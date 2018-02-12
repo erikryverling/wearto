@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="se.yverling.wearto.R"/>
+        <import type="android.text.TextUtils"/>
+        <import type="android.view.View"/>
+        <variable name="viewModel" type="se.yverling.wearto.login.LoginViewModel"/>
+    </data>
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/headline"
+                    android:text="@string/login_heading"
+                    android:textColor="@color/primary"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    app:autoSizeTextType="uniform"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"/>
+
+            <ImageView
+                    android:id="@+id/step_1_icon"
+                    android:contentDescription="@string/step_1_icon_content_description"
+                    app:srcCompat="@drawable/ic_looks_one_primary_dark_48dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintTop_toTopOf="@+id/todoist_link"
+                    app:layout_constraintBottom_toBottomOf="@+id/step_1_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:id="@+id/todoist_link"
+                    android:onClick="@{() -> viewModel.onLinkClick()}"
+                    android:text="@string/todoist_link"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent"
+                    android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                    android:layout_marginTop="56dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/headline"
+                    app:layout_constraintStart_toEndOf="@+id/step_1_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:id="@+id/step_1_description"
+                    android:text="@string/step_1_description"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintTop_toBottomOf="@+id/todoist_link"
+                    app:layout_constraintStart_toStartOf="@+id/todoist_link"
+                    app:layout_constraintEnd_toEndOf="@+id/todoist_link"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+            <ImageView
+                    android:id="@+id/step_2_icon"
+                    android:contentDescription="@string/step_2_icon_content_description"
+                    app:srcCompat="@drawable/ic_looks_two_primary_dark_48dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintTop_toTopOf="@+id/access_token_edit_layout"
+                    app:layout_constraintBottom_toBottomOf="@+id/step_2_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <android.support.design.widget.TextInputLayout
+                    android:id="@+id/access_token_edit_layout"
+                    android:hint="@string/access_token_hint"
+                    android:transitionGroup="true"
+                    android:layout_marginTop="64dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/step_1_description"
+                    app:layout_constraintStart_toEndOf="@+id/step_2_icon"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+
+                <EditText
+                        android:id="@+id/access_token_edit"
+                        android:text="@={viewModel.accessToken}"
+                        tools:ignore="LabelFor"
+                        android:imeOptions="flagNoExtractUi"
+                        android:inputType="textPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                    android:id="@+id/step_2_description"
+                    android:text="@string/step_2_description"
+                    android:textAppearance="@android:style/TextAppearance.Material.Small"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="4dp"
+                    app:layout_constraintTop_toBottomOf="@+id/access_token_edit_layout"
+                    app:layout_constraintStart_toStartOf="@+id/access_token_edit_layout"
+                    app:layout_constraintEnd_toEndOf="@+id/access_token_edit_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"/>
+
+            <Button
+                    android:id="@+id/login_button"
+                    android:onClick="@{() -> viewModel.login()}"
+                    android:enabled="@{!TextUtils.isEmpty(viewModel.accessToken.get()) &amp;&amp; !viewModel.isLoggingIn}"
+                    android:text="@{viewModel.isLoggingIn ? @string/empty_string : @string/login_button}"
+                    tools:text="Login"
+                    android:backgroundTint="@color/accent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="64dp"
+                    app:layout_constraintTop_toBottomOf="@+id/step_2_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"/>
+
+            <ProgressBar
+                    android:indeterminateTint="@color/primary_text"
+                    android:visibility="@{viewModel.isLoggingIn ? View.VISIBLE : View.GONE}"
+                    android:elevation="3dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintTop_toTopOf="@+id/login_button"
+                    app:layout_constraintBottom_toBottomOf="@+id/login_button"
+                    app:layout_constraintStart_toStartOf="@+id/login_button"
+                    app:layout_constraintEnd_toEndOf="@+id/login_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"/>
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+</layout>

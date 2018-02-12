@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/sync_items_action"
+        android:title="@string/sync_item"
+        android:icon="@drawable/ic_sync_white_24dp"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/logout_action"
+        android:title="@string/logout_item"
+        android:orderInCategory="100"
+        app:showAsAction="never"/>
+</menu>

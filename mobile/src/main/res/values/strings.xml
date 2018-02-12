@@ -1,0 +1,72 @@
+<resources>
+    <!-- Core -->
+    <string name="empty_string" translatable="false"/>
+    <string name="app_name" translatable="false">WearTo</string>
+    <string name="ok_button" translatable="false">OK</string>
+    <string name="try_again_button">Try again</string>
+    <string name="cancel_button">Cancel</string>
+
+
+    <!-- Login -->
+    <string name="login_heading">Let\'s get started!</string>
+
+    <string name="step_1_icon_content_description">Step 1 icon</string>
+    <string name="step_1_description">Tap the link and copy the <i>API Token</i></string>
+    <string name="todoist_link" translatable="false">https://todoist.com/Users/viewPrefs?page=integrations</string>
+
+    <string name="step_2_icon_content_description">Step 2 icon</string>
+    <string name="step_2_description">Paste the token and tap <i>Login</i></string>
+    <string name="access_token_hint" translatable="false">API token</string>
+
+    <string name="login_button">Login</string>
+
+    <string name="login_failed_title">Login failed</string>
+    <string name="login_failed_due_to_network_message">Check your network settings and try again</string>
+    <string name="login_failed_due_to_general_error_message">Check your API token and try again</string>
+
+
+    <!-- Items -->
+    <string name="items_title">Items</string>
+
+    <string name="logout_item">Logout</string>
+    <string name="sync_item">Sync</string>
+
+    <string name="no_items_label">You have no items</string>
+
+    <string name="add_item_tap_target_primary">Add your items</string>
+    <string name="add_item_tap_target_secondary">Tap here to add your first item</string>
+
+    <string name="sync_item_tap_target_primary">Sync your items</string>
+    <string name="sync_item_tap_target_secondary">Tap the here to sync your item with your wearable</string>
+
+    <string name="sync_succeeded_message">Sync succeeded</string>
+
+    <string name="logout_warning_title">Are you sure?</string>
+    <string name="logout_warning_message">All your items will be removed</string>
+
+    <string name="sync_error_title">Couldn\'t sync your items</string>
+    <string name="sync_error_due_to_general_error_message">Something went wrong</string>
+    <string name="sync_error_due_to_network_message">Check your network settings and try again</string>
+    <string name="sync_error_due_to_data_layer_message">Check your Android Wear settings and try again</string>
+
+
+    <!-- Item (edit) -->
+    <string name="add_item_title">Add item</string>
+    <string name="edit_item_title">Edit item</string>
+
+    <string name="item_name_label">Name</string>
+    <!--suppress AndroidLintUnusedResources -->
+    <string name="item_name_hint">Add a name</string>
+
+    <string name="item_name_is_required_label">Name is required</string>
+
+    <string name="remove_item">Remove</string>
+
+    <string name="save_error_title">Couldn\'t save item</string>
+    <string name="save_error_message">Something went wrong when saving to the database</string>
+
+
+    <!-- Selected item -->
+    <string name="could_not_send_item_text">Could not send item to Todoist</string>
+    <string name="could_not_send_item_message">Check your network settings and try again</string>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Items -->
+    <string name="no_items_label">Du har inga uppgifter</string>
+    <string name="to_label">till</string>
+
+    <!-- Selected item -->
+    <string name="error_sending_item_message">Kunde inte skicka den valda uppgiften</string>
+</resources>
