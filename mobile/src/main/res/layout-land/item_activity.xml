@@ -36,7 +36,7 @@
                 app:hint="@{R.string.item_name_hint}"
                 app:focus="@{true}"
                 android:imeOptions="flagNoExtractUi"
-                android:inputType="textNoSuggestions"
+                android:inputType="textCapSentences"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </android.support.design.widget.TextInputLayout>
