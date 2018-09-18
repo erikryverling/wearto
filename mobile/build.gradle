@@ -5,8 +5,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0-alpha09'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.10'
+        classpath 'com.android.tools.build:gradle:3.3.0-alpha10'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.70'
     }
 }
 
@@ -20,6 +20,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
+    // TODO Can't bump to 28
     compileSdkVersion 27
 
     defaultConfig {
@@ -42,6 +43,8 @@ android {
             buildConfigField 'String', 'API_BASE_URL', "\"https://todoist.com/API/v7/\""
         }
 
+        // Debug suffix and icon
+
         release {
             minifyEnabled true
             shrinkResources true
@@ -57,33 +60,33 @@ android {
 dependencies {
     // -- Android dependencies
 
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jre8:1.2.10'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.61'
 
-    kapt 'com.google.dagger:dagger-compiler:2.13'
-    implementation 'com.google.dagger:dagger:2.13'
-    implementation 'com.google.dagger:dagger-android:2.13'
+    kapt 'com.google.dagger:dagger-compiler:2.16'
+    implementation 'com.google.dagger:dagger:2.16'
+    implementation 'com.google.dagger:dagger-android:2.16'
 
-    implementation 'com.android.support:design:27.0.2'
+    implementation 'com.android.support:design:27.1.1'
 
-    kapt 'android.arch.lifecycle:compiler:1.1.0'
-    implementation 'android.arch.lifecycle:runtime:1.1.0'
-    implementation 'android.arch.lifecycle:extensions:1.1.0'
+    kapt 'android.arch.lifecycle:compiler:1.1.1'
+    implementation 'android.arch.lifecycle:runtime:1.1.1'
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
 
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
-    kapt 'android.arch.persistence.room:compiler:1.0.0'
-    implementation 'android.arch.persistence.room:runtime:1.0.0'
-    implementation 'android.arch.persistence.room:rxjava2:1.0.0'
+    kapt 'android.arch.persistence.room:compiler:1.1.1'
+    implementation 'android.arch.persistence.room:runtime:1.1.1'
+    implementation 'android.arch.persistence.room:rxjava2:1.1.1'
 
-    implementation 'com.google.android.gms:play-services-wearable:11.8.0'
+    implementation 'com.google.android.gms:play-services-wearable:15.0.1'
 
     // -- Third party dependencies
 
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
-    implementation 'io.reactivex.rxjava2:rxkotlin:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.14'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
 
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
@@ -97,22 +100,22 @@ dependencies {
 
     // -- Test dependencies
 
-    kaptAndroidTest 'com.google.dagger:dagger-compiler:2.13'
+    kaptAndroidTest 'com.google.dagger:dagger-compiler:2.16'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.mockito:mockito-inline:2.13.0"
-    testImplementation 'android.arch.core:core-testing:1.1.0'
+    testImplementation "org.mockito:mockito-inline:2.19.0"
+    testImplementation 'android.arch.core:core-testing:1.1.1'
     testImplementation 'com.willowtreeapps.assertk:assertk:0.9'
 
     androidTestImplementation 'junit:junit:4.12'
 
-    androidTestImplementation 'org.mockito:mockito-android:2.13.0'
+    androidTestImplementation 'org.mockito:mockito-android:2.19.0'
 
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test:rules:1.0.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
 
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.2'
 
     //noinspection GradleDependency
     androidTestImplementation 'com.squareup.okhttp3:mockwebserver:3.8.0'
