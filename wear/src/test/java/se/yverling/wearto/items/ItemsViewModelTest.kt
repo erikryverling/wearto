@@ -55,7 +55,7 @@ class ItemsViewModelTest {
     }
 
     @Test
-    fun shouldSendSelectedItemSuccessfully() {
+    fun `Should send selected item successfully`() {
         whenever(dataLayerClientMock.sendSelectedItem(testItem)).thenReturn(Single.just(testItem))
 
         viewModel.sendItem(testItem)
@@ -64,7 +64,7 @@ class ItemsViewModelTest {
     }
 
     @Test
-    fun shouldShowErrorMessageWhenSendingSelectedItemFailed() {
+    fun `Should show ErrorMessage when sending selected item failed`() {
         whenever(dataLayerClientMock.sendSelectedItem(testItem)).thenReturn(Single.error(RuntimeException()))
 
         viewModel.sendItem(testItem)

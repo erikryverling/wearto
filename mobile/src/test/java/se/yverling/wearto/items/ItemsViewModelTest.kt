@@ -59,13 +59,13 @@ class ItemsViewModelTest {
     }
 
     @Test
-    fun shouldPotentiallyShowAddTapTargetWhenItemsListIsEmpty() {
+    fun `Should potentially show add tap target when items list is empty`() {
         assert(viewModel.events.value).isEqualTo(SHOW_ADD_TAP_TARGET_EVENT)
     }
 
 
     @Test
-    fun shouldPotentiallyShowSyncTapTargetWhenItemsListIsEmpty() {
+    fun `Should potentially show sync tap target when items list is empty`() {
         whenever(databaseClientMock.findAllItemsWithProjectContinuously()).thenReturn(Flowable.just(listOf(ItemWithProject())))
 
         viewModel = ItemsViewModel(applicationMock, databaseClientMock, networkClientMock, dataLayerClientMock, recyclerViewAdapter)
@@ -75,7 +75,7 @@ class ItemsViewModelTest {
 
 
     @Test
-    fun shouldSyncSuccessfully() {
+    fun `Should sync successfully`() {
         whenever(networkClientMock.getProjects()).thenReturn(Single.just(SyncResponse(testProjects)))
         whenever(databaseClientMock.replaceAllProjects(testProjects)).thenReturn(Completable.complete())
         whenever(databaseClientMock.findAllOrphanItems()).thenReturn(Single.just(emptyList()))
@@ -89,7 +89,7 @@ class ItemsViewModelTest {
     }
 
     @Test
-    fun shouldShowErrorMessageWhenNetworkErrorOccurs() {
+    fun `Should show error message when network error occurs`() {
         whenever(networkClientMock.getProjects()).thenReturn(Single.error(UnknownHostException()))
         whenever(databaseClientMock.replaceAllProjects(testProjects)).thenReturn(Completable.complete())
         whenever(databaseClientMock.findAllOrphanItems()).thenReturn(Single.just(emptyList()))
@@ -103,7 +103,7 @@ class ItemsViewModelTest {
     }
 
     @Test
-    fun shouldShowErrorMessageWhenDataLayerErrorOccurs() {
+    fun `Should show error message when DataLayerError occurs`() {
         whenever(networkClientMock.getProjects()).thenReturn(Single.just(SyncResponse(testProjects)))
         whenever(databaseClientMock.replaceAllProjects(testProjects)).thenReturn(Completable.complete())
         whenever(databaseClientMock.findAllOrphanItems()).thenReturn(Single.just(emptyList()))
@@ -117,7 +117,7 @@ class ItemsViewModelTest {
     }
 
     @Test
-    fun shouldShowErrorMessageWhenGeneralErrorOccurs() {
+    fun `Should show error message when GeneralError occurs`() {
         whenever(networkClientMock.getProjects()).thenReturn(Single.just(SyncResponse(testProjects)))
         whenever(databaseClientMock.replaceAllProjects(testProjects)).thenReturn(Completable.complete())
         whenever(databaseClientMock.findAllOrphanItems()).thenReturn(Single.just(emptyList()))

@@ -63,7 +63,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun shouldLoginSuccessfully() {
+    fun `Should login successfully`() {
         val projects = listOf(Project(1, "Project1", 0))
 
         whenever(networkClientMock.getProjects(ACCESS_TOKEN)).thenReturn(Single.just(SyncResponse(projects)))
@@ -83,7 +83,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun shouldShowErrorMessageWhenNetworkErrorEventOccurs() {
+    fun `Should show ErrorMessage when NetworkErrorEvent occurs`() {
         whenever(networkClientMock.getProjects(ACCESS_TOKEN)).thenReturn(Single.error(UnknownHostException()))
 
         // This is to make sure the Rx chain doesn't throw an NPE
@@ -100,7 +100,7 @@ class LoginViewModelTest {
 
 
     @Test
-    fun shouldShowErrorMessageWheGeneralErrorEventOccurs() {
+    fun `Should show ErrorMessage when GeneralErrorEvent occurs`() {
         whenever(networkClientMock.getProjects(ACCESS_TOKEN)).thenReturn(Single.error(RuntimeException()))
 
         // This is to make sure the Rx chain doesn't throw an NPE

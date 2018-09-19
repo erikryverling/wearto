@@ -67,7 +67,7 @@ class ItemViewModelTest {
     }
 
     @Test
-    fun shouldEditItemSuccessfully() {
+    fun `Should edit item successfully`() {
         val itemWithProject = ItemWithProject()
         itemWithProject.item = Item(UUID, ITEM_NAME, FIRST_PROJECT_ID)
         itemWithProject.project = Project(FIRST_PROJECT_ID, FIRST_PROJECT_NAME, FIRST_PROJECT_COLOR)
@@ -81,7 +81,7 @@ class ItemViewModelTest {
     }
 
     @Test
-    fun shouldSaveNewItemSuccessfully() {
+    fun `Should save new item successfully`() {
         viewModel.name.set(ITEM_NAME)
         viewModel.projectName.set(FIRST_PROJECT_NAME)
 
@@ -94,7 +94,7 @@ class ItemViewModelTest {
     }
 
     @Test
-    fun shouldShouldErrorMessageWhenItemCouldNotBeSave() {
+    fun `Should show error message when item could not be saved`() {
         viewModel.name.set(ITEM_NAME)
         viewModel.projectName.set(FIRST_PROJECT_NAME)
 
@@ -107,7 +107,7 @@ class ItemViewModelTest {
     }
 
     @Test
-    fun shouldSaveExistingItemSuccessfully() {
+    fun `Should save existing item Successfully`() {
         viewModel.uuid.set(UUID)
         viewModel.name.set(ITEM_NAME)
         viewModel.projectName.set(FIRST_PROJECT_NAME)
@@ -123,7 +123,7 @@ class ItemViewModelTest {
     }
 
     @Test
-    fun shouldShowErrorMessageWhenSavingExistingItemFailed() {
+    fun `Should show error message when saving existing item failed`() {
         viewModel.uuid.set(UUID)
         viewModel.name.set(ITEM_NAME)
         viewModel.projectName.set(FIRST_PROJECT_NAME)
@@ -139,7 +139,7 @@ class ItemViewModelTest {
     }
 
     @Test
-    fun shouldDeleteItemSuccessfully() {
+    fun `Should delete item successfully`() {
         viewModel.uuid.set(UUID)
 
         whenever(databaseClientMock.deleteItem(UUID)).thenReturn(Completable.complete())
@@ -151,19 +151,19 @@ class ItemViewModelTest {
     }
 
     @Test
-    fun shouldMarkItemAsValidWhenNameIsSet() {
+    fun `Should mark item as valid when name is set`() {
         viewModel.name.set(ITEM_NAME)
 
         assert(viewModel.isValid()).isEqualTo(true)
     }
 
     @Test
-    fun shouldNotMarkItemAsValidWhenNameNotIsSet() {
+    fun `Should not mark item as valid when name is not set`() {
         assert(viewModel.isValid()).isEqualTo(false)
     }
 
     @Test
-    fun shouldSetSelectedProjectToLastUsed() {
+    fun `Should set selected project to last used`() {
         whenever(
                 sharedPreferencesMock.getString(LATEST_SELECTED_PROJECT_PREFERENCES_KEY, "Inbox")
         ).thenReturn(SECOND_PROJECT_NAME)
