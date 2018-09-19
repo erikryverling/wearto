@@ -43,7 +43,9 @@ android {
             buildConfigField 'String', 'API_BASE_URL', "\"https://todoist.com/API/v7/\""
         }
 
-        // Debug suffix and icon
+        debug {
+            applicationIdSuffix ".debug"
+        }
 
         release {
             minifyEnabled true
@@ -57,26 +59,36 @@ android {
     }
 }
 
+ext {
+    daggerVersion = '2.16'
+    archVerion = '1.1.1'
+    androidTestVersion = '1.0.1'
+    ankoVersion = '0.10.2'
+    stethoVersion = '1.5.0'
+    androidTestVersion = '1.0.2'
+    espressoVersion = '3.0.2'
+}
+
 dependencies {
     // -- Android dependencies
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.2.61'
 
-    kapt 'com.google.dagger:dagger-compiler:2.16'
-    implementation 'com.google.dagger:dagger:2.16'
-    implementation 'com.google.dagger:dagger-android:2.16'
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    implementation "com.google.dagger:dagger:\$daggerVersion"
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
 
     implementation 'com.android.support:design:27.1.1'
 
-    kapt 'android.arch.lifecycle:compiler:1.1.1'
-    implementation 'android.arch.lifecycle:runtime:1.1.1'
-    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    kapt "android.arch.lifecycle:compiler:$archVerion"
+    implementation "android.arch.lifecycle:runtime:$archVerion"
+    implementation "android.arch.lifecycle:extensions:$archVerion"
 
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
-    kapt 'android.arch.persistence.room:compiler:1.1.1'
-    implementation 'android.arch.persistence.room:runtime:1.1.1'
-    implementation 'android.arch.persistence.room:rxjava2:1.1.1'
+    kapt "android.arch.persistence.room:compiler:$archVerion"
+    implementation "android.arch.persistence.room:runtime:$archVerion"
+    implementation "android.arch.persistence.room:rxjava2:$archVerion"
 
     implementation 'com.google.android.gms:play-services-wearable:15.0.1'
 
@@ -90,11 +102,11 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
-    implementation 'org.jetbrains.anko:anko-commons:0.10.2'
-    implementation 'org.jetbrains.anko:anko-design:0.10.2'
+    implementation "org.jetbrains.anko:anko-commons:$ankoVersion"
+    implementation "org.jetbrains.anko:anko-design:$ankoVersion"
 
-    implementation 'com.facebook.stetho:stetho:1.5.0'
-    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+    implementation "com.facebook.stetho:stetho:$stethoVersion"
+    implementation "com.facebook.stetho:stetho-okhttp3:$stethoVersion"
 
     implementation 'uk.co.samuelwall:material-tap-target-prompt:2.5.0'
 
@@ -111,11 +123,11 @@ dependencies {
 
     androidTestImplementation 'org.mockito:mockito-android:2.19.0'
 
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    androidTestImplementation "com.android.support.test:runner:$androidTestVersion"
+    androidTestImplementation "com.android.support.test:rules:$androidTestVersion"
 
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.0.2'
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$espressoVersion"
+    androidTestImplementation "com.android.support.test.espresso:espresso-intents:$espressoVersion"
 
     //noinspection GradleDependency
     androidTestImplementation 'com.squareup.okhttp3:mockwebserver:3.8.0'
