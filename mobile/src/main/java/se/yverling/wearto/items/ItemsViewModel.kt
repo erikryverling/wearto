@@ -151,44 +151,6 @@ class ItemsViewModel @Inject constructor(
     fun itemDecoration() = DividerItemDecoration(app, LinearLayoutManager.VERTICAL)
 
     fun layoutManager() = LinearLayoutManager(app)
-
-    class ItemsRecyclerViewAdapter @Inject constructor() : RecyclerView.Adapter<ItemsRecyclerViewAdapter.TemplateViewHolder>() {
-        private var itemsWithProject: List<ItemWithProject> = mutableListOf()
-        private lateinit var onItemClick: (Item) -> Unit
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TemplateViewHolder {
-            val itemView = LayoutInflater
-                    .from(parent.context)
-                    .inflate(R.layout.items_list_item, parent, false)
-            return TemplateViewHolder(itemView)
-        }
-
-        override fun onBindViewHolder(holder: TemplateViewHolder, position: Int) {
-            holder.item.text = itemsWithProject[position].item.name
-            holder.project.text = itemsWithProject[position].project.name
-            holder.project.backgroundTintList = ColorStateList.valueOf(itemsWithProject[position].project.color)
-
-            holder.itemView.setOnClickListener { onItemClick(itemsWithProject[position].item) }
-        }
-
-        override fun getItemCount(): Int {
-            return itemsWithProject.size
-        }
-
-        fun onItemClick(function: (Item) -> (Unit)) {
-            this.onItemClick = function
-        }
-
-        fun setItems(itemsWithProject: List<ItemWithProject>) {
-            this.itemsWithProject = itemsWithProject
-            notifyDataSetChanged()
-        }
-
-        class TemplateViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val item: TextView = view.findViewById(R.id.item_name)
-            val project: TextView = view.findViewById(R.id.project_name)
-        }
-    }
     
     enum class Events {
         START_ITEM_ACTIVITY_EVENT,
@@ -206,7 +168,7 @@ class ItemsViewModel @Inject constructor(
 }
 
 @BindingAdapter("viewAdapter")
-fun adapter(view: RecyclerView, adapter: ItemsViewModel.ItemsRecyclerViewAdapter) {
+fun adapter(view: RecyclerView, adapter: ItemsRecyclerViewAdapter) {
     view.adapter = adapter
 }
 
