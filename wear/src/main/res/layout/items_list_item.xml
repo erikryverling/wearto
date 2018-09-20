@@ -1,0 +1,23 @@
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="viewModel" type="se.yverling.wearto.items.ItemsListItemViewModel"/>
+    </data>
+
+    <TextView
+            android:id="@+id/item"
+            android:onClick="@{() -> viewModel.onClick()}"
+            android:text="@{viewModel.text}"
+            app:compoundDrawableTintList="@{viewModel.drawableColor}"
+            tools:text="Milk"
+            android:drawableStart="@drawable/item_icon"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+</layout>

@@ -4,16 +4,11 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.content.res.ColorStateList
 import android.databinding.BindingAdapter
 import android.databinding.ObservableBoolean
 import android.support.annotation.VisibleForTesting
-import android.support.v7.widget.RecyclerView
 import android.support.wear.widget.WearableLinearLayoutManager
 import android.support.wear.widget.WearableRecyclerView
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.TextView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
@@ -21,11 +16,10 @@ import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
-import se.yverling.wearto.R
 import se.yverling.wearto.core.SingleLiveEvent
 import se.yverling.wearto.core.db.AppDatabase
 import se.yverling.wearto.core.entities.Item
-import se.yverling.wearto.items.ItemsViewModel.Events.SHOW_ITEM_SELECTION_FAILED_EVENT
+import se.yverling.wearto.items.Events.SHOW_ITEM_SELECTION_FAILED_EVENT
 import se.yverling.wearto.sync.datalayer.DataLayerClient
 import javax.inject.Inject
 
@@ -101,7 +95,7 @@ enum class Events {
 }
 
 @BindingAdapter("viewAdapter")
-fun adapter(view: WearableRecyclerView, adapter: ItemsViewModel.ItemsRecyclerViewAdapter) {
+fun adapter(view: WearableRecyclerView, adapter: ItemsRecyclerViewAdapter) {
     view.adapter = adapter
 }
 

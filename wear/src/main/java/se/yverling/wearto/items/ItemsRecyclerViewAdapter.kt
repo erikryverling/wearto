@@ -1,11 +1,14 @@
 package se.yverling.wearto.items
 
 import android.content.res.ColorStateList
+import android.databinding.BindingAdapter
 import android.support.v7.widget.RecyclerView
+import android.support.wear.widget.WearableRecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import se.yverling.wearto.core.entities.Item
+import se.yverling.wearto.databinding.ItemsListItemBinding
 import javax.inject.Inject
 
 class ItemsRecyclerViewAdapter @Inject constructor() : RecyclerView.Adapter<ItemsRecyclerViewAdapter.ViewHolder>() {
@@ -13,20 +16,18 @@ class ItemsRecyclerViewAdapter @Inject constructor() : RecyclerView.Adapter<Item
     private lateinit var onItemClick: (Item) -> (Unit)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item, parent, false) as TextView
-        return ViewHolder(view)
+        return ViewHolder(ItemsListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textView.compoundDrawableTintList = ColorStateList.valueOf(items[position].color)
-        holder.textView.text = items[position].name
-
-        holder.textView.setOnClickListener { onItemClick.invoke(items[position]) }
+        items[position].apply {
+            holder.binding.viewModel = ItemsListItemViewModel(name, ColorStateList.valueOf(color)) {
+                onItemClick(items[position])
+            }
+        }
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+    override fun getItemCount(): Int = items.size
 
     fun setItems(items: List<Item>) {
         this.items = items
@@ -37,5 +38,10 @@ class ItemsRecyclerViewAdapter @Inject constructor() : RecyclerView.Adapter<Item
         this.onItemClick = function
     }
 
-    class ViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+    class ViewHolder(val binding: ItemsListItemBinding) : RecyclerView.ViewHolder(binding.root)
+}
+
+@BindingAdapter("compoundDrawableTintList")
+fun adapter(view: TextView, colorStateList: ColorStateList) {
+    view.compoundDrawableTintList = colorStateList
 }

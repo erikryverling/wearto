@@ -21,7 +21,7 @@ import se.yverling.wearto.R
 import se.yverling.wearto.core.WearToApplication
 import se.yverling.wearto.core.entities.Item
 import se.yverling.wearto.databinding.ItemsActivityBinding
-import se.yverling.wearto.items.ItemsViewModel.Events.*
+import se.yverling.wearto.items.Events.*
 import javax.inject.Inject
 
 private const val FINISH_ACTIVITY: Int = 100

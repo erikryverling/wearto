@@ -16,7 +16,7 @@ import org.mockito.junit.MockitoJUnit
 import se.yverling.wearto.core.db.AppDatabase
 import se.yverling.wearto.core.db.ItemDao
 import se.yverling.wearto.core.entities.Item
-import se.yverling.wearto.items.ItemsViewModel.Events.*
+import se.yverling.wearto.items.Events.*
 import se.yverling.wearto.sync.datalayer.DataLayerClient
 import se.yverling.wearto.test.RxRule
 import se.yverling.wearto.test.whenever
@@ -38,7 +38,7 @@ class ItemsViewModelTest {
     @Mock
     lateinit var dataLayerClientMock: DataLayerClient
     @Mock
-    lateinit var itemsRecyclerViewAdapterMock: ItemsViewModel.ItemsRecyclerViewAdapter
+    lateinit var itemsRecyclerViewAdapterMock: ItemsRecyclerViewAdapter
 
     lateinit var viewModel: ItemsViewModel
     
