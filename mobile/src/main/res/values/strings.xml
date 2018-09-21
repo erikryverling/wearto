@@ -28,6 +28,7 @@
     <!-- Items -->
     <string name="items_title">Items</string>
 
+    <string name="licences">Licences</string>
     <string name="logout_item">Logout</string>
     <string name="sync_item">Sync</string>
 

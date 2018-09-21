@@ -24,6 +24,7 @@
     <!-- Items -->
     <string name="items_title">Uppgifter</string>
 
+    <string name="licences">Licenser</string>
     <string name="logout_item">Logga ut</string>
     <string name="sync_item">Synka</string>
 

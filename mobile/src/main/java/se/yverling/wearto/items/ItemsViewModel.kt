@@ -151,7 +151,7 @@ class ItemsViewModel @Inject constructor(
     fun itemDecoration() = DividerItemDecoration(app, LinearLayoutManager.VERTICAL)
 
     fun layoutManager() = LinearLayoutManager(app)
-    
+
     enum class Events {
         START_ITEM_ACTIVITY_EVENT,
 

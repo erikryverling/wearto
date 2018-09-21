@@ -22,10 +22,12 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.browse
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.info
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.startActivity
+import se.yverling.wearto.BuildConfig
 import se.yverling.wearto.R
 import se.yverling.wearto.auth.TokenManager
 import se.yverling.wearto.core.WearToApplication
@@ -146,6 +148,8 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.sync_items_action -> viewModel.sync()
+
+            R.id.licences_action -> browse(BuildConfig.ACKNOWLEDGMENTS_URL)
 
             R.id.logout_action -> logoutDialog.show()
         }
