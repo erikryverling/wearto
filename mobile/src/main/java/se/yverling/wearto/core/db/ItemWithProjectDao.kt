@@ -14,6 +14,6 @@ interface ItemWithProjectDao {
     @Query("SELECT * FROM item INNER JOIN project ON item.project_id = project.id")
     fun findAllItemsWithProject(): Single<List<ItemWithProject>>
 
-    @Query("SELECT * FROM item INNER JOIN project ON item.project_id = project.id")
+    @Query("SELECT * FROM item INNER JOIN project ON item.project_id = project.id WHERE item.deleted = 0 ORDER BY item.name")
     fun findAllItemsWithProjectContinuously(): Flowable<List<ItemWithProject>>
 }

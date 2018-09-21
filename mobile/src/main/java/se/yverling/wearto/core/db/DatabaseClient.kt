@@ -61,7 +61,7 @@ class DatabaseClient @Inject constructor(
                 .findByUuid(uuid)
                 .flatMapCompletable {
                     Completable.fromCallable {
-                        database.itemDao().delete(it)
+                        database.itemDao().update(Item(it.uuid, it.name, it.projectId, true))
                     }
                 }
     }

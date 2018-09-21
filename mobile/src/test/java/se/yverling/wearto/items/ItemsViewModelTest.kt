@@ -18,7 +18,6 @@ import org.mockito.junit.MockitoRule
 import se.yverling.wearto.core.db.DatabaseClient
 import se.yverling.wearto.core.entities.ItemWithProject
 import se.yverling.wearto.items.ItemsViewModel.Events.*
-import se.yverling.wearto.items.ItemsViewModel.ItemsRecyclerViewAdapter
 import se.yverling.wearto.sync.datalayer.DataLayerClient
 import se.yverling.wearto.sync.network.NetworkClient
 import se.yverling.wearto.sync.network.dtos.SyncResponse

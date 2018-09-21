@@ -63,14 +63,18 @@ class DataLayerClient @Inject constructor(
     private fun getAllItemsAsDataMap(): Single<ArrayList<DataMap>> {
         return databaseClient.findAllItemsWithProject()
                 .map { itemsWithProject ->
-                    val maps = itemsWithProject.map {
-                        val dataMap = DataMap()
-                        dataMap.putString(ITEM_UUID_KEY, it.item.uuid)
-                        dataMap.putString(ITEM_NAME_KEY, it.item.name)
-                        dataMap.putInt(ITEM_COLOR_KEY, it.project.color)
-                        dataMap.putString(ITEM_PROJECT_NAME, it.project.name)
-                        dataMap
-                    }
+                    val maps = itemsWithProject
+                            .asSequence()
+                            .filter { !it.item.deleted }
+                            .map {
+                                val dataMap = DataMap()
+                                dataMap.putString(ITEM_UUID_KEY, it.item.uuid)
+                                dataMap.putString(ITEM_NAME_KEY, it.item.name)
+                                dataMap.putInt(ITEM_COLOR_KEY, it.project.color)
+                                dataMap.putString(ITEM_PROJECT_NAME, it.project.name)
+                                dataMap
+                            }
+                            .toList()
                     java.util.ArrayList<DataMap>(maps)
                 }
     }

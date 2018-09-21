@@ -5,4 +5,8 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "item")
-data class Item(@PrimaryKey val uuid: String, val name: String, @ColumnInfo(name = "project_id") val projectId: Long)
+data class Item(
+        @PrimaryKey val uuid: String,
+        val name: String,
+        @ColumnInfo(name = "project_id") val projectId: Long,
+        val deleted: Boolean = false)
