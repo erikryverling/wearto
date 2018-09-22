@@ -28,9 +28,10 @@
     <!-- Items -->
     <string name="items_title">Items</string>
 
+    <string name="sync_item">Sync</string>
+    <string name="import_item">Import</string>
     <string name="licences">Licences</string>
     <string name="logout_item">Logout</string>
-    <string name="sync_item">Sync</string>
 
     <string name="no_items_label">You have no items</string>
 
@@ -49,6 +50,15 @@
     <string name="sync_error_due_to_general_error_message">Something went wrong</string>
     <string name="sync_error_due_to_network_message">Check your network settings and try again</string>
     <string name="sync_error_due_to_data_layer_message">Check your Android Wear settings and try again</string>
+
+    <!-- Import dialog -->
+    <string name="import_title">Import items</string>
+    <string name="include_completed_items">Include completed items</string>
+    <string name="include_locally_removed_items">Include locally removed items</string>
+    <string name="import_button_title">Import</string>
+    <string name="cancel_button_title">Cancel</string>
+    <string name="import_error_title">Could not import items</string>
+    <string name="import_error_due_to_general_error_message">Something went wrong</string>
 
 
     <!-- Item (edit) -->

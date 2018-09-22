@@ -69,6 +69,7 @@ class ItemsUiTest {
         dbClient.close()
     }
 
+    // TODO Fix. Race?
     @Test
     fun shouldShowTapTargetSuccessfully() {
         setTapTargetsAsUndone()

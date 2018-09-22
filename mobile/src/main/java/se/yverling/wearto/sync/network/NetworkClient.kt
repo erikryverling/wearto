@@ -8,6 +8,7 @@ import se.yverling.wearto.auth.TokenManager
 import se.yverling.wearto.core.entities.Item
 import se.yverling.wearto.sync.network.dtos.AddItemCommand
 import se.yverling.wearto.sync.network.dtos.Args
+import se.yverling.wearto.sync.network.dtos.ProjectDataResponse
 import se.yverling.wearto.sync.network.dtos.SyncResponse
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,6 +16,8 @@ import javax.inject.Singleton
 @Singleton
 class NetworkClient @Inject constructor(
         private val syncResource: SyncResource,
+        private val projectsResource: ProjectsResource,
+        private val completedResource: CompletedResource,
         private val tokenManager: TokenManager
 ) {
     private val syncToken = "*"
@@ -40,5 +43,17 @@ class NetworkClient @Inject constructor(
                     val commands = JSONArray().put(json)
                     syncResource.addItem(it, commands)
                 }
+    }
+
+    fun getItems(projectId: Long): Single<ProjectDataResponse> {
+        return tokenManager.getAccessToken().flatMapSingle {
+            projectsResource.getItems(it, projectId)
+        }
+    }
+
+    fun getCompletedItems(projectId: Long, offset: Int, limit: Int): Single<ProjectDataResponse> {
+        return tokenManager.getAccessToken().flatMapSingle {
+            completedResource.getItems(it, projectId, offset, limit)
+        }
     }
 }

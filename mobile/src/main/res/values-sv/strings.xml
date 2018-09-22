@@ -24,9 +24,10 @@
     <!-- Items -->
     <string name="items_title">Uppgifter</string>
 
+    <string name="sync_item">Synka</string>
+    <string name="import_item">Importera</string>
     <string name="licences">Licenser</string>
     <string name="logout_item">Logga ut</string>
-    <string name="sync_item">Synka</string>
 
     <string name="no_items_label">Du har inga uppgifter</string>
 
@@ -45,6 +46,15 @@
     <string name="sync_error_due_to_general_error_message">Ett okänt fel uppstod</string>
     <string name="sync_error_due_to_network_message">Kontrollera dina nätverksinställningar och försök igen</string>
     <string name="sync_error_due_to_data_layer_message">Kontrollera dina Android Wear inställningar och försök igen</string>
+
+    <!-- Import dialog -->
+    <string name="import_title">Importera</string>
+    <string name="include_completed_items">Inkludera slutförda uppgifter</string>
+    <string name="include_locally_removed_items">Inkluderade lokalt borttagna uppgifter</string>
+    <string name="import_button_title">Importera</string>
+    <string name="cancel_button_title">Avbryt</string>
+    <string name="import_error_title">Kunde inte importera uppgifter</string>
+    <string name="import_error_due_to_general_error_message">Ett okänt fel uppstod</string>
 
 
     <!-- Item (edit) -->

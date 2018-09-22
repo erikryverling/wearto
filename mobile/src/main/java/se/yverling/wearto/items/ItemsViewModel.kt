@@ -2,17 +2,18 @@ package se.yverling.wearto.items
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
-import android.content.res.ColorStateList
+import android.content.Context
+import android.content.SharedPreferences
 import android.databinding.BindingAdapter
 import android.databinding.ObservableBoolean
+import android.databinding.ObservableField
 import android.support.annotation.VisibleForTesting
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.ArrayAdapter
+import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
@@ -24,29 +25,46 @@ import org.jetbrains.anko.info
 import se.yverling.wearto.R
 import se.yverling.wearto.core.SingleLiveEvent
 import se.yverling.wearto.core.db.DatabaseClient
-import se.yverling.wearto.core.entities.Item
-import se.yverling.wearto.core.entities.ItemWithProject
+import se.yverling.wearto.core.entities.Project
 import se.yverling.wearto.items.ItemsViewModel.Events.*
+import se.yverling.wearto.items.edit.LATEST_SELECTED_PROJECT_PREFERENCES_KEY
 import se.yverling.wearto.sync.datalayer.DataLayerClient
 import se.yverling.wearto.sync.network.NetworkClient
+import se.yverling.wearto.sync.network.dtos.ProjectDataResponse
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
+
+// We'll only fetch the first 200 completed items
+private const val COMPLETED_ITEMS_OFFSET = 0
+private const val COMPLETED_ITEMS_LIMIT = 200
+
+private const val DEFAULT_PROJECT = "Inbox"
 
 class ItemsViewModel @Inject constructor(
         private val app: Application,
         private val databaseClient: DatabaseClient,
         private val networkClient: NetworkClient,
         private val dataLayerClient: DataLayerClient,
+        private val sharedPreferences: SharedPreferences,
         val viewAdapter: ItemsRecyclerViewAdapter
 ) : AndroidViewModel(app), AnkoLogger {
 
     val hasItems = ObservableBoolean()
 
+    val projectToBeImported = ObservableField<String>()
+    val includeCompletedItemsInImport = ObservableBoolean()
+    val includeRemovedItemsWhenImporting = ObservableBoolean()
+    val isImporting = ObservableBoolean()
+
+    val importItemsAdapter = ArrayAdapter<String>(getApplication() as Context, R.layout.spinner_list_header, arrayListOf())
+
     internal val events = SingleLiveEvent<Events>()
 
     @VisibleForTesting
     internal var isSyncing = false
+
 
     private val disposables = CompositeDisposable()
 
@@ -57,7 +75,9 @@ class ItemsViewModel @Inject constructor(
             itemToEditEvents.value = it.uuid
         }
 
-        val disposable = databaseClient.findAllItemsWithProjectContinuously()
+        importItemsAdapter.setDropDownViewResource(R.layout.spinner_list_item)
+
+        var disposable = databaseClient.findAllItemsWithProjectContinuously()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter { !isSyncing }
@@ -71,6 +91,35 @@ class ItemsViewModel @Inject constructor(
                                 events.value = SHOW_SYNC_TAP_TARGET_EVENT
                                 hasItems.set(true)
                             }
+                        },
+
+                        onError = {
+                            error(it)
+                        }
+                )
+        disposables.add(disposable)
+
+        disposable = databaseClient.findAllProjects()
+                .doOnSuccess {
+                    importItemsAdapter.addAll(getSpinnerArray(it))
+                }
+                .flatMapMaybe {
+                    Maybe.fromCallable<String> {
+                        val selectedProjectName
+                                = sharedPreferences.getString(LATEST_SELECTED_PROJECT_PREFERENCES_KEY, DEFAULT_PROJECT)
+
+                        if (it.find { it.name == selectedProjectName } != null) {
+                            selectedProjectName
+                        } else {
+                            null
+                        }
+                    }
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                        onSuccess = {
+                            projectToBeImported.set(it)
                         },
 
                         onError = {
@@ -106,7 +155,7 @@ class ItemsViewModel @Inject constructor(
                                 }
                                 .flatMapCompletable {
                                     info("SYNC: Updating orphan item: $it")
-                                    databaseClient.updateItem(it.uuid, it.name, "Inbox")
+                                    databaseClient.updateItem(it.uuid, it.name, DEFAULT_PROJECT)
                                 }
                 )
                 .andThen(
@@ -140,6 +189,53 @@ class ItemsViewModel @Inject constructor(
         disposables.add(disposable)
     }
 
+    fun importItems() {
+        events.value = DISMISS_IMPORT_DIALOG_EVENT
+
+        isImporting.set(true)
+
+        val disposable = databaseClient.findProjectByName(projectToBeImported.get()!!)
+                .flatMap {
+                    networkClient.getItems(it.id)
+                }
+                .mergeWith(
+                        if (!includeCompletedItemsInImport.get()) {
+                            // Pass an empty list so we don't emit events for completed items at this point
+                            Single.just(ProjectDataResponse(listOf()))
+                        } else {
+                            databaseClient.findProjectByName(projectToBeImported.get()!!).flatMap {
+                                networkClient.getCompletedItems(it.id, COMPLETED_ITEMS_OFFSET, COMPLETED_ITEMS_LIMIT)
+                            }
+                        }
+                )
+                .flatMap {
+                    it.items.toFlowable()
+                }
+                .filter {
+                    val duplicateItem = databaseClient.findByNameAndProjectId(it.content, it.projectId).blockingGet()
+                    duplicateItem == null || (includeRemovedItemsWhenImporting.get() && duplicateItem.deleted)
+                }.flatMapCompletable {
+                    databaseClient.saveItem(it.content, projectToBeImported.get() as String)
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeBy(
+                        onComplete = {
+                            isImporting.set(false)
+                        },
+
+                        onError = {
+                            isImporting.set(false)
+                            events.value = SHOW_IMPORT_FAILED_DIALOG_EVENT
+                        }
+                )
+        disposables.add(disposable)
+    }
+
+    fun cancelItemImport() {
+        events.value = DISMISS_IMPORT_DIALOG_EVENT
+    }
+
     fun addItem() {
         events.value = START_ITEM_ACTIVITY_EVENT
     }
@@ -152,6 +248,11 @@ class ItemsViewModel @Inject constructor(
 
     fun layoutManager() = LinearLayoutManager(app)
 
+    private fun getSpinnerArray(projects: List<Project>): ArrayList<String> {
+        val names = projects.asSequence().filter { it.name != DEFAULT_PROJECT }.map { it.name }.toList()
+        return ArrayList(listOf(DEFAULT_PROJECT) + names)
+    }
+
     enum class Events {
         START_ITEM_ACTIVITY_EVENT,
 
@@ -163,7 +264,10 @@ class ItemsViewModel @Inject constructor(
         SYNC_SUCCEEDED_SNACKBAR_EVENT,
         SYNC_FAILED_DUE_TO_NETWORK_DIALOG_EVENT,
         SYNC_FAILED_DUE_TO_DATA_LAYER_DIALOG_EVENT,
-        SYNC_FAILED_DUE_TO_GENERAL_ERROR_EVENT
+        SYNC_FAILED_DUE_TO_GENERAL_ERROR_EVENT,
+
+        DISMISS_IMPORT_DIALOG_EVENT,
+        SHOW_IMPORT_FAILED_DIALOG_EVENT,
     }
 }
 

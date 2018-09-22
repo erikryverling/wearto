@@ -11,6 +11,7 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.annotation.StringRes
+import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -46,6 +47,7 @@ internal const val ADD_ITEM_TAP_TARGET_PREFERENCES_KEY = "ADD_ITEM_TAP_TARGET_PR
 internal const val SYNC_TAP_TARGET_PREFERENCES_KEY = "SYNC_TAP_TARGET_PREFERENCES"
 
 class ItemsActivity : AppCompatActivity(), AnkoLogger {
+
     @Inject
     internal lateinit var tokenManager: TokenManager
     @Inject
@@ -59,9 +61,14 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
     private val disposables = CompositeDisposable()
 
     private lateinit var logoutDialog: Dialog
+
     private lateinit var syncFailedDueToNetworkDialog: Dialog
     private lateinit var syncFailedDueToDataLayerDialog: Dialog
     private lateinit var syncFailedDueToGeneralErrorDialog: Dialog
+
+    private lateinit var importFailedDueToGeneralErrorDialog: Dialog
+
+    private lateinit var importDialog: ImportDialogFragment
 
     private var binding: ItemsActivityBinding? = null
 
@@ -89,7 +96,7 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
                                     .of(this, viewModelFactory)
                                     .get(ItemsViewModel::class.java)
 
-                             binding = DataBindingUtil.setContentView(this, R.layout.items_activity)!!
+                            binding = DataBindingUtil.setContentView(this, R.layout.items_activity)!!
 
                             viewModel.events.observe(this, Observer {
                                 when (it) {
@@ -98,6 +105,8 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
                                     SHOW_SYNC_TAP_TARGET_EVENT -> showSyncTapTarget()
 
                                     ROTATE_SYNC_ICON_EVENT -> rotateSyncIcon()
+
+                                    DISMISS_IMPORT_DIALOG_EVENT -> dismissImportDialog()
 
                                     SYNC_SUCCEEDED_SNACKBAR_EVENT -> snackbar(binding!!.root, R.string.sync_succeeded_message)
 
@@ -108,6 +117,9 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
                                     SYNC_FAILED_DUE_TO_DATA_LAYER_DIALOG_EVENT -> syncFailedDueToDataLayerDialog.show()
 
                                     SYNC_FAILED_DUE_TO_GENERAL_ERROR_EVENT -> syncFailedDueToGeneralErrorDialog.show()
+
+                                    SHOW_IMPORT_FAILED_DIALOG_EVENT -> importFailedDueToGeneralErrorDialog.show()
+
                                 }
                             })
 
@@ -129,9 +141,13 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
         super.onPause()
 
         logoutDialog.dismiss()
+
         syncFailedDueToNetworkDialog.dismiss()
         syncFailedDueToDataLayerDialog.dismiss()
         syncFailedDueToGeneralErrorDialog.dismiss()
+
+        if (::importDialog.isInitialized) importDialog.dismiss()
+        importFailedDueToGeneralErrorDialog.dismiss()
     }
 
     override fun onDestroy() {
@@ -148,6 +164,8 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.sync_items_action -> viewModel.sync()
+
+            R.id.import_items_action -> showImportDialog()
 
             R.id.licences_action -> browse(BuildConfig.ACKNOWLEDGMENTS_URL)
 
@@ -208,6 +226,15 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
                 R.string.sync_error_due_to_general_error_message,
                 DialogInterface.OnClickListener { _, _ ->
                     viewModel.sync()
+                }
+        )
+
+        importFailedDueToGeneralErrorDialog = errorTryAgainDialog(
+                this,
+                R.string.import_error_title,
+                R.string.import_error_due_to_general_error_message,
+                DialogInterface.OnClickListener { _, _ ->
+                    viewModel.importItems()
                 }
         )
     }
@@ -287,9 +314,19 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
         findViewById<View>(R.id.sync_items_action).startAnimation(rotation)
     }
 
+    private fun dismissImportDialog() {
+        importDialog.dismiss()
+    }
+
     private fun startLogoutActivity() {
         val intent = intentFor<LoginActivity>()
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+    }
+
+    private fun showImportDialog() {
+        val fm: FragmentManager = supportFragmentManager
+        importDialog = ImportDialogFragment.newInstance()
+        importDialog.show(fm, "import_dialog_fragment")
     }
 }

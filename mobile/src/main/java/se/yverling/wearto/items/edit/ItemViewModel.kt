@@ -51,14 +51,14 @@ class ItemViewModel @Inject constructor(
 
     private val disposables = CompositeDisposable()
 
-    private val adapter = ArrayAdapter<String>(getApplication() as Context, R.layout.spinner_list_header, arrayListOf())
+    val arrayAdapter = ArrayAdapter<String>(getApplication() as Context, R.layout.spinner_list_header, arrayListOf())
 
     init {
-        adapter.setDropDownViewResource(R.layout.spinner_list_item)
+        arrayAdapter.setDropDownViewResource(R.layout.spinner_list_item)
 
         val disposable = databaseClient.findAllProjects()
                 .doOnSuccess {
-                    adapter.addAll(getSpinnerArray(it))
+                    arrayAdapter.addAll(getSpinnerArray(it))
                 }
                 .flatMapMaybe {
                     Maybe.fromCallable<String> {
@@ -187,10 +187,8 @@ class ItemViewModel @Inject constructor(
         }
     }
 
-    fun arrayAdapter(): ArrayAdapter<String> = adapter
-
     private fun getSpinnerArray(projects: List<Project>): ArrayList<String> {
-        val names = projects.filter { it.name != "Inbox" }.map { it.name }
+        val names = projects.asSequence().filter { it.name != "Inbox" }.map { it.name }.toList()
         return ArrayList(listOf("Inbox") + names)
     }
 
@@ -235,30 +233,3 @@ fun setHint(editText: EditText, @StringRes resourceId: Int) {
 fun setEditorActionListener(editText: EditText, listener: TextView.OnEditorActionListener) {
     editText.setOnEditorActionListener(listener)
 }
-
-@BindingAdapter("spinnerAdapter")
-fun setAdapter(view: Spinner, adapter: SpinnerAdapter) {
-    view.adapter = adapter
-}
-
-@BindingAdapter(value = ["selectedValue", "selectedValueAttrChanged"], requireAll = false)
-fun bindSpinnerData(spinner: Spinner, newSelectedValue: String?, newTextAttrChanged: InverseBindingListener) {
-    spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-            newTextAttrChanged.onChange()
-        }
-
-        override fun onNothingSelected(parent: AdapterView<*>) {}
-    }
-
-    if (newSelectedValue != null) {
-        val position = (spinner.adapter as ArrayAdapter<String>).getPosition(newSelectedValue)
-        spinner.setSelection(position, true)
-    }
-}
-
-@InverseBindingAdapter(attribute = "selectedValue", event = "selectedValueAttrChanged")
-fun captureSelectedValue(spinner: Spinner): String {
-    return spinner.selectedItem as String
-}
-

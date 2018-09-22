@@ -3,6 +3,7 @@ package se.yverling.wearto.core.db
 import android.content.Context
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import org.jetbrains.anko.AnkoLogger
 import se.yverling.wearto.core.entities.Item
@@ -21,6 +22,10 @@ class DatabaseClient @Inject constructor(
     // -- Items
 
     fun findItemByUuid(uuid: String): Single<Item> = database.itemDao().findByUuid(uuid)
+
+    fun findByNameAndProjectId(name: String, projectId: Long): Maybe<Item>  {
+        return database.itemDao().findByNameAndProjectId(name, projectId)
+    }
 
     fun findItemWithProjectByUuid(uuid: String): Single<ItemWithProject> {
         return database.itemWithProjectDao().findItemWithProjectByUuid(uuid)
@@ -76,6 +81,10 @@ class DatabaseClient @Inject constructor(
     // -- Projects
 
     fun findAllProjects(): Single<List<Project>> = database.projectDao().findAll()
+
+    fun findProjectByName(name: String): Single<Project> {
+        return database.projectDao().findByName(name)
+    }
 
     fun replaceAllProjects(projects: List<se.yverling.wearto.sync.network.dtos.Project>): Completable {
         return Completable.fromCallable {
