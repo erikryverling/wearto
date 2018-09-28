@@ -12,6 +12,7 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.ArrayAdapter
+import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,6 +22,7 @@ import io.reactivex.rxkotlin.toFlowable
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.bundleOf
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import se.yverling.wearto.R
@@ -51,7 +53,8 @@ class ItemsViewModel @Inject constructor(
         private val networkClient: NetworkClient,
         private val dataLayerClient: DataLayerClient,
         private val sharedPreferences: SharedPreferences,
-        val viewAdapter: ItemsRecyclerViewAdapter
+        val viewAdapter: ItemsRecyclerViewAdapter,
+        private val analytics: FirebaseAnalytics
 ) : AndroidViewModel(app), AnkoLogger {
 
     val hasItems = ObservableBoolean()
@@ -172,6 +175,7 @@ class ItemsViewModel @Inject constructor(
                 .subscribeBy(
                         onComplete = {
                             info("SYNC: Completed!")
+                            analytics.logEvent("sync", bundleOf(Pair("result", "succeeded")))
                             events.value = SYNC_SUCCEEDED_SNACKBAR_EVENT
                             isSyncing = false
                         },
@@ -180,10 +184,13 @@ class ItemsViewModel @Inject constructor(
                             error(it)
 
                             if (it is UnknownHostException || it is SocketTimeoutException) {
+                                analytics.logEvent("sync", bundleOf(Pair("result", "failed due to network error")))
                                 events.value = SYNC_FAILED_DUE_TO_NETWORK_DIALOG_EVENT
                             } else if (it is DataLayerClient.DataLayerException) {
+                                analytics.logEvent("sync", bundleOf(Pair("result", "failed due to data layer error")))
                                 events.value = SYNC_FAILED_DUE_TO_DATA_LAYER_DIALOG_EVENT
                             } else {
+                                analytics.logEvent("sync", bundleOf(Pair("result", "failed due to general error")))
                                 events.value = SYNC_FAILED_DUE_TO_GENERAL_ERROR_EVENT
                             }
                             isSyncing = false
@@ -224,10 +231,14 @@ class ItemsViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                         onComplete = {
+                            info("IMPORT: Items imported")
+                            analytics.logEvent("import", bundleOf(Pair("result", "succeeded")))
                             isImporting.set(false)
                         },
 
                         onError = {
+                            error(it)
+                            analytics.logEvent("import", bundleOf(Pair("result", "failed")))
                             isImporting.set(false)
                             events.value = SHOW_IMPORT_FAILED_DIALOG_EVENT
                         }

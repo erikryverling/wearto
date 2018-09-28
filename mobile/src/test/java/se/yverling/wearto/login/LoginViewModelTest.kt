@@ -4,6 +4,7 @@ import android.app.Application
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import assertk.assert
 import assertk.assertions.isEqualTo
+import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -48,6 +49,8 @@ class LoginViewModelTest {
     lateinit var tokenManagerMock: TokenManager
     @Mock
     lateinit var databaseClientMock: DatabaseClient
+    @Mock
+    lateinit var analyticsMock: FirebaseAnalytics
 
     lateinit var viewModel: LoginViewModel
 
@@ -59,7 +62,8 @@ class LoginViewModelTest {
                 applicationMock,
                 tokenManagerMock,
                 networkClientMock,
-                databaseClientMock)
+                databaseClientMock,
+                analyticsMock)
     }
 
     @Test

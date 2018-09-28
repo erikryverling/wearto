@@ -9,11 +9,13 @@ import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.WearableListenerService
+import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.bundleOf
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import se.yverling.wearto.R
@@ -34,6 +36,8 @@ class DataLayerListenerService : WearableListenerService(), AnkoLogger {
     internal lateinit var networkClient: NetworkClient
     @Inject
     internal lateinit var databaseClient: DatabaseClient
+    @Inject
+    internal lateinit var analytics: FirebaseAnalytics
 
     private val disposables = CompositeDisposable()
 
@@ -66,9 +70,11 @@ class DataLayerListenerService : WearableListenerService(), AnkoLogger {
                             .subscribeBy(
                                     onComplete = {
                                         info("SELECTED ITEM: Item added to Todoist API successfully")
+                                        analytics.logEvent("add_item_to_api", bundleOf(Pair("result", "succeeded")))
                                     },
 
                                     onError = {
+                                        analytics.logEvent("add_item_to_api", bundleOf(Pair("result", "failed")))
                                         error(it)
                                         sendErrorNotification()
                                     }

@@ -7,6 +7,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.0-alpha12'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71'
+        classpath 'com.google.gms:google-services:4.0.1'
     }
 }
 
@@ -91,7 +92,9 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$archVerion"
     implementation "android.arch.persistence.room:rxjava2:$archVerion"
 
-    implementation 'com.google.android.gms:play-services-wearable:15.0.1'
+    implementation 'com.google.android.gms:play-services-wearable:16.0.0'
+
+    implementation 'com.google.firebase:firebase-core:16.0.3'
 
     // -- Third party dependencies
 
@@ -133,3 +136,6 @@ dependencies {
     //noinspection GradleDependency
     androidTestImplementation 'com.squareup.okhttp3:mockwebserver:3.8.0'
 }
+
+// NOTE! Firebase Analytics requires a google-services.json file not provided. Thus disabling the Firebase plugin.
+//apply plugin: 'com.google.gms.google-services'

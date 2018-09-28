@@ -7,6 +7,7 @@ import assertk.assert
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNotEqualTo
+import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -60,6 +61,8 @@ class ItemsViewModelTest {
     @Mock
     lateinit var sharedPreferencesMock: SharedPreferences
     @Mock
+    lateinit var analyticsMock: FirebaseAnalytics
+
     lateinit var viewModel: ItemsViewModel
 
     private val testProjectDtos = listOf(se.yverling.wearto.sync.network.dtos.Project(1, PROJECT_NAME, 0))
@@ -76,7 +79,8 @@ class ItemsViewModelTest {
                 networkClientMock,
                 dataLayerClientMock,
                 sharedPreferencesMock,
-                recyclerViewAdapterMock)
+                recyclerViewAdapterMock,
+                analyticsMock)
     }
 
     @Test
@@ -95,7 +99,8 @@ class ItemsViewModelTest {
                 networkClientMock,
                 dataLayerClientMock,
                 sharedPreferencesMock,
-                recyclerViewAdapterMock)
+                recyclerViewAdapterMock,
+                analyticsMock)
 
         assert(viewModel.events.value).isEqualTo(SHOW_SYNC_TAP_TARGET_EVENT)
     }

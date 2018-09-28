@@ -5,6 +5,7 @@ import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
 import assertk.assert
 import assertk.assertions.isEqualTo
+import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Completable
 import io.reactivex.Single
 import org.junit.Before
@@ -51,6 +52,8 @@ class ItemViewModelTest {
     lateinit var databaseClientMock: DatabaseClient
     @Mock
     lateinit var sharedPreferencesMock: SharedPreferences
+    @Mock
+    lateinit var analyticsMock: FirebaseAnalytics
 
     lateinit var viewModel: ItemViewModel
 
@@ -63,7 +66,7 @@ class ItemViewModelTest {
 
         whenever(databaseClientMock.findAllProjects()).thenReturn(Single.just(testProjects))
 
-        viewModel = ItemViewModel(applicationMock, databaseClientMock, sharedPreferencesMock)
+        viewModel = ItemViewModel(applicationMock, databaseClientMock, sharedPreferencesMock, analyticsMock)
     }
 
     @Test
@@ -168,7 +171,7 @@ class ItemViewModelTest {
                 sharedPreferencesMock.getString(LATEST_SELECTED_PROJECT_PREFERENCES_KEY, "Inbox")
         ).thenReturn(SECOND_PROJECT_NAME)
 
-        viewModel = ItemViewModel(applicationMock, databaseClientMock, sharedPreferencesMock)
+        viewModel = ItemViewModel(applicationMock, databaseClientMock, sharedPreferencesMock, analyticsMock)
 
         assert(viewModel.projectName).valueIsEqualTo(SECOND_PROJECT_NAME)
     }

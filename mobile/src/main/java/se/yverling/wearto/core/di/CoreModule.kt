@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.Module
 import dagger.Provides
 import se.yverling.wearto.core.db.AppDatabase
@@ -37,9 +38,13 @@ open class CoreModule(private val app: Application) {
 
     @Provides
     @Singleton
-    open fun provideDataClient(context: Context): DataClient = Wearable.getDataClient(context)
+    fun provideDataClient(context: Context): DataClient = Wearable.getDataClient(context)
 
     @Provides
     @Singleton
-    open fun provideNoteClient(context: Context): NodeClient = Wearable.getNodeClient(context)
+    fun provideNoteClient(context: Context): NodeClient = Wearable.getNodeClient(context)
+
+    @Provides
+    @Singleton
+    fun provideFirebase(context: Context) = FirebaseAnalytics.getInstance(context)
 }

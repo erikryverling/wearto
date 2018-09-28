@@ -4,15 +4,15 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.databinding.ObservableBoolean
 import android.databinding.ObservableField
+import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.browse
+import org.jetbrains.anko.bundleOf
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
-import se.yverling.wearto.R
 import se.yverling.wearto.auth.TokenManager
 import se.yverling.wearto.core.SingleLiveEvent
 import se.yverling.wearto.core.db.DatabaseClient
@@ -26,7 +26,8 @@ class LoginViewModel @Inject constructor(
         private val app: Application,
         private val tokenManager: TokenManager,
         private val networkClient: NetworkClient,
-        private val databaseClient: DatabaseClient
+        private val databaseClient: DatabaseClient,
+        private val analytics: FirebaseAnalytics
 ) : AndroidViewModel(app), AnkoLogger {
 
     val accessToken: ObservableField<String> = ObservableField()
@@ -76,6 +77,7 @@ class LoginViewModel @Inject constructor(
                 .subscribeBy(
                         onComplete = {
                             info("LOGIN: Access token saved")
+                            analytics.logEvent("login", bundleOf(Pair("result", "succeeded")))
                             accessToken.set("")
                             isLoggingIn.set(false)
                             events.value = START_ITEMS_ACTIVITY_EVENT
@@ -83,6 +85,7 @@ class LoginViewModel @Inject constructor(
 
                         onError = {
                             error(it)
+                            analytics.logEvent("login", bundleOf(Pair("result", "failed")))
 
                             if (it is UnknownHostException || it is SocketTimeoutException) {
                                 events.value = LOGIN_FAILED_DUE_TO_NETWORK_DIALOG_EVENT
@@ -97,7 +100,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun onLinkClick() {
-            events.value = OPEN_TODOIST_URL
+        events.value = OPEN_TODOIST_URL
     }
 
     enum class Events {

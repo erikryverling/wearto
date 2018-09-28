@@ -5,20 +5,15 @@ import android.arch.lifecycle.AndroidViewModel
 import android.content.Context
 import android.content.SharedPreferences
 import android.databinding.BindingAdapter
-import android.databinding.InverseBindingAdapter
-import android.databinding.InverseBindingListener
 import android.databinding.Observable
 import android.databinding.ObservableField
 import android.support.annotation.StringRes
 import android.support.design.widget.TextInputLayout
-import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
-import android.widget.Spinner
-import android.widget.SpinnerAdapter
 import android.widget.TextView
+import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -26,6 +21,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.bundleOf
 import org.jetbrains.anko.error
 import se.yverling.wearto.R
 import se.yverling.wearto.core.SingleLiveEvent
@@ -40,7 +36,8 @@ internal const val LATEST_SELECTED_PROJECT_PREFERENCES_KEY = "LATEST_SELECTED_PR
 class ItemViewModel @Inject constructor(
         app: Application,
         private val databaseClient: DatabaseClient,
-        private val sharedPreferences: SharedPreferences
+        private val sharedPreferences: SharedPreferences,
+        private val analytics: FirebaseAnalytics
 ) : AndroidViewModel(app), AnkoLogger {
 
     val uuid = ObservableField<String>()
@@ -123,10 +120,12 @@ class ItemViewModel @Inject constructor(
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                             onComplete = {
+                                analytics.logEvent("update_item", bundleOf(Pair("result", "succeeded")))
                                 events.value = FINISH_ACTIVITY_EVENT
                             },
 
                             onError = {
+                                analytics.logEvent("update_item", bundleOf(Pair("result", "failed")))
                                 events.value = SHOW_SAVE_FAILED_DIALOG_EVENT
                             }
                     )
@@ -137,10 +136,12 @@ class ItemViewModel @Inject constructor(
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                             onComplete = {
+                                analytics.logEvent("save_item", bundleOf(Pair("result", "succeeded")))
                                 events.value = FINISH_ACTIVITY_EVENT
                             },
 
                             onError = {
+                                analytics.logEvent("save_item", bundleOf(Pair("result", "failed")))
                                 events.value = SHOW_SAVE_FAILED_DIALOG_EVENT
                             }
                     )
@@ -155,11 +156,13 @@ class ItemViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                         onComplete = {
+                            analytics.logEvent("delete_item", bundleOf(Pair("result", "succeeded")))
                             events.value = FINISH_ACTIVITY_EVENT
                         },
 
                         onError = {
                             error(it)
+                            analytics.logEvent("delete_item", bundleOf(Pair("result", "failed")))
                         }
                 )
         disposables.add(disposable)

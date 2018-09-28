@@ -17,6 +17,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
+import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -24,6 +25,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.browse
+import org.jetbrains.anko.bundleOf
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.info
 import org.jetbrains.anko.intentFor
@@ -56,6 +58,8 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
     internal lateinit var databaseClient: DatabaseClient
     @Inject
     internal lateinit var sharedPreferences: SharedPreferences
+    @Inject
+    internal lateinit var analytics: FirebaseAnalytics
 
     private lateinit var viewModel: ItemsViewModel
     private val disposables = CompositeDisposable()
@@ -190,11 +194,13 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
                             .subscribeBy(
                                     onComplete = {
                                         info("LOGOUT: Access token removed")
+                                        analytics.logEvent("logout", bundleOf(Pair("result", "succeeded")))
                                         viewModel.clear()
                                         startLogoutActivity()
                                     },
 
                                     onError = {
+                                        analytics.logEvent("logout", bundleOf(Pair("result", "failed")))
                                         error(it)
                                     }
                             )
