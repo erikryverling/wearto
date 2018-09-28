@@ -21,7 +21,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    // TODO Can't bump to 28
+    // TODO Can't bump to 28 to to incompatibilities with com.android.support:design
     compileSdkVersion 27
 
     defaultConfig {
