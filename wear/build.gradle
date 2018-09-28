@@ -5,8 +5,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-alpha11'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.70'
+        classpath 'com.android.tools.build:gradle:3.3.0-alpha12'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71'
     }
 }
 
@@ -85,9 +85,8 @@ dependencies {
     implementation "android.arch.persistence.room:rxjava2:$archVerion"
 
     implementation 'com.google.android.support:wearable:2.3.0'
-    // TODO Can't bump
     implementation 'com.android.support:wear:27.0.2'
-    implementation 'com.google.android.gms:play-services-wearable:15.0.1'
+    implementation 'com.google.android.gms:play-services-wearable:16.0.0'
 
     // -- Third party dependencies
 
@@ -100,15 +99,13 @@ dependencies {
     // -- Test dependencies
 
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.mockito:mockito-inline:2.19.0"
+    testImplementation "org.mockito:mockito-inline:2.22.0"
     testImplementation "android.arch.core:core-testing:$archVerion"
     testImplementation 'com.willowtreeapps.assertk:assertk:0.9'
 
     androidTestImplementation 'junit:junit:4.12'
 
-    androidTestImplementation 'org.mockito:mockito-android:2.19.0'
-
-    // TODO Can't bump the following:
+    androidTestImplementation 'org.mockito:mockito-android:2.22.0'
 
     androidTestImplementation "com.android.support.test:runner:$androidTestVersion"
     androidTestImplementation "com.android.support.test:rules:$androidTestVersion"
