@@ -5,8 +5,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-alpha11'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.70'
+        classpath 'com.android.tools.build:gradle:3.3.0-alpha12'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71'
     }
 }
 
@@ -41,7 +41,7 @@ android {
     buildTypes {
         all {
             buildConfigField 'String', 'API_BASE_URL', "\"https://todoist.com/API/v7/\""
-            buildConfigField 'String', 'ACKNOWLEDGMENTS_URL', "\"https://github.com/erikryverling/wearto/blob/master/README.md#license-and-acknowledgments\""
+            buildConfigField 'String', 'LICENCES_URL', "\"https://github.com/erikryverling/wearto/blob/master/README.md#license-and-acknowledgments\""
         }
 
         debug {
@@ -116,13 +116,13 @@ dependencies {
     kaptAndroidTest 'com.google.dagger:dagger-compiler:2.16'
 
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.mockito:mockito-inline:2.19.0"
+    testImplementation "org.mockito:mockito-inline:2.22.0"
     testImplementation 'android.arch.core:core-testing:1.1.1'
     testImplementation 'com.willowtreeapps.assertk:assertk:0.9'
 
     androidTestImplementation 'junit:junit:4.12'
 
-    androidTestImplementation 'org.mockito:mockito-android:2.19.0'
+    androidTestImplementation 'org.mockito:mockito-android:2.22.0'
 
     androidTestImplementation "com.android.support.test:runner:$androidTestVersion"
     androidTestImplementation "com.android.support.test:rules:$androidTestVersion"
