@@ -167,7 +167,7 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
 
             R.id.import_items_action -> showImportDialog()
 
-            R.id.licences_action -> browse(BuildConfig.ACKNOWLEDGMENTS_URL)
+            R.id.licences_action -> browse(BuildConfig.LICENCES_URL)
 
             R.id.logout_action -> logoutDialog.show()
         }

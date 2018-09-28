@@ -17,6 +17,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.toFlowable
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.AnkoLogger
@@ -37,10 +38,12 @@ import java.util.*
 import javax.inject.Inject
 
 // We'll only fetch the first 200 completed items
-private const val COMPLETED_ITEMS_OFFSET = 0
-private const val COMPLETED_ITEMS_LIMIT = 200
+@VisibleForTesting
+const val COMPLETED_ITEMS_OFFSET = 0
+@VisibleForTesting
+const val COMPLETED_ITEMS_LIMIT = 200
 
-private const val DEFAULT_PROJECT = "Inbox"
+const val DEFAULT_PROJECT = "Inbox"
 
 class ItemsViewModel @Inject constructor(
         private val app: Application,

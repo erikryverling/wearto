@@ -15,6 +15,8 @@ import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.intent.Intents.intended
 import android.support.test.espresso.intent.Intents.times
 import android.support.test.espresso.intent.matcher.IntentMatchers
+import android.support.test.espresso.intent.matcher.IntentMatchers.hasAction
+import android.support.test.espresso.intent.matcher.IntentMatchers.hasData
 import android.support.test.espresso.matcher.RootMatchers
 import android.support.test.espresso.matcher.ViewMatchers
 import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -24,6 +26,7 @@ import android.support.test.espresso.matcher.ViewMatchers.withText
 import android.support.test.runner.AndroidJUnit4
 import android.view.View
 import io.reactivex.schedulers.Schedulers
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -33,6 +36,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import se.yverling.wearto.BuildConfig
 import se.yverling.wearto.R
 import se.yverling.wearto.core.db.AppDatabase
 import se.yverling.wearto.core.db.DatabaseClient
@@ -69,7 +73,6 @@ class ItemsUiTest {
         dbClient.close()
     }
 
-    // TODO Fix. Race?
     @Test
     fun shouldShowTapTargetSuccessfully() {
         setTapTargetsAsUndone()
@@ -243,6 +246,19 @@ class ItemsUiTest {
                 .check(matches(withText(FIRST_PROJECT_NAME)))
                 .check(matches(hasBackgroundColor(projectColorToColorHex(context, FIRST_PROJECT_COLOR))))
     }
+
+    @Test
+    fun shouldShowLicensesSuccessfully() {
+        launchActivity()
+
+        openActionBarOverflowOrOptionsMenu(context)
+
+        onView(withText(R.string.licences)).perform(click())
+
+        intended(allOf(hasAction(Intent.ACTION_VIEW), hasData(BuildConfig.LICENCES_URL)))
+    }
+
+    // TODO Add test for importing items
 
     /*
     TODO Add tests for syncing and receiving a selectable item from wear.
