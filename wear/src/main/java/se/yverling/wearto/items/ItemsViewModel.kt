@@ -1,14 +1,14 @@
 package se.yverling.wearto.items
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.databinding.BindingAdapter
-import android.databinding.ObservableBoolean
-import android.support.annotation.VisibleForTesting
-import android.support.wear.widget.WearableLinearLayoutManager
-import android.support.wear.widget.WearableRecyclerView
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.databinding.BindingAdapter
+import androidx.databinding.ObservableBoolean
+import androidx.annotation.VisibleForTesting
+import androidx.wear.widget.WearableLinearLayoutManager
+import androidx.wear.widget.WearableRecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy

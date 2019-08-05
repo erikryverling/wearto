@@ -46,14 +46,14 @@ android {
 
         debug {
             applicationIdSuffix ".debug"
-            manifestPlaceholders = [usesCleartextTraffic:"true"]
+            manifestPlaceholders = [usesCleartextTraffic: "true"]
         }
 
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            manifestPlaceholders = [usesCleartextTraffic:"false"]
+            manifestPlaceholders = [usesCleartextTraffic: "false"]
         }
     }
 
@@ -141,3 +141,6 @@ dependencies {
     //noinspection GradleDependency
     androidTestImplementation 'com.squareup.okhttp3:mockwebserver:3.8.0'
 }
+
+// NOTE! Firebase Analytics requires a google-services.json file not provided. Thus disabling the Firebase plugin.
+//apply plugin: 'com.google.gms.google-services'

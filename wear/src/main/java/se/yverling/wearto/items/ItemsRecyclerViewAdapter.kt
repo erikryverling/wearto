@@ -1,9 +1,9 @@
 package se.yverling.wearto.items
 
 import android.content.res.ColorStateList
-import android.databinding.BindingAdapter
-import android.support.v7.widget.RecyclerView
-import android.support.wear.widget.WearableRecyclerView
+import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
+import androidx.wear.widget.WearableRecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
@@ -11,7 +11,7 @@ import se.yverling.wearto.core.entities.Item
 import se.yverling.wearto.databinding.ItemsListItemBinding
 import javax.inject.Inject
 
-class ItemsRecyclerViewAdapter @Inject constructor() : RecyclerView.Adapter<ItemsRecyclerViewAdapter.ViewHolder>() {
+class ItemsRecyclerViewAdapter @Inject constructor() : androidx.recyclerview.widget.RecyclerView.Adapter<ItemsRecyclerViewAdapter.ViewHolder>() {
     private var items: List<Item> = mutableListOf()
     private lateinit var onItemClick: (Item) -> (Unit)
 
@@ -38,7 +38,7 @@ class ItemsRecyclerViewAdapter @Inject constructor() : RecyclerView.Adapter<Item
         this.onItemClick = function
     }
 
-    class ViewHolder(val binding: ItemsListItemBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: ItemsListItemBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
 }
 
 @BindingAdapter("compoundDrawableTintList")

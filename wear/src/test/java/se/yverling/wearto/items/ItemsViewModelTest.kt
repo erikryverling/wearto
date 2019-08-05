@@ -1,7 +1,7 @@
 package se.yverling.wearto.items
 
 import android.app.Application
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.reactivex.Flowable
 import io.reactivex.Single
 import org.junit.Test
