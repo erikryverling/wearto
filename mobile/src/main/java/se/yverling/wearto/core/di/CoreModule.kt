@@ -1,7 +1,7 @@
 package se.yverling.wearto.core.di
 
 import android.app.Application
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.android.gms.wearable.DataClient

@@ -14,6 +14,7 @@
             android:supportsRtl="false"
             android:allowBackup="true"
             android:fullBackupContent="@xml/backup_rules"
+            android:usesCleartextTraffic="${usesCleartextTraffic}"
             tools:ignore="GoogleAppIndexingWarning">
 
         <activity

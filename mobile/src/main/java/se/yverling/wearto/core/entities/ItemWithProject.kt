@@ -1,6 +1,6 @@
 package se.yverling.wearto.core.entities
 
-import android.arch.persistence.room.Embedded
+import androidx.room.Embedded
 
 class ItemWithProject {
     @Embedded internal lateinit var item: Item

@@ -7,7 +7,7 @@
         <variable name="viewModel" type="se.yverling.wearto.items.ItemsListItemViewModel"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/items_list_item"
             android:onClick="@{() -> viewModel.onItemClick()}"
             android:background="?android:attr/selectableItemBackground"
@@ -49,5 +49,5 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/access_token_edit_layout"
                     android:hint="@string/access_token_hint"
                     android:transitionGroup="true"
@@ -112,7 +112,7 @@
                         android:inputType="textPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                     android:id="@+id/step_2_description"
@@ -152,6 +152,6 @@
                     app:layout_constraintEnd_toEndOf="@+id/login_button"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"/>
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

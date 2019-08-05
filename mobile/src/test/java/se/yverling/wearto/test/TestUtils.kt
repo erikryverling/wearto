@@ -1,7 +1,7 @@
 package se.yverling.wearto.test
 
-import android.databinding.ObservableBoolean
-import android.databinding.ObservableField
+import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
 import assertk.Assert
 import assertk.assert
 import assertk.assertions.isEqualTo

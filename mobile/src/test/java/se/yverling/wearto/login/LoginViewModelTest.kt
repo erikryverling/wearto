@@ -1,7 +1,7 @@
 package se.yverling.wearto.login
 
 import android.app.Application
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import assertk.assert
 import assertk.assertions.isEqualTo
 import com.google.firebase.analytics.FirebaseAnalytics

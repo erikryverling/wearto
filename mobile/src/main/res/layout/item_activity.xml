@@ -10,12 +10,12 @@
         <variable name="viewModel" type="se.yverling.wearto.items.edit.ItemViewModel"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/item_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/access_token_edit_layout"
                 android:hint="@string/item_name_label"
                 app:errorMessage="@{viewModel.itemErrorMessage}"
@@ -40,7 +40,7 @@
                     android:inputType="textCapSentences"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
         <Spinner
 
                 android:id="@+id/spinner"
@@ -54,5 +54,5 @@
                 app:layout_constraintTop_toBottomOf="@+id/access_token_edit_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

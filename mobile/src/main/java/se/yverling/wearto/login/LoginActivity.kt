@@ -1,15 +1,15 @@
 package se.yverling.wearto.login
 
 import android.app.Dialog
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.DialogInterface
 import android.content.Intent
-import android.databinding.DataBindingUtil.setContentView
+import androidx.databinding.DataBindingUtil.setContentView
 import android.os.Bundle
-import android.support.annotation.TransitionRes
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.TransitionRes
+import androidx.appcompat.app.AppCompatActivity
 import android.transition.Transition
 import android.transition.TransitionInflater
 import org.jetbrains.anko.browse

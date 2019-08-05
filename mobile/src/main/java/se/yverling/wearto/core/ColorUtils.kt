@@ -2,7 +2,7 @@ package se.yverling.wearto.core
 
 import android.content.Context
 import android.graphics.Color
-import android.support.v4.content.ContextCompat.getColor
+import androidx.core.content.ContextCompat.getColor
 import se.yverling.wearto.R
 
 fun projectColorToColorHex(context: Context, code: Int): Int {

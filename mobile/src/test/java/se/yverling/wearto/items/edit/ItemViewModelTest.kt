@@ -1,7 +1,7 @@
 package se.yverling.wearto.items.edit
 
 import android.app.Application
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
 import assertk.assert
 import assertk.assertions.isEqualTo

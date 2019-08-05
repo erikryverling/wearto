@@ -1,6 +1,6 @@
 package se.yverling.wearto.sync.network.dtos
 
-import android.support.annotation.Keep
+import androidx.annotation.Keep
 
 @Keep
 data class SyncResponse(val projects: List<Project>)

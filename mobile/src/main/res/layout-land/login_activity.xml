@@ -11,7 +11,7 @@
         <variable name="viewModel" type="se.yverling.wearto.login.LoginViewModel"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:layout_width="match_parent"
@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/access_token_edit_layout"
                 android:hint="@string/access_token_hint"
                 android:layout_marginTop="24dp"
@@ -90,7 +90,7 @@
                     android:ems="10"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
                 android:id="@+id/step_2_description"
@@ -132,5 +132,5 @@
                 android:layout_marginBottom="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

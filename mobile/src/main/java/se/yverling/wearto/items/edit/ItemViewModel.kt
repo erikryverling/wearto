@@ -1,14 +1,14 @@
 package se.yverling.wearto.items.edit
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
+import androidx.lifecycle.AndroidViewModel
 import android.content.Context
 import android.content.SharedPreferences
-import android.databinding.BindingAdapter
-import android.databinding.Observable
-import android.databinding.ObservableField
-import android.support.annotation.StringRes
-import android.support.design.widget.TextInputLayout
+import androidx.databinding.BindingAdapter
+import androidx.databinding.Observable
+import androidx.databinding.ObservableField
+import androidx.annotation.StringRes
+import com.google.android.material.textfield.TextInputLayout
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.EditText

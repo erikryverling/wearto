@@ -1,11 +1,11 @@
 package se.yverling.wearto.test
 
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.test.InstrumentationRegistry
-import android.support.test.runner.AndroidJUnitRunner
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.runner.AndroidJUnitRunner
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.mockwebserver.Dispatcher
@@ -36,7 +36,7 @@ class WearToTestRunner : AndroidJUnitRunner() {
     override fun onCreate(arguments: Bundle?) {
         super.onCreate(arguments)
 
-        val context = InstrumentationRegistry.getTargetContext()
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         val db = Room.databaseBuilder(context, AppDatabase::class.java, WEARTO_DATABASE_NAME).build()
         dbClient = DatabaseClient(context, db)

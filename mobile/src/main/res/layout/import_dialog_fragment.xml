@@ -8,7 +8,7 @@
         <variable name="viewModel" type="se.yverling.wearto.items.ItemsViewModel"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:minWidth="350dp"
             android:layout_width="350dp"
             android:layout_height="wrap_content">
@@ -95,5 +95,5 @@
                 app:layout_constraintEnd_toStartOf="@+id/import_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

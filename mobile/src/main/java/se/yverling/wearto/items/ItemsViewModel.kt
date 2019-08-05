@@ -1,16 +1,16 @@
 package se.yverling.wearto.items
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
+import androidx.lifecycle.AndroidViewModel
 import android.content.Context
 import android.content.SharedPreferences
-import android.databinding.BindingAdapter
-import android.databinding.ObservableBoolean
-import android.databinding.ObservableField
-import android.support.annotation.VisibleForTesting
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.databinding.BindingAdapter
+import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
+import androidx.annotation.VisibleForTesting
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.widget.ArrayAdapter
 import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Maybe
@@ -258,9 +258,9 @@ class ItemsViewModel @Inject constructor(
         disposables.clear()
     }
 
-    fun itemDecoration() = DividerItemDecoration(app, LinearLayoutManager.VERTICAL)
+    fun itemDecoration() = androidx.recyclerview.widget.DividerItemDecoration(app, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL)
 
-    fun layoutManager() = LinearLayoutManager(app)
+    fun layoutManager() = androidx.recyclerview.widget.LinearLayoutManager(app)
 
     private fun getSpinnerArray(projects: List<Project>): ArrayList<String> {
         val names = projects.asSequence().filter { it.name != DEFAULT_PROJECT }.map { it.name }.toList()
@@ -286,11 +286,11 @@ class ItemsViewModel @Inject constructor(
 }
 
 @BindingAdapter("viewAdapter")
-fun adapter(view: RecyclerView, adapter: ItemsRecyclerViewAdapter) {
+fun adapter(view: androidx.recyclerview.widget.RecyclerView, adapter: ItemsRecyclerViewAdapter) {
     view.adapter = adapter
 }
 
 @BindingAdapter("itemDecoration")
-fun adapter(view: RecyclerView, decoration: RecyclerView.ItemDecoration) {
+fun adapter(view: androidx.recyclerview.widget.RecyclerView, decoration: androidx.recyclerview.widget.RecyclerView.ItemDecoration) {
     view.addItemDecoration(decoration)
 }

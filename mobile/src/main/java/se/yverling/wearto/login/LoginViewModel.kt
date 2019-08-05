@@ -1,9 +1,9 @@
 package se.yverling.wearto.login
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.databinding.ObservableBoolean
-import android.databinding.ObservableField
+import androidx.lifecycle.AndroidViewModel
+import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableField
 import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
