@@ -2,7 +2,6 @@ package se.yverling.wearto.core
 
 import android.app.Application
 import android.os.StrictMode
-import com.facebook.stetho.Stetho
 import se.yverling.wearto.BuildConfig
 import se.yverling.wearto.core.di.AppComponent
 import se.yverling.wearto.core.di.CoreModule
@@ -31,6 +30,5 @@ open class WearToApplication : Application() {
                     .build())
         }
 
-        Stetho.initializeWithDefaults(this)
     }
 }

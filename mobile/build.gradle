@@ -67,7 +67,6 @@ ext {
     lifecycleVersion = '2.0.0'
     roomVersion = '2.1.0'
     ankoVersion = '0.10.2'
-    stethoVersion = '1.5.0'
     androidTestVersion = '1.2.0'
     espressoVersion = '3.2.0'
 }
@@ -110,9 +109,6 @@ dependencies {
 
     implementation "org.jetbrains.anko:anko-commons:$ankoVersion"
     implementation "org.jetbrains.anko:anko-design:$ankoVersion"
-
-    implementation "com.facebook.stetho:stetho:$stethoVersion"
-    implementation "com.facebook.stetho:stetho-okhttp3:$stethoVersion"
 
     implementation 'uk.co.samuelwall:material-tap-target-prompt:2.5.0'
 
