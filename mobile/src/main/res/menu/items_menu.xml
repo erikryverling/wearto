@@ -21,6 +21,12 @@
             app:showAsAction="never"/>
 
     <item
+            android:id="@+id/privacy_policy_action"
+            android:title="@string/privacy_policy"
+            android:orderInCategory="100"
+            app:showAsAction="never"/>
+
+    <item
             android:id="@+id/logout_action"
             android:title="@string/logout_item"
             android:orderInCategory="100"

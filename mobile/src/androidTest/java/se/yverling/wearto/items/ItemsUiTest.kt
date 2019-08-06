@@ -258,6 +258,17 @@ class ItemsUiTest {
         intended(allOf(hasAction(Intent.ACTION_VIEW), hasData(BuildConfig.LICENCES_URL)))
     }
 
+    @Test
+    fun shouldShowPrivacyPolicySuccessfully() {
+        launchActivity()
+
+        openActionBarOverflowOrOptionsMenu(context)
+
+        onView(withText(R.string.privacy_policy)).perform(click())
+
+        intended(allOf(hasAction(Intent.ACTION_VIEW), hasData(BuildConfig.PRIVACY_POLICY_URL)))
+    }
+
     // TODO Add test for importing items
 
     /*

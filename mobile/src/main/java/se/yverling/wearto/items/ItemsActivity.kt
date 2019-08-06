@@ -173,6 +173,8 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
 
             R.id.licences_action -> browse(BuildConfig.LICENCES_URL)
 
+            R.id.privacy_policy_action -> browse(BuildConfig.PRIVACY_POLICY_URL)
+
             R.id.logout_action -> logoutDialog.show()
         }
         return super.onOptionsItemSelected(item)

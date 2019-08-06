@@ -27,6 +27,7 @@
     <string name="sync_item">Synka</string>
     <string name="import_item">Importera</string>
     <string name="licences">Licenser</string>
+    <string name="privacy_policy">Sekretesspolicy</string>
     <string name="logout_item">Logga ut</string>
 
     <string name="no_items_label">Du har inga uppgifter</string>

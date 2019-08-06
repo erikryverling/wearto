@@ -27,3 +27,5 @@ This projects is gratefully using the following third party libraries:
 * [assertk](https://github.com/willowtreeapps/assertk/blob/master/LICENSE)
 * [Mockito](https://github.com/mockito/mockito/blob/release/2.x/LICENSE)
 * [mockwebserver](https://github.com/square/okhttp/tree/master/mockwebserver#license)
+
+### [Privacy policy](https://www.github.com/erikryverling/wearto/blob/master/privacy-policy.md)

@@ -31,6 +31,7 @@
     <string name="sync_item">Sync</string>
     <string name="import_item">Import</string>
     <string name="licences">Licences</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="logout_item">Logout</string>
 
     <string name="no_items_label">You have no items</string>
