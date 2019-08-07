@@ -1,6 +1,6 @@
 <resources>
     <!-- Core -->
-    <string name="empty_string" translatable="false"/>
+    <string name="empty_string" translatable="false" />
     <string name="app_name" translatable="false">WearTo</string>
     <string name="ok_button" translatable="false">OK</string>
     <string name="try_again_button">Try again</string>

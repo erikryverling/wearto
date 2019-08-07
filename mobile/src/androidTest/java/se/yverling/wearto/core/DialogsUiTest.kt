@@ -35,7 +35,7 @@ class DialogsUiTest {
         }
 
         onView(withText((R.string.login_failed_title)))
-                .inRoot(RootMatchers.isDialog())
+                .inRoot(isDialog())
                 .check(matches(isDisplayed()))
 
         onView(withId(android.R.id.message))
@@ -64,7 +64,7 @@ class DialogsUiTest {
         }
 
         onView(withText((R.string.logout_warning_title)))
-                .inRoot(RootMatchers.isDialog())
+                .inRoot(isDialog())
                 .check(matches(isDisplayed()))
 
         onView(withId(android.R.id.message))

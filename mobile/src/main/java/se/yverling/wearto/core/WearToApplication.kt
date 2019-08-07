@@ -29,6 +29,5 @@ open class WearToApplication : Application() {
                     .penaltyLog()
                     .build())
         }
-
     }
 }

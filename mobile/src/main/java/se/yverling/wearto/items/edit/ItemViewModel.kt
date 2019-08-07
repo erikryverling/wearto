@@ -43,7 +43,7 @@ class ItemViewModel @Inject constructor(
     val uuid = ObservableField<String>()
     val name = ObservableField<String>()
     val projectName = ObservableField<String>()
-    val itemErrorMessage = ObservableField<String>("")
+    val itemErrorMessage = ObservableField("")
     internal val events = SingleLiveEvent<Events>()
 
     private val disposables = CompositeDisposable()

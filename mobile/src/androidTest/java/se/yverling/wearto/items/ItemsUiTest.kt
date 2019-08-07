@@ -298,20 +298,20 @@ class ItemsUiTest {
     private fun assertLogoutWarningDialogIsShowing() {
         onView(withText((R.string.logout_warning_title)))
                 .inRoot(RootMatchers.isDialog())
-                .check(matches(ViewMatchers.isDisplayed()))
+                .check(matches(isDisplayed()))
 
         onView(withId(android.R.id.message))
                 .inRoot(RootMatchers.isDialog())
                 .check(matches(withText(R.string.logout_warning_message)))
-                .check(matches(ViewMatchers.isDisplayed()))
+                .check(matches(isDisplayed()))
 
         onView(withId(android.R.id.button1))
                 .check(matches(withText(R.string.ok_button)))
-                .check(matches(ViewMatchers.isDisplayed()))
+                .check(matches(isDisplayed()))
 
         onView(withId(android.R.id.button2))
                 .check(matches(withText(R.string.cancel_button)))
-                .check(matches(ViewMatchers.isDisplayed()))
+                .check(matches(isDisplayed()))
     }
 
 

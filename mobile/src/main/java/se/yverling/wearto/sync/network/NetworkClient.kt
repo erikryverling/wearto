@@ -37,7 +37,7 @@ class NetworkClient @Inject constructor(
         return tokenManager.getAccessToken()
                 .flatMapCompletable {
                     val builder = Moshi.Builder().build()
-                    val adapter = builder.adapter<AddItemCommand>(AddItemCommand::class.java)
+                    val adapter = builder.adapter(AddItemCommand::class.java)
                     val json = adapter.toJson(AddItemCommand(Args(item.projectId.toString(), item.name)))
 
                     val commands = JSONArray().put(json)

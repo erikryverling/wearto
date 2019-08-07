@@ -198,7 +198,7 @@ class ItemsViewModelTest {
     @Test
     fun `Should import items successfully when completed items are not included and locally removed items are included`() {
         val testProject = Project(0, PROJECT_NAME, 0)
-        val testItem = se.yverling.wearto.core.entities.Item(UUID.randomUUID().toString(), ITEM_NAME, testProject.id)
+        val testItem = Item(UUID.randomUUID().toString(), ITEM_NAME, testProject.id)
         val testItemDto = ItemDto(0, testProject.id, ITEM_NAME)
 
         viewModel.includeRemovedItemsWhenImporting.set(true)

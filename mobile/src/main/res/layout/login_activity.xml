@@ -108,10 +108,12 @@
                         android:id="@+id/access_token_edit"
                         android:text="@={viewModel.accessToken}"
                         tools:ignore="LabelFor"
+                        android:autofillHints="password"
                         android:imeOptions="flagNoExtractUi"
                         android:inputType="textPassword"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        tools:targetApi="o" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView

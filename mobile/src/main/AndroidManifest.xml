@@ -1,41 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="se.yverling.wearto">
+        xmlns:tools="http://schemas.android.com/tools"
+        package="se.yverling.wearto">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
             android:name=".core.WearToApplication"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme"
-            android:supportsRtl="false"
             android:allowBackup="true"
             android:fullBackupContent="@xml/backup_rules"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:supportsRtl="false"
+            android:theme="@style/AppTheme"
             android:usesCleartextTraffic="${usesCleartextTraffic}"
             tools:ignore="GoogleAppIndexingWarning">
 
-        <activity
-                android:name=".items.ItemsActivity">
+        <activity android:name=".items.ItemsActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity
                 android:name=".login.LoginActivity"
-                android:windowSoftInputMode="stateHidden"
-                android:theme="@style/NoActionBar"/>
-        <activity android:name=".items.edit.ItemActivity"/>
+                android:theme="@style/NoActionBar"
+                android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".items.edit.ItemActivity" />
 
         <service android:name=".sync.datalayer.DataLayerListenerService">
             <intent-filter>
-                <action android:name="com.google.android.gms.wearable.DATA_CHANGED"/>
-                <action android:name="com.google.android.gms.wearable.CAPABILITY_CHANGED"/>
-                <data android:scheme="wear" android:host="*" android:path="/items/selected"/>
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <action android:name="com.google.android.gms.wearable.CAPABILITY_CHANGED" />
+
+                <data
+                        android:host="*"
+                        android:path="/items/selected"
+                        android:scheme="wear" />
             </intent-filter>
         </service>
 

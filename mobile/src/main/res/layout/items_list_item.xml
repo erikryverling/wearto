@@ -1,53 +1,56 @@
-<layout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="viewModel" type="se.yverling.wearto.items.ItemsListItemViewModel"/>
+
+        <variable
+                name="viewModel"
+                type="se.yverling.wearto.items.ItemsListItemViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/items_list_item"
-            android:onClick="@{() -> viewModel.onItemClick()}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:onClick="@{() -> viewModel.onItemClick()}">
 
         <TextView
                 android:id="@+id/item_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:singleLine="true"
                 android:text="@{viewModel.itemName}"
-                tools:text="Milk"
                 android:textAppearance="@android:style/TextAppearance.Material.Body1"
                 android:textSize="17sp"
-                android:singleLine="true"
-                android:layout_marginStart="16dp"
-                app:layout_constraintTop_toTopOf="@+id/project_name"
                 app:layout_constraintBottom_toBottomOf="@+id/project_name"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/project_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" android:layout_marginEnd="16dp"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toTopOf="@+id/project_name"
+                tools:text="Milk" />
 
         <TextView
                 android:id="@+id/project_name"
-                android:text="@{viewModel.projectName}"
-                tools:text="Groceries"
-                android:textColor="@color/project_label_text"
-                android:backgroundTint="@{viewModel.colorStateList}"
-                android:background="@drawable/label"
-                android:textSize="14sp"
-                android:singleLine="true"
-                android:padding="3dp"
-                android:layout_marginTop="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                app:layout_constraintTop_toTopOf="parent"
+                android:background="@drawable/label"
+                android:backgroundTint="@{viewModel.colorStateList}"
+                android:padding="3dp"
+                android:singleLine="true"
+                android:text="@{viewModel.projectName}"
+                android:textColor="@color/project_label_text"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Groceries" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

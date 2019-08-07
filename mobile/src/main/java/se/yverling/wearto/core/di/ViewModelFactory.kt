@@ -11,7 +11,7 @@ class ViewModelFactory @Inject constructor(private val creators: Map<Class<out V
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val creator: Provider<ViewModel>? = creators[modelClass] ?: provider(modelClass)
-        val viewModel = creator?.get() ?: throw IllegalArgumentException("unknown model class " + modelClass)
+        val viewModel = creator?.get() ?: throw IllegalArgumentException("unknown model class $modelClass")
         return viewModel as T
     }
 

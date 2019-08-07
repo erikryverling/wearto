@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="se.yverling.wearto.R"/>
-        <import type="android.view.View"/>
-        <variable name="viewModel" type="se.yverling.wearto.items.ItemsViewModel"/>
+
+        <import type="se.yverling.wearto.R" />
+
+        <import type="android.view.View" />
+
+        <variable
+                name="viewModel"
+                type="se.yverling.wearto.items.ItemsViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -21,54 +25,54 @@
 
             <TextView
                     android:id="@+id/empty_screen_text"
-                    android:text="@string/no_items_label"
-                    android:visibility="@{viewModel.hasItems ? View.GONE : View.VISIBLE}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:drawableTop="@drawable/ic_view_headline_secondary_text_48dp"
                     android:drawablePadding="10dp"
-                    android:textColor="@color/secondary_text"
+                    android:text="@string/no_items_label"
                     android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                    android:layout_marginBottom="8dp"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:textColor="@color/secondary_text"
+                    android:visibility="@{viewModel.hasItems ? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             <ProgressBar
                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:indeterminate="true"
                     android:visibility="@{viewModel.isImporting ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/items"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="@{viewModel.hasItems ? View.VISIBLE : View.GONE}"
                     app:itemDecoration="@{viewModel.itemDecoration}"
                     app:layoutManager="@{viewModel.layoutManager}"
-                    app:viewAdapter="@{viewModel.viewAdapter}"
-                    tools:listitem="@layout/items_list_item"
-                    android:visibility="@{viewModel.hasItems ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:viewAdapter="@{viewModel.viewAdapter}"
+                    tools:listitem="@layout/items_list_item" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_item_button"
-                android:onClick="@{() -> viewModel.addItem()}"
-                android:src="@drawable/ic_add_black_24dp"
-                app:fabSize="normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="24dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:onClick="@{() -> viewModel.addItem()}"
+                android:src="@drawable/ic_add_black_24dp"
+                app:fabSize="normal" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

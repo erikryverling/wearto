@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
-        <import type="se.yverling.wearto.R"/>
-        <variable name="viewModel" type="se.yverling.wearto.items.edit.ItemViewModel"/>
+
+        <import type="android.view.View" />
+
+        <import type="se.yverling.wearto.R" />
+
+        <variable
+                name="viewModel"
+                type="se.yverling.wearto.items.edit.ItemViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,42 +21,44 @@
 
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/access_token_edit_layout"
-                android:hint="@string/item_name_label"
-                app:errorMessage="@{viewModel.itemErrorMessage}"
-                app:errorEnabled="true"
-                android:layout_marginTop="42dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="42dp"
+                android:layout_marginEnd="24dp"
+                android:hint="@string/item_name_label"
+                app:errorEnabled="true"
+                app:errorMessage="@{viewModel.itemErrorMessage}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
             <EditText
                     android:id="@+id/edit_text"
-                    app:editorActionListener="@{viewModel.editorActionListener}"
-                    android:text="@={viewModel.name}"
-                    tools:ignore="LabelFor"
-                    app:hint="@{R.string.item_name_hint}"
-                    app:focus="@{true}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="no"
                     android:imeOptions="flagNoExtractUi"
                     android:inputType="textCapSentences"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:text="@={viewModel.name}"
+                    app:editorActionListener="@{viewModel.editorActionListener}"
+                    app:focus="@{true}"
+                    app:hint="@{R.string.item_name_hint}"
+                    tools:ignore="LabelFor"
+                    tools:targetApi="o" />
         </com.google.android.material.textfield.TextInputLayout>
-        <Spinner
 
+        <Spinner
                 android:id="@+id/spinner"
-                app:spinnerAdapter="@{viewModel.arrayAdapter}"
-                app:selectedValue="@={viewModel.projectName}"
-                tools:listitem="@layout/spinner_list_header"
-                android:spinnerMode="dialog"
-                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:spinnerMode="dialog"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/access_token_edit_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                app:selectedValue="@={viewModel.projectName}"
+                app:spinnerAdapter="@{viewModel.arrayAdapter}"
+                tools:listitem="@layout/spinner_list_header" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

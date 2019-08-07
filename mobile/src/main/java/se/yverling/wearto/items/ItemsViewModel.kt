@@ -258,9 +258,9 @@ class ItemsViewModel @Inject constructor(
         disposables.clear()
     }
 
-    fun itemDecoration() = androidx.recyclerview.widget.DividerItemDecoration(app, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL)
+    fun itemDecoration() = DividerItemDecoration(app, LinearLayoutManager.VERTICAL)
 
-    fun layoutManager() = androidx.recyclerview.widget.LinearLayoutManager(app)
+    fun layoutManager() = LinearLayoutManager(app)
 
     private fun getSpinnerArray(projects: List<Project>): ArrayList<String> {
         val names = projects.asSequence().filter { it.name != DEFAULT_PROJECT }.map { it.name }.toList()
@@ -286,11 +286,11 @@ class ItemsViewModel @Inject constructor(
 }
 
 @BindingAdapter("viewAdapter")
-fun adapter(view: androidx.recyclerview.widget.RecyclerView, adapter: ItemsRecyclerViewAdapter) {
+fun adapter(view: RecyclerView, adapter: ItemsRecyclerViewAdapter) {
     view.adapter = adapter
 }
 
 @BindingAdapter("itemDecoration")
-fun adapter(view: androidx.recyclerview.widget.RecyclerView, decoration: androidx.recyclerview.widget.RecyclerView.ItemDecoration) {
+fun adapter(view: RecyclerView, decoration: RecyclerView.ItemDecoration) {
     view.addItemDecoration(decoration)
 }

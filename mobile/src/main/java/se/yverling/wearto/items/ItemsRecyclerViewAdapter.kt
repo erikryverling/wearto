@@ -9,7 +9,7 @@ import se.yverling.wearto.core.entities.ItemWithProject
 import se.yverling.wearto.databinding.ItemsListItemBinding
 import javax.inject.Inject
 
-class ItemsRecyclerViewAdapter @Inject constructor() : androidx.recyclerview.widget.RecyclerView.Adapter<ItemsRecyclerViewAdapter.ViewHolder>() {
+class ItemsRecyclerViewAdapter @Inject constructor() : RecyclerView.Adapter<ItemsRecyclerViewAdapter.ViewHolder>() {
     private var itemsWithProject: List<ItemWithProject> = mutableListOf()
     private lateinit var onItemClick: (Item) -> Unit
 
@@ -36,5 +36,5 @@ class ItemsRecyclerViewAdapter @Inject constructor() : androidx.recyclerview.wid
         notifyDataSetChanged()
     }
 
-    class ViewHolder(val binding: ItemsListItemBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: ItemsListItemBinding) : RecyclerView.ViewHolder(binding.root)
 }
