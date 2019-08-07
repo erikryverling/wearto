@@ -50,7 +50,7 @@ class DataLayerClient @Inject constructor(
     }
 
     private fun getDataItemResult(item: Item): Single<Item>? {
-        return Single.create<Item> {
+        return Single.create {
             val dataMapRequest = PutDataMapRequest.create(SELECTED_ITEM_PATH)
 
             val dataMap = dataMapRequest.dataMap
