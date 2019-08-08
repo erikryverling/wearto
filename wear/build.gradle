@@ -24,8 +24,8 @@ android {
 
     defaultConfig {
         applicationId 'se.yverling.wearto'
-        versionCode 281110101 // Target SDK, version, release number, multi-apk number
-        versionName '1.1.1'
+        versionCode 281120001 // Target SDK, version, release number, multi-apk number
+        versionName '1.1.2'
 
         targetSdkVersion 28
         minSdkVersion 23
