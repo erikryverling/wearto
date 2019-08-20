@@ -6,7 +6,7 @@ import dagger.Binds
 import dagger.MapKey
 import dagger.Module
 import dagger.multibindings.IntoMap
-import se.yverling.wearto.items.ItemsViewModel
+import se.yverling.wearto.chars.CharsViewModel
 import kotlin.reflect.KClass
 
 @Module
@@ -16,8 +16,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ItemsViewModel::class)
-    internal abstract fun bindItemsViewModel(itemsViewModel: ItemsViewModel): ViewModel
+    @ViewModelKey(CharsViewModel::class)
+    internal abstract fun bindCharsViewModel(viewModel: CharsViewModel): ViewModel
 }
 
 @MustBeDocumented

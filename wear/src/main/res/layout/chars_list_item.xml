@@ -1,0 +1,23 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+                name="viewModel"
+                type="se.yverling.wearto.chars.CharsListItemViewModel" />
+    </data>
+
+    <TextView
+            android:id="@+id/char_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="15dp"
+            android:drawableStart="@drawable/char_icon"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:onClick="@{() -> viewModel.onClick()}"
+            android:text="@{String.valueOf(viewModel.getChar())}"
+            tools:text="A" />
+</layout>

@@ -27,7 +27,7 @@
 
         <androidx.wear.widget.WearableRecyclerView
             android:id="@+id/items"
-            tools:listitem="@layout/item"
+            tools:listitem="@layout/items_list_item"
             app:layoutManager="@{viewModel.layoutManager}"
             app:viewAdapter="@{viewModel.viewAdapter}"
             android:visibility="@{viewModel.hasItems ? View.VISIBLE : View.GONE}"
