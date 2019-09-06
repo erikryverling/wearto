@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0-rc02'
+        classpath 'com.android.tools.build:gradle:3.5.0'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.41'
         classpath 'com.google.gms:google-services:4.3.0'
     }
@@ -40,7 +40,7 @@ android {
 
     buildTypes {
         all {
-            buildConfigField 'String', 'API_BASE_URL', "\"https://todoist.com/API/v7/\""
+            buildConfigField 'String', 'API_BASE_URL', "\"https://todoist.com/API/v8/\""
             buildConfigField 'String', 'LICENCES_URL', "\"https://github.com/erikryverling/wearto/blob/master/README.md#license-and-acknowledgments\""
             buildConfigField 'String', 'PRIVACY_POLICY_URL', "\"https://github.com/erikryverling/wearto/blob/master/privacy-policy.md\""
         }
