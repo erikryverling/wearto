@@ -7,28 +7,26 @@ import se.yverling.wearto.R
 
 fun projectColorToColorHex(context: Context, code: Int): Int {
     when (code) {
-        0 -> return getColor(context, R.color.lime)
-        1 -> return getColor(context, R.color.salmon)
-        2 -> return getColor(context, R.color.peach)
-        3 -> return getColor(context, R.color.canary)
-        4 -> return getColor(context, R.color.slate)
-        5 -> return getColor(context, R.color.cafe)
-        6 -> return getColor(context, R.color.orchid)
-        7 -> return getColor(context, R.color.silver)
-        8 -> return getColor(context, R.color.coral)
-        9 -> return getColor(context, R.color.amber)
-        10 -> return getColor(context, R.color.turquoise)
-        11 -> return getColor(context, R.color.aqua)
-        12 -> return getColor(context, R.color.raspberry)
-        13 -> return getColor(context, R.color.cherry)
-        14 -> return getColor(context, R.color.ruby)
-        15 -> return getColor(context, R.color.pistachio)
-        16 -> return getColor(context, R.color.teal)
-        17 -> return getColor(context, R.color.lagoon)
-        18 -> return getColor(context, R.color.sky)
-        19 -> return getColor(context, R.color.sapphire)
-        20 -> return getColor(context, R.color.onyx)
-        21 -> return getColor(context, R.color.steel)
-        else -> return Color.MAGENTA
+        30 -> return getColor(context, R.color.berry_red)
+        31 -> return getColor(context, R.color.red)
+        32 -> return getColor(context, R.color.orange)
+        33 -> return getColor(context, R.color.yellow)
+        34 -> return getColor(context, R.color.olive_green)
+        35 -> return getColor(context, R.color.lime_green)
+        36 -> return getColor(context, R.color.green)
+        37 -> return getColor(context, R.color.mint_green)
+        38 -> return getColor(context, R.color.teal)
+        39 -> return getColor(context, R.color.sky_blue)
+        40 -> return getColor(context, R.color.light_blue)
+        41 -> return getColor(context, R.color.blue)
+        42 -> return getColor(context, R.color.grape)
+        43 -> return getColor(context, R.color.violet)
+        44 -> return getColor(context, R.color.lavender)
+        45 -> return getColor(context, R.color.magneta)
+        46 -> return getColor(context, R.color.salomon)
+        47 -> return getColor(context, R.color.charcoal)
+
+        // Inbox
+        else -> return Color.DKGRAY
     }
 }
