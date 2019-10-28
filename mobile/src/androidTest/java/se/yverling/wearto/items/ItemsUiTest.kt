@@ -322,7 +322,7 @@ class ItemsUiTest {
             }
 
             override fun matchesSafely(view: View): Boolean {
-                val stateList: ColorStateList = view.backgroundTintList
+                val stateList: ColorStateList? = view.backgroundTintList
                 return stateList == ColorStateList.valueOf(expectedColor)
             }
         }
