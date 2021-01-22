@@ -10,7 +10,9 @@
     <color name="primary_text">#000000</color>
     <color name="label_background">#e0e0e0</color>
 
+
     <!-- Todoist project colors -->
+
     <color name="berry_red">#b8255f</color>
     <color name="red">#db4035</color>
     <color name="orange">#ff9933</color>

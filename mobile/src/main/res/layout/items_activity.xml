@@ -27,17 +27,16 @@
                     android:id="@+id/empty_screen_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:drawableTop="@drawable/ic_view_headline_secondary_text_48dp"
-                    android:drawablePadding="10dp"
+                    android:layout_marginBottom="@dimen/space_small"
+                    android:drawablePadding="@dimen/space_default"
                     android:text="@string/no_items_label"
                     android:textAppearance="@android:style/TextAppearance.Material.Subhead"
-                    android:textColor="@color/secondary_text"
                     android:visibility="@{viewModel.hasItems ? View.GONE : View.VISIBLE}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:drawableTopCompat="@drawable/ic_view_headline_secondary_text_48dp" />
 
             <ProgressBar
                     style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -66,13 +65,15 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_item_button"
+                style="@style/WearTo.FloatingActionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="24dp"
+                android:layout_marginEnd="@dimen/space_large"
+                android:layout_marginBottom="@dimen/space_large"
                 android:onClick="@{() -> viewModel.addItem()}"
                 android:src="@drawable/ic_add_black_24dp"
-                app:fabSize="normal" />
+                app:fabSize="normal"
+                android:contentDescription="@string/add_item_button_description" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

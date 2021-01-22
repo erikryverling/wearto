@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Core -->
+
     <string name="try_again_button">Försök igen</string>
     <string name="cancel_button">Avbryt</string>
 
 
     <!-- Login -->
+
     <string name="login_heading">Nu kör vi!</string>
 
     <string name="step_1_icon_content_description">Ikon för Steg 1</string>
@@ -22,6 +24,7 @@
 
 
     <!-- Items -->
+
     <string name="items_title">Uppgifter</string>
 
     <string name="sync_item">Synka</string>
@@ -48,7 +51,11 @@
     <string name="sync_error_due_to_network_message">Kontrollera dina nätverksinställningar och försök igen</string>
     <string name="sync_error_due_to_data_layer_message">Kontrollera dina Android Wear inställningar och försök igen</string>
 
+    <string name="add_item_button_description">Add item button</string>
+
+
     <!-- Import dialog -->
+
     <string name="import_title">Importera</string>
     <string name="include_completed_items">Inkludera slutförda uppgifter</string>
     <string name="include_locally_removed_items">Inkluderade lokalt borttagna uppgifter</string>
@@ -59,6 +66,7 @@
 
 
     <!-- Item (edit) -->
+
     <string name="add_item_title">Lägg till uppgift</string>
     <string name="edit_item_title">Ändra uppgift</string>
 
@@ -74,6 +82,7 @@
 
 
     <!-- Selected item -->
+
     <string name="could_not_send_item_text">Kunde inte skicka uppgiften till Todoist</string>
     <string name="could_not_send_item_message">Kontrollera dina nätverksinställningar och försök igen</string>
 </resources>

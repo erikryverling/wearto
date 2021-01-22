@@ -1,6 +1,5 @@
 <resources>
-
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
@@ -10,5 +9,25 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+
+    <!-- Components -->
+
+    <style name="TextAppearance.WearTo.TodoistLink" parent="@android:style/TextAppearance.Material.Subhead">
+        <item name="android:textColor">@color/accent</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="WearTo.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="backgroundTint">@color/accent</item>
+    </style>
+
+    <style name="WearTo.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/accent</item>
+    </style>
+
+    <style name="WearTo.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="backgroundTint">@color/accent</item>
     </style>
 </resources>

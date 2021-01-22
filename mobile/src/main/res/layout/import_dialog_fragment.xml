@@ -4,23 +4,21 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
                 name="viewModel"
                 type="se.yverling.wearto.items.ItemsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="350dp"
+            android:layout_width="@dimen/import_dialog_width"
             android:layout_height="wrap_content"
-            android:minWidth="350dp">
+            android:minWidth="@dimen/import_dialog_width"
+            android:padding="@dimen/space_default">
 
         <TextView
                 android:id="@+id/import_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
                 android:text="@string/import_title"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 app:layout_constraintStart_toStartOf="parent"
@@ -30,9 +28,7 @@
                 android:id="@+id/projects_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginTop="@dimen/space_larger"
                 android:spinnerMode="dialog"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -46,9 +42,7 @@
                 android:id="@+id/include_completed_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginTop="@dimen/space_small"
                 android:checked="@={viewModel.includeCompletedItemsInImport}"
                 android:text="@string/include_completed_items"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -60,8 +54,7 @@
                 android:id="@+id/include_removed_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginTop="@dimen/space_small"
                 android:checked="@={viewModel.includeRemovedItemsWhenImporting}"
                 android:text="@string/include_locally_removed_items"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -69,33 +62,29 @@
                 app:layout_constraintStart_toStartOf="@+id/include_completed_checkbox"
                 app:layout_constraintTop_toBottomOf="@+id/include_completed_checkbox" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
                 android:id="@+id/import_button"
+                style="@style/WearTo.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="@dimen/space_larger"
                 android:onClick="@{() -> viewModel.importItems()}"
                 android:text="@string/import_button_title"
-                android:textAllCaps="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/accent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cancel_button"
                 app:layout_constraintTop_toBottomOf="@+id/include_removed_checkbox" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
                 android:id="@+id/cancel_button"
+                style="@style/WearTo.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
                 android:onClick="@{() -> viewModel.cancelItemImport()}"
                 android:text="@string/cancel_button_title"
-                android:textAllCaps="true"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/accent"
+                app:layout_constraintBottom_toBottomOf="@+id/import_button"
                 app:layout_constraintEnd_toStartOf="@+id/import_button"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/import_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

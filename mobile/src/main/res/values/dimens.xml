@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Core -->
+
+    <dimen name="space_smallest">4dp</dimen>
+    <dimen name="space_small">8dp</dimen>
+    <dimen name="space_default">16dp</dimen>
+    <dimen name="space_large">24dp</dimen>
+    <dimen name="space_larger">32dp</dimen>
+    <dimen name="space_largest">64dp</dimen>
+
+    <dimen name="default_elevation">3dp</dimen>
+
+
+    <!-- Login -->
+
+    <dimen name="headline_height">60dp</dimen>
+    <dimen name="login_button_height">60dp</dimen>
+    <item name="max_with_component_land" type="dimen" format="float">0.75</item>
+
+
+    <!-- Import dialog -->
+
+    <dimen name="import_dialog_width">350dp</dimen>
+</resources>

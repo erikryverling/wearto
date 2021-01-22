@@ -1,5 +1,6 @@
 <resources>
     <!-- Core -->
+
     <string name="empty_string" translatable="false" />
     <string name="app_name" translatable="false">WearTo</string>
     <string name="ok_button" translatable="false">OK</string>
@@ -8,6 +9,7 @@
 
 
     <!-- Login -->
+
     <string name="login_heading">Let\'s get started!</string>
 
     <string name="step_1_icon_content_description">Step 1 icon</string>
@@ -26,6 +28,7 @@
 
 
     <!-- Items -->
+
     <string name="items_title">Items</string>
 
     <string name="sync_item">Sync</string>
@@ -52,7 +55,11 @@
     <string name="sync_error_due_to_network_message">Check your network settings and try again</string>
     <string name="sync_error_due_to_data_layer_message">Check your Android Wear settings and try again</string>
 
+    <string name="add_item_button_description">Add item button</string>
+
+
     <!-- Import dialog -->
+
     <string name="import_title">Import items</string>
     <string name="include_completed_items">Include completed items</string>
     <string name="include_locally_removed_items">Include locally removed items</string>
@@ -63,6 +70,7 @@
 
 
     <!-- Item (edit) -->
+
     <string name="add_item_title">Add item</string>
     <string name="edit_item_title">Edit item</string>
 
@@ -79,6 +87,7 @@
 
 
     <!-- Selected item -->
+
     <string name="could_not_send_item_text">Could not send item to Todoist</string>
     <string name="could_not_send_item_message">Check your network settings and try again</string>
 </resources>

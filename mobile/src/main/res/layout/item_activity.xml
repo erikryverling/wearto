@@ -16,16 +16,15 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/item_layout"
+            android:layout_margin="@dimen/space_default"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/access_token_edit_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="42dp"
-                android:layout_marginEnd="24dp"
                 android:hint="@string/item_name_label"
                 app:errorEnabled="true"
                 app:errorMessage="@{viewModel.itemErrorMessage}"
@@ -44,16 +43,14 @@
                     app:editorActionListener="@{viewModel.editorActionListener}"
                     app:focus="@{true}"
                     app:hint="@{R.string.item_name_hint}"
-                    tools:ignore="LabelFor"
-                    tools:targetApi="o" />
+                    tools:ignore="LabelFor" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Spinner
                 android:id="@+id/spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/space_default"
                 android:spinnerMode="dialog"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/access_token_edit_layout"
