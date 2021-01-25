@@ -1,23 +1,23 @@
 package se.yverling.wearto.items.edit
 
 import android.app.Dialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
-import android.content.DialogInterface
-import androidx.databinding.DataBindingUtil.setContentView
 import android.os.Bundle
-import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil.setContentView
+import androidx.lifecycle.ViewModelProvider
 import org.jetbrains.anko.AnkoLogger
 import se.yverling.wearto.R
 import se.yverling.wearto.core.WearToApplication
+import se.yverling.wearto.core.di.ViewModelFactory
 import se.yverling.wearto.databinding.ItemActivityBinding
-import se.yverling.wearto.items.edit.ItemViewModel.Events.*
+import se.yverling.wearto.items.edit.ItemViewModel.Events.FINISH_ACTIVITY_EVENT
+import se.yverling.wearto.items.edit.ItemViewModel.Events.HIDE_KEYBOARD_EVENT
+import se.yverling.wearto.items.edit.ItemViewModel.Events.SHOW_SAVE_FAILED_DIALOG_EVENT
 import se.yverling.wearto.ui.errorTryAgainDialog
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ internal const val ITEM_UUID_KEY = "UUID"
 
 class ItemActivity : AppCompatActivity(), AnkoLogger {
     @Inject
-    internal lateinit var viewModelFactory: ViewModelProvider.Factory
+    internal lateinit var viewModelFactory: ViewModelFactory<ItemViewModel>
 
     private lateinit var viewModel: ItemViewModel
 
@@ -38,20 +38,19 @@ class ItemActivity : AppCompatActivity(), AnkoLogger {
 
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ItemViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ItemViewModel::class.java)
 
         binding = setContentView(this, R.layout.item_activity)!!
 
         errorDialog = errorTryAgainDialog(
                 this,
                 R.string.save_error_title,
-                R.string.save_error_message,
-                DialogInterface.OnClickListener { _, _ ->
-                    viewModel.save()
-                }
-        )
+                R.string.save_error_message
+        ) { _, _ ->
+            viewModel.save()
+        }
 
-        viewModel.events.observe(this, Observer {
+        viewModel.events.observe(this, {
             when (it) {
                 FINISH_ACTIVITY_EVENT -> finish()
 

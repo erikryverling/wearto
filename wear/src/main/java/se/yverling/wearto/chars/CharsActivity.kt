@@ -3,9 +3,7 @@ package se.yverling.wearto.chars
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.intentFor
 import se.yverling.wearto.R
@@ -26,9 +24,9 @@ class CharsActivity : FragmentActivity(), AnkoLogger {
 
         super.onCreate(savedInstanceState)
 
-        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(CharsViewModel::class.java)
+        val viewModel = ViewModelProvider(this, viewModelFactory).get(CharsViewModel::class.java)
 
-        viewModel.events.observe(this, Observer {
+        viewModel.events.observe(this, {
             when (it) {
                 is StartItemsActivity -> {
                     startItemsActivity(it.char)

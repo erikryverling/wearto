@@ -1,21 +1,20 @@
 package se.yverling.wearto.login
 
 import android.app.Dialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.DialogInterface
 import android.content.Intent
-import androidx.databinding.DataBindingUtil.setContentView
 import android.os.Bundle
-import androidx.annotation.TransitionRes
-import androidx.appcompat.app.AppCompatActivity
 import android.transition.Transition
 import android.transition.TransitionInflater
+import androidx.annotation.TransitionRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil.setContentView
+import androidx.lifecycle.ViewModelProvider
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.intentFor
 import se.yverling.wearto.R
 import se.yverling.wearto.core.WearToApplication
+import se.yverling.wearto.core.di.ViewModelFactory
 import se.yverling.wearto.databinding.LoginActivityBinding
 import se.yverling.wearto.items.ItemsActivity
 import se.yverling.wearto.login.LoginViewModel.Events.LOGIN_FAILED_DUE_TO_GENERAL_ERROR_EVENT
@@ -27,7 +26,7 @@ import javax.inject.Inject
 
 class LoginActivity : AppCompatActivity() {
     @Inject
-    internal lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: ViewModelFactory<LoginViewModel>
 
     private lateinit var binding: LoginActivityBinding
 
@@ -41,9 +40,9 @@ class LoginActivity : AppCompatActivity() {
 
         binding = setContentView(this, R.layout.login_activity)!!
 
-        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
+        val viewModel = ViewModelProvider(this, viewModelFactory).get(LoginViewModel::class.java)
 
-        viewModel.events.observe(this, Observer {
+        viewModel.events.observe(this, {
             when (it) {
                 START_ITEMS_ACTIVITY_EVENT -> startItemsActivity()
 

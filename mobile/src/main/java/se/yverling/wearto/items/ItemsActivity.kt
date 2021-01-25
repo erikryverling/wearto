@@ -1,22 +1,19 @@
 package se.yverling.wearto.items
 
 import android.app.Dialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.databinding.DataBindingUtil
 import android.os.Bundle
-import androidx.annotation.IdRes
-import androidx.annotation.StringRes
-import androidx.fragment.app.FragmentManager
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.annotation.IdRes
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Maybe
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,8 +32,18 @@ import se.yverling.wearto.R
 import se.yverling.wearto.auth.TokenManager
 import se.yverling.wearto.core.WearToApplication
 import se.yverling.wearto.core.db.DatabaseClient
+import se.yverling.wearto.core.di.ViewModelFactory
 import se.yverling.wearto.databinding.ItemsActivityBinding
-import se.yverling.wearto.items.ItemsViewModel.Events.*
+import se.yverling.wearto.items.ItemsViewModel.Events.DISMISS_IMPORT_DIALOG_EVENT
+import se.yverling.wearto.items.ItemsViewModel.Events.ROTATE_SYNC_ICON_EVENT
+import se.yverling.wearto.items.ItemsViewModel.Events.SHOW_ADD_TAP_TARGET_EVENT
+import se.yverling.wearto.items.ItemsViewModel.Events.SHOW_IMPORT_FAILED_DIALOG_EVENT
+import se.yverling.wearto.items.ItemsViewModel.Events.SHOW_SYNC_TAP_TARGET_EVENT
+import se.yverling.wearto.items.ItemsViewModel.Events.START_ITEM_ACTIVITY_EVENT
+import se.yverling.wearto.items.ItemsViewModel.Events.SYNC_FAILED_DUE_TO_DATA_LAYER_DIALOG_EVENT
+import se.yverling.wearto.items.ItemsViewModel.Events.SYNC_FAILED_DUE_TO_GENERAL_ERROR_EVENT
+import se.yverling.wearto.items.ItemsViewModel.Events.SYNC_FAILED_DUE_TO_NETWORK_DIALOG_EVENT
+import se.yverling.wearto.items.ItemsViewModel.Events.SYNC_SUCCEEDED_SNACKBAR_EVENT
 import se.yverling.wearto.items.edit.ITEM_UUID_KEY
 import se.yverling.wearto.items.edit.ItemActivity
 import se.yverling.wearto.login.LoginActivity
@@ -52,12 +59,16 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
 
     @Inject
     internal lateinit var tokenManager: TokenManager
+
     @Inject
-    internal lateinit var viewModelFactory: ViewModelProvider.Factory
+    internal lateinit var viewModelFactory: ViewModelFactory<ItemsViewModel>
+
     @Inject
     internal lateinit var databaseClient: DatabaseClient
+
     @Inject
     internal lateinit var sharedPreferences: SharedPreferences
+
     @Inject
     internal lateinit var analytics: FirebaseAnalytics
 
@@ -96,13 +107,12 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
                         onSuccess = {
                             supportActionBar?.title = getString(R.string.items_title)
 
-                            viewModel = ViewModelProviders
-                                    .of(this, viewModelFactory)
+                            viewModel = ViewModelProvider(this, viewModelFactory)
                                     .get(ItemsViewModel::class.java)
 
                             binding = DataBindingUtil.setContentView(this, R.layout.items_activity)!!
 
-                            viewModel.events.observe(this, Observer {
+                            viewModel.events.observe(this, {
                                 when (it) {
                                     SHOW_ADD_TAP_TARGET_EVENT -> showAddTapTarget()
 
@@ -127,7 +137,7 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
                                 }
                             })
 
-                            viewModel.getItemToEditEvents().observe(this, Observer { uuid ->
+                            viewModel.getItemToEditEvents().observe(this, { uuid ->
                                 startActivity(intentFor<ItemActivity>(ITEM_UUID_KEY to uuid))
                             })
 
@@ -184,67 +194,62 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
         logoutDialog = warningMessageDialog(
                 this,
                 R.string.logout_warning_title,
-                R.string.logout_warning_message,
-                DialogInterface.OnClickListener { _, _ ->
-                    val disposable = databaseClient.deleteAll()
-                            .doOnComplete {
-                                info("LOGOUT: All local items and projects removed")
+                R.string.logout_warning_message
+        ) { _, _ ->
+            val disposable = databaseClient.deleteAll()
+                    .doOnComplete {
+                        info("LOGOUT: All local items and projects removed")
+                    }
+                    .andThen(tokenManager.removeAccessToken())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeBy(
+                            onComplete = {
+                                info("LOGOUT: Access token removed")
+                                analytics.logEvent("logout", bundleOf(Pair("result", "succeeded")))
+                                viewModel.clear()
+                                startLogoutActivity()
+                            },
+
+                            onError = {
+                                analytics.logEvent("logout", bundleOf(Pair("result", "failed")))
+                                error(it)
                             }
-                            .andThen(tokenManager.removeAccessToken())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeBy(
-                                    onComplete = {
-                                        info("LOGOUT: Access token removed")
-                                        analytics.logEvent("logout", bundleOf(Pair("result", "succeeded")))
-                                        viewModel.clear()
-                                        startLogoutActivity()
-                                    },
+                    )
+            disposables.add(disposable)
+        }
 
-                                    onError = {
-                                        analytics.logEvent("logout", bundleOf(Pair("result", "failed")))
-                                        error(it)
-                                    }
-                            )
-                    disposables.add(disposable)
-                }
-        )
-
-        syncFailedDueToNetworkDialog = errorTryAgainDialog(
+        errorTryAgainDialog(
                 this,
                 R.string.sync_error_title,
-                R.string.sync_error_due_to_network_message,
-                DialogInterface.OnClickListener { _, _ ->
-                    viewModel.sync()
-                }
-        )
+                R.string.sync_error_due_to_network_message
+        ) { _, _ ->
+            viewModel.sync()
+        }.also { syncFailedDueToNetworkDialog = it }
 
         syncFailedDueToDataLayerDialog = errorTryAgainDialog(
                 this,
                 R.string.sync_error_title,
-                R.string.sync_error_due_to_data_layer_message,
-                DialogInterface.OnClickListener { _, _ ->
-                    viewModel.sync()
-                }
-        )
+                R.string.sync_error_due_to_data_layer_message
+        ) { _, _ ->
+            viewModel.sync()
+        }
 
-        syncFailedDueToGeneralErrorDialog = errorTryAgainDialog(
+        errorTryAgainDialog(
                 this,
                 R.string.sync_error_title,
-                R.string.sync_error_due_to_general_error_message,
-                DialogInterface.OnClickListener { _, _ ->
-                    viewModel.sync()
-                }
-        )
+                R.string.sync_error_due_to_general_error_message
+        ) { _, _ ->
+            viewModel.sync()
+        }.also { syncFailedDueToGeneralErrorDialog = it }
 
-        importFailedDueToGeneralErrorDialog = errorTryAgainDialog(
+        errorTryAgainDialog(
                 this,
                 R.string.import_error_title,
-                R.string.import_error_due_to_general_error_message,
-                DialogInterface.OnClickListener { _, _ ->
-                    viewModel.importItems()
-                }
-        )
+                R.string.import_error_due_to_general_error_message
+        ) { _, _ ->
+            viewModel.importItems()
+        }.also { importFailedDueToGeneralErrorDialog = it }
     }
 
     private fun showAddTapTarget() {
@@ -304,7 +309,7 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
             val hasTapTargetBeenShown = sharedPreferences.getBoolean(preferencesKey, false)
             if (!hasTapTargetBeenShown) {
                 baseBuilder
-                        .setTarget(findViewById<View>(tapTarget))
+                        .setTarget(findViewById(tapTarget))
                         .setPrimaryText(getString(primaryText))
                         .setSecondaryText(getString(secondaryText))
 
