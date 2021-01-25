@@ -28,7 +28,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:scroll_degrees_per_screen="90"
+                app:scroll_degrees_per_screen="@dimen/scroll_degrees_per_screen"
                 app:viewAdapter="@{viewModel.viewAdapter}"
                 tools:listitem="@layout/chars_list_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>

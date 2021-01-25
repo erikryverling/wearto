@@ -14,10 +14,10 @@
             app:compoundDrawableTintList="@{viewModel.drawableColor}"
             tools:text="Milk"
             android:drawableStart="@drawable/item_icon"
-            android:drawablePadding="10dp"
+            android:drawablePadding="@dimen/space_default"
             android:gravity="center_vertical"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginStart="@dimen/list_default_padding"
+            android:layout_marginBottom="@dimen/space_default"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 </layout>

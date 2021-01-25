@@ -16,7 +16,7 @@
             android:text="@string/no_items_label"
             android:visibility="@{viewModel.hasItems ? View.GONE : View.VISIBLE}"
             android:drawableTop="@drawable/ic_sync_secondary_48dp"
-            android:drawablePadding="20dp"
+            android:drawablePadding="@dimen/empty_screen_padding"
             android:textAppearance="@android:style/TextAppearance.Material.Body1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
