@@ -7,7 +7,7 @@ import se.yverling.wearto.sync.datalayer.DataLayerListenerService
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [(CoreModule::class), (ViewModelModule::class)])
+@Component(modules = [(CoreModule::class)])
 interface AppComponent {
     fun inject(activity: ItemsActivity)
     fun inject(activity: CharsActivity)

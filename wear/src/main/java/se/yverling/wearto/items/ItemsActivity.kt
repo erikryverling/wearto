@@ -10,10 +10,8 @@ import android.support.wearable.activity.ConfirmationActivity.FAILURE_ANIMATION
 import android.support.wearable.activity.ConfirmationActivity.SUCCESS_ANIMATION
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.intentFor
 import se.yverling.wearto.R
@@ -32,8 +30,10 @@ private const val FINISH_ACTIVITY: Int = 100
 class ItemsActivity : FragmentActivity(), AnkoLogger {
     @Inject
     internal lateinit var dataLayerClient: DataLayerClient
+
     @Inject
     internal lateinit var viewAdapter: ItemsRecyclerViewAdapter
+
     @Inject
     internal lateinit var dataBase: AppDatabase
 
@@ -52,9 +52,9 @@ class ItemsActivity : FragmentActivity(), AnkoLogger {
                 char
         )
 
-        val viewModel = ViewModelProviders.of(this, viewModelFactory).get(ItemsViewModel::class.java)
+        val viewModel = ViewModelProvider(this, viewModelFactory).get(ItemsViewModel::class.java)
 
-        viewModel.events.observe(this, Observer {
+        viewModel.events.observe(this, {
             when (it) {
                 is ShowItemSelectionFailed -> showErrorView()
                 is ShowConfirmationAndFinish -> showConfirmationViewAndFinish(it.item)
