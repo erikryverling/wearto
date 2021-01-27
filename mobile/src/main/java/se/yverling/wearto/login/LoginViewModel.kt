@@ -2,8 +2,7 @@ package se.yverling.wearto.login
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.databinding.ObservableBoolean
-import androidx.databinding.ObservableField
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -14,73 +13,55 @@ import org.jetbrains.anko.bundleOf
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import se.yverling.wearto.auth.TokenManager
-import se.yverling.wearto.core.SingleLiveEvent
 import se.yverling.wearto.core.db.DatabaseClient
-import se.yverling.wearto.login.LoginViewModel.Events.*
+import se.yverling.wearto.login.LoginViewModel.Event.LoginFailedDueToGeneralError
+import se.yverling.wearto.login.LoginViewModel.Event.LoginFailedDueToNetworkDialog
+import se.yverling.wearto.login.LoginViewModel.Event.OpenTodoistUrl
+import se.yverling.wearto.login.LoginViewModel.Event.StartItemsActivity
 import se.yverling.wearto.sync.network.NetworkClient
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
-        private val app: Application,
+        app: Application,
         private val tokenManager: TokenManager,
         private val networkClient: NetworkClient,
         private val databaseClient: DatabaseClient,
         private val analytics: FirebaseAnalytics
 ) : AndroidViewModel(app), AnkoLogger {
 
-    val accessToken: ObservableField<String> = ObservableField()
-    val isLoggingIn = ObservableBoolean()
+    val accessToken = MutableLiveData<String>()
+    val isLoggingIn = MutableLiveData<Boolean>()
 
-    internal val events = SingleLiveEvent<Events>()
+    internal val events = MutableLiveData<Event>()
 
     private val disposables = CompositeDisposable()
-
-    init {
-        val disposable = tokenManager.getAccessToken()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeBy(
-                        onSuccess = {
-                            if (it == null) {
-                                accessToken.set("")
-                            } else {
-                                accessToken.set(it)
-                            }
-                        },
-
-                        onError = {
-                            error(it)
-                        }
-                )
-        disposables.add(disposable)
-    }
 
     override fun onCleared() {
         disposables.clear()
     }
 
     fun login() {
-        isLoggingIn.set(true)
+        isLoggingIn.value = true
 
-        val disposable = networkClient.getProjects(accessToken.get()!!)
+        val disposable = networkClient.getProjects(accessToken.value!!)
                 .flatMapCompletable {
                     databaseClient.replaceAllProjects(it.projects)
                 }
                 .doOnComplete {
                     info("LOGIN: All projects fetched and saved")
                 }
-                .andThen(tokenManager.persistToken(accessToken.get()!!))
+                .andThen(tokenManager.persistToken(accessToken.value!!))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                         onComplete = {
                             info("LOGIN: Access token saved")
                             analytics.logEvent("login", bundleOf(Pair("result", "succeeded")))
-                            accessToken.set("")
-                            isLoggingIn.set(false)
-                            events.value = START_ITEMS_ACTIVITY_EVENT
+                            accessToken.value = ""
+                            isLoggingIn.value = false
+                            events.value = StartItemsActivity
                         },
 
                         onError = {
@@ -88,26 +69,27 @@ class LoginViewModel @Inject constructor(
                             analytics.logEvent("login", bundleOf(Pair("result", "failed")))
 
                             if (it is UnknownHostException || it is SocketTimeoutException) {
-                                events.value = LOGIN_FAILED_DUE_TO_NETWORK_DIALOG_EVENT
+                                events.value = LoginFailedDueToNetworkDialog
                             } else {
-                                events.value = LOGIN_FAILED_DUE_TO_GENERAL_ERROR_EVENT
+                                events.value = LoginFailedDueToGeneralError
                             }
 
-                            isLoggingIn.set(false)
+                            isLoggingIn.value = false
                         }
                 )
         disposables.add(disposable)
     }
 
     fun onLinkClick() {
-        events.value = OPEN_TODOIST_URL
+        events.value = OpenTodoistUrl
     }
 
-    enum class Events {
-        START_ITEMS_ACTIVITY_EVENT,
-        LOGIN_FAILED_DUE_TO_NETWORK_DIALOG_EVENT,
-        LOGIN_FAILED_DUE_TO_GENERAL_ERROR_EVENT,
+    sealed class Event {
+        object StartItemsActivity : Event()
 
-        OPEN_TODOIST_URL
+        object LoginFailedDueToNetworkDialog : Event()
+        object LoginFailedDueToGeneralError : Event()
+
+        object OpenTodoistUrl : Event()
     }
 }

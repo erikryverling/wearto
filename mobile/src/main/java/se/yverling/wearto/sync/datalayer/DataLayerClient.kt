@@ -75,7 +75,7 @@ class DataLayerClient @Inject constructor(
                                 dataMap
                             }
                             .toList()
-                    java.util.ArrayList<DataMap>(maps)
+                    ArrayList<DataMap>(maps)
                 }
     }
 

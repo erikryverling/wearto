@@ -15,7 +15,7 @@ fun errorTryAgainDialog(
             .setMessage(context.getString(messageResourceId))
             .setCancelable(true)
             .setPositiveButton(context.getString(R.string.try_again_button), listener)
-            .setNegativeButton(context.getString(R.string.cancel_button), { _, _ -> })
+            .setNegativeButton(context.getString(R.string.cancel_button)) { _, _ -> }
     return builder.create()
 }
 
@@ -29,6 +29,6 @@ fun warningMessageDialog(
             .setMessage(context.getString(messageResourceId))
             .setCancelable(true)
             .setPositiveButton(context.getString(R.string.ok_button), listener)
-            .setNegativeButton(context.getString(R.string.cancel_button), { _, _ -> })
+            .setNegativeButton(context.getString(R.string.cancel_button)) { _, _ -> }
     return builder.create()
 }

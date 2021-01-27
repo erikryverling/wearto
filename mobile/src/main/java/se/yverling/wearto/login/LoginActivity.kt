@@ -1,7 +1,6 @@
 package se.yverling.wearto.login
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.transition.Transition
@@ -17,10 +16,10 @@ import se.yverling.wearto.core.WearToApplication
 import se.yverling.wearto.core.di.ViewModelFactory
 import se.yverling.wearto.databinding.LoginActivityBinding
 import se.yverling.wearto.items.ItemsActivity
-import se.yverling.wearto.login.LoginViewModel.Events.LOGIN_FAILED_DUE_TO_GENERAL_ERROR_EVENT
-import se.yverling.wearto.login.LoginViewModel.Events.LOGIN_FAILED_DUE_TO_NETWORK_DIALOG_EVENT
-import se.yverling.wearto.login.LoginViewModel.Events.OPEN_TODOIST_URL
-import se.yverling.wearto.login.LoginViewModel.Events.START_ITEMS_ACTIVITY_EVENT
+import se.yverling.wearto.login.LoginViewModel.Event.LoginFailedDueToGeneralError
+import se.yverling.wearto.login.LoginViewModel.Event.LoginFailedDueToNetworkDialog
+import se.yverling.wearto.login.LoginViewModel.Event.OpenTodoistUrl
+import se.yverling.wearto.login.LoginViewModel.Event.StartItemsActivity
 import se.yverling.wearto.ui.errorTryAgainDialog
 import javax.inject.Inject
 
@@ -39,18 +38,19 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = setContentView(this, R.layout.login_activity)!!
+        binding.lifecycleOwner = this
 
         val viewModel = ViewModelProvider(this, viewModelFactory).get(LoginViewModel::class.java)
 
         viewModel.events.observe(this, {
             when (it) {
-                START_ITEMS_ACTIVITY_EVENT -> startItemsActivity()
+                StartItemsActivity -> startItemsActivity()
 
-                LOGIN_FAILED_DUE_TO_NETWORK_DIALOG_EVENT -> loginFailedDueToNetworkErrorDialog.show()
+                LoginFailedDueToNetworkDialog -> loginFailedDueToNetworkErrorDialog.show()
 
-                LOGIN_FAILED_DUE_TO_GENERAL_ERROR_EVENT -> loginFailedDueToGeneralErrorDialog.show()
+                LoginFailedDueToGeneralError -> loginFailedDueToGeneralErrorDialog.show()
 
-                OPEN_TODOIST_URL -> browse(getString(R.string.todoist_link))
+                OpenTodoistUrl -> browse(getString(R.string.todoist_link))
             }
         })
 
@@ -69,27 +69,23 @@ class LoginActivity : AppCompatActivity() {
         loginFailedDueToNetworkErrorDialog = errorTryAgainDialog(
                 this,
                 R.string.login_failed_title,
-                R.string.login_failed_due_to_network_message,
-                DialogInterface.OnClickListener { _, _ ->
-                    viewModel.login()
-                })
+                R.string.login_failed_due_to_network_message
+        ) { _, _ ->
+            viewModel.login()
+        }
 
         loginFailedDueToGeneralErrorDialog = errorTryAgainDialog(
                 this,
                 R.string.login_failed_title,
-                R.string.login_failed_due_to_general_error_message,
-                DialogInterface.OnClickListener { _, _ ->
-                    viewModel.login()
-                })
+                R.string.login_failed_due_to_general_error_message
+        ) { _, _ ->
+            viewModel.login()
+        }
     }
 
     private fun startItemsActivity() {
         val intent = intentFor<ItemsActivity>()
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
-    }
-
-    private fun inflateTransition(@TransitionRes resourceId: Int): Transition {
-        return TransitionInflater.from(this).inflateTransition(resourceId)
     }
 }

@@ -4,14 +4,15 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
 import assertk.assert
-import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
-import assertk.assertions.isNotEqualTo
 import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.not
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,7 +23,13 @@ import se.yverling.wearto.core.db.DatabaseClient
 import se.yverling.wearto.core.entities.Item
 import se.yverling.wearto.core.entities.ItemWithProject
 import se.yverling.wearto.core.entities.Project
-import se.yverling.wearto.items.ItemsViewModel.Events.*
+import se.yverling.wearto.items.ItemsViewModel.Event.ShowAddTapTarget
+import se.yverling.wearto.items.ItemsViewModel.Event.ShowImportFailedDialog
+import se.yverling.wearto.items.ItemsViewModel.Event.ShowSyncTapTarget
+import se.yverling.wearto.items.ItemsViewModel.Event.SyncFailedDueToDataLayerDialog
+import se.yverling.wearto.items.ItemsViewModel.Event.SyncFailedDueToGeneralError
+import se.yverling.wearto.items.ItemsViewModel.Event.SyncFailedDueToNetworkDialog
+import se.yverling.wearto.items.ItemsViewModel.Event.SyncSucceededSnackbar
 import se.yverling.wearto.items.edit.LATEST_SELECTED_PROJECT_PREFERENCES_KEY
 import se.yverling.wearto.sync.datalayer.DataLayerClient
 import se.yverling.wearto.sync.network.NetworkClient
@@ -85,9 +92,8 @@ class ItemsViewModelTest {
 
     @Test
     fun `Should potentially show add tap target when items list is empty`() {
-        assert(viewModel.events.value).isEqualTo(SHOW_ADD_TAP_TARGET_EVENT)
+        assertThat(viewModel.events.value, instanceOf(ShowAddTapTarget::class.java))
     }
-
 
     @Test
     fun `Should potentially show sync tap target when items list is empty`() {
@@ -102,7 +108,7 @@ class ItemsViewModelTest {
                 recyclerViewAdapterMock,
                 analyticsMock)
 
-        assert(viewModel.events.value).isEqualTo(SHOW_SYNC_TAP_TARGET_EVENT)
+        assertThat(viewModel.events.value, instanceOf(ShowSyncTapTarget::class.java))
     }
 
 
@@ -116,7 +122,7 @@ class ItemsViewModelTest {
         viewModel.sync()
 
         assert(viewModel.isSyncing).isFalse()
-        assert(viewModel.events.value).isEqualTo(SYNC_SUCCEEDED_SNACKBAR_EVENT)
+        assertThat(viewModel.events.value, instanceOf(SyncSucceededSnackbar::class.java))
     }
 
     @Test
@@ -128,7 +134,7 @@ class ItemsViewModelTest {
         viewModel.sync()
 
         assert(viewModel.isSyncing).isFalse()
-        assert(viewModel.events.value).isEqualTo(SYNC_FAILED_DUE_TO_NETWORK_DIALOG_EVENT)
+        assertThat(viewModel.events.value, instanceOf(SyncFailedDueToNetworkDialog::class.java))
     }
 
     @Test
@@ -141,7 +147,7 @@ class ItemsViewModelTest {
         viewModel.sync()
 
         assert(viewModel.isSyncing).isFalse()
-        assert(viewModel.events.value).isEqualTo(SYNC_FAILED_DUE_TO_DATA_LAYER_DIALOG_EVENT)
+        assertThat(viewModel.events.value, instanceOf(SyncFailedDueToDataLayerDialog::class.java))
     }
 
     @Test
@@ -154,7 +160,7 @@ class ItemsViewModelTest {
         viewModel.sync()
 
         assert(viewModel.isSyncing).isFalse()
-        assert(viewModel.events.value).isEqualTo(SYNC_FAILED_DUE_TO_GENERAL_ERROR_EVENT)
+        assertThat(viewModel.events.value, instanceOf(SyncFailedDueToGeneralError::class.java))
     }
 
     @Test
@@ -170,8 +176,8 @@ class ItemsViewModelTest {
 
         viewModel.importItems()
 
-        assert(viewModel.isImporting.get()).isFalse()
-        assert(viewModel.events.value).isNotEqualTo(SHOW_IMPORT_FAILED_DIALOG_EVENT)
+        assert(viewModel.isImporting.value as Boolean).isFalse()
+        assertThat(viewModel.events.value, not(instanceOf(ShowImportFailedDialog::class.java)))
     }
 
     @Test
@@ -180,7 +186,7 @@ class ItemsViewModelTest {
         val testItem = Item(UUID.randomUUID().toString(), ITEM_NAME, testProject.id)
         val testItemDto = ItemDto(0, testProject.id, ITEM_NAME)
 
-        viewModel.includeCompletedItemsInImport.set(true)
+        viewModel.includeCompletedItemsInImport.value = true
 
         whenever(databaseClientMock.findProjectByName(testProject.name)).thenReturn(Single.just(testProject))
         whenever(networkClientMock.getItems(testProject.id)).thenReturn(Single.just(ProjectDataResponse(listOf(testItemDto))))
@@ -191,8 +197,8 @@ class ItemsViewModelTest {
 
         viewModel.importItems()
 
-        assert(viewModel.isImporting.get()).isFalse()
-        assert(viewModel.events.value).isNotEqualTo(SHOW_IMPORT_FAILED_DIALOG_EVENT)
+        assert(viewModel.isImporting.value as Boolean).isFalse()
+        assertThat(viewModel.events.value, not(instanceOf(ShowImportFailedDialog::class.java)))
     }
 
     @Test
@@ -201,7 +207,7 @@ class ItemsViewModelTest {
         val testItem = Item(UUID.randomUUID().toString(), ITEM_NAME, testProject.id)
         val testItemDto = ItemDto(0, testProject.id, ITEM_NAME)
 
-        viewModel.includeRemovedItemsWhenImporting.set(true)
+        viewModel.includeRemovedItemsWhenImporting.value = true
 
         whenever(databaseClientMock.findProjectByName(testProject.name)).thenReturn(Single.just(testProject))
         whenever(networkClientMock.getItems(testProject.id)).thenReturn(Single.just(ProjectDataResponse(listOf(testItemDto))))
@@ -210,8 +216,8 @@ class ItemsViewModelTest {
 
         viewModel.importItems()
 
-        assert(viewModel.isImporting.get()).isFalse()
-        assert(viewModel.events.value).isNotEqualTo(SHOW_IMPORT_FAILED_DIALOG_EVENT)
+        assert(viewModel.isImporting.value as Boolean).isFalse()
+        assertThat(viewModel.events.value, not(instanceOf(ShowImportFailedDialog::class.java)))
     }
 
     @Test
@@ -220,8 +226,8 @@ class ItemsViewModelTest {
         val testItem = Item(UUID.randomUUID().toString(), ITEM_NAME, testProject.id)
         val testItemDto = ItemDto(0, testProject.id, ITEM_NAME)
 
-        viewModel.includeRemovedItemsWhenImporting.set(true)
-        viewModel.includeCompletedItemsInImport.set(true)
+        viewModel.includeRemovedItemsWhenImporting.value = true
+        viewModel.includeCompletedItemsInImport.value = true
 
         whenever(databaseClientMock.findProjectByName(testProject.name)).thenReturn(Single.just(testProject))
         whenever(networkClientMock.getItems(testProject.id)).thenReturn(Single.just(ProjectDataResponse(listOf(testItemDto))))
@@ -233,8 +239,8 @@ class ItemsViewModelTest {
 
         viewModel.importItems()
 
-        assert(viewModel.isImporting.get()).isFalse()
-        assert(viewModel.events.value).isNotEqualTo(SHOW_IMPORT_FAILED_DIALOG_EVENT)
+        assert(viewModel.isImporting.value as Boolean).isFalse()
+        assertThat(viewModel.events.value, not(instanceOf(ShowImportFailedDialog::class.java)))
     }
 
     @Test
@@ -245,7 +251,7 @@ class ItemsViewModelTest {
 
         viewModel.importItems()
 
-        assert(viewModel.isImporting.get()).isFalse()
-        assert(viewModel.events.value).isEqualTo(SHOW_IMPORT_FAILED_DIALOG_EVENT)
+        assert(viewModel.isImporting.value as Boolean).isFalse()
+        assertThat(viewModel.events.value, instanceOf(ShowImportFailedDialog::class.java))
     }
 }

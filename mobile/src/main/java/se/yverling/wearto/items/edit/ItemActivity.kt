@@ -15,9 +15,9 @@ import se.yverling.wearto.R
 import se.yverling.wearto.core.WearToApplication
 import se.yverling.wearto.core.di.ViewModelFactory
 import se.yverling.wearto.databinding.ItemActivityBinding
-import se.yverling.wearto.items.edit.ItemViewModel.Events.FINISH_ACTIVITY_EVENT
-import se.yverling.wearto.items.edit.ItemViewModel.Events.HIDE_KEYBOARD_EVENT
-import se.yverling.wearto.items.edit.ItemViewModel.Events.SHOW_SAVE_FAILED_DIALOG_EVENT
+import se.yverling.wearto.items.edit.ItemViewModel.Event.FinishActivity
+import se.yverling.wearto.items.edit.ItemViewModel.Event.HideKeyboard
+import se.yverling.wearto.items.edit.ItemViewModel.Event.ShowSaveFailedDialog
 import se.yverling.wearto.ui.errorTryAgainDialog
 import javax.inject.Inject
 
@@ -41,6 +41,7 @@ class ItemActivity : AppCompatActivity(), AnkoLogger {
         viewModel = ViewModelProvider(this, viewModelFactory).get(ItemViewModel::class.java)
 
         binding = setContentView(this, R.layout.item_activity)!!
+        binding.lifecycleOwner = this
 
         errorDialog = errorTryAgainDialog(
                 this,
@@ -50,15 +51,17 @@ class ItemActivity : AppCompatActivity(), AnkoLogger {
             viewModel.save()
         }
 
-        viewModel.events.observe(this, {
+        viewModel.events.observe(this) {
             when (it) {
-                FINISH_ACTIVITY_EVENT -> finish()
+                FinishActivity -> finish()
 
-                HIDE_KEYBOARD_EVENT -> hideKeyboard()
+                HideKeyboard -> hideKeyboard()
 
-                SHOW_SAVE_FAILED_DIALOG_EVENT -> errorDialog.show()
+                ShowSaveFailedDialog -> errorDialog.show()
             }
-        })
+        }
+
+        viewModel.name.observe(this) { viewModel.onNameChanged() }
 
         binding.viewModel = viewModel
 

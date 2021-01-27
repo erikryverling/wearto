@@ -1,13 +1,17 @@
 package se.yverling.wearto.items.edit
 
 import android.app.Application
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.SharedPreferences
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import assertk.assert
 import assertk.assertions.isEqualTo
 import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.MatcherAssert
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,9 +23,10 @@ import se.yverling.wearto.core.db.DatabaseClient
 import se.yverling.wearto.core.entities.Item
 import se.yverling.wearto.core.entities.ItemWithProject
 import se.yverling.wearto.core.entities.Project
-import se.yverling.wearto.items.edit.ItemViewModel.Events.*
+import se.yverling.wearto.items.ItemsViewModel
+import se.yverling.wearto.items.edit.ItemViewModel.Event.FinishActivity
+import se.yverling.wearto.items.edit.ItemViewModel.Event.ShowSaveFailedDialog
 import se.yverling.wearto.test.RxRule
-import se.yverling.wearto.test.valueIsEqualTo
 import se.yverling.wearto.test.whenever
 
 private const val UUID = "UUID"
@@ -48,10 +53,13 @@ class ItemViewModelTest {
 
     @Mock
     lateinit var applicationMock: Application
+
     @Mock
     lateinit var databaseClientMock: DatabaseClient
+
     @Mock
     lateinit var sharedPreferencesMock: SharedPreferences
+
     @Mock
     lateinit var analyticsMock: FirebaseAnalytics
 
@@ -79,41 +87,42 @@ class ItemViewModelTest {
 
         viewModel.edit(UUID)
 
-        assert(viewModel.name).valueIsEqualTo(ITEM_NAME)
-        assert(viewModel.projectName).valueIsEqualTo(FIRST_PROJECT_NAME)
+        assert(viewModel.name.value).isEqualTo(ITEM_NAME)
+        assert(viewModel.projectName.value).isEqualTo(FIRST_PROJECT_NAME)
     }
 
     @Test
     fun `Should save new item successfully`() {
-        viewModel.name.set(ITEM_NAME)
-        viewModel.projectName.set(FIRST_PROJECT_NAME)
+        viewModel.name.value = ITEM_NAME
+        viewModel.projectName.value = FIRST_PROJECT_NAME
 
         whenever(databaseClientMock.saveItem(ITEM_NAME, FIRST_PROJECT_NAME)).thenReturn(Completable.complete())
 
         viewModel.save()
 
         verify(databaseClientMock).saveItem(ITEM_NAME, FIRST_PROJECT_NAME)
-        assert(viewModel.events.value).isEqualTo(FINISH_ACTIVITY_EVENT)
+        assertThat(viewModel.events.value, instanceOf(FinishActivity::class.java))
     }
+
 
     @Test
     fun `Should show error message when item could not be saved`() {
-        viewModel.name.set(ITEM_NAME)
-        viewModel.projectName.set(FIRST_PROJECT_NAME)
+        viewModel.name.value = ITEM_NAME
+        viewModel.projectName.value = FIRST_PROJECT_NAME
 
         whenever(databaseClientMock.saveItem(ITEM_NAME, FIRST_PROJECT_NAME)).thenReturn(Completable.error(RuntimeException()))
 
         viewModel.save()
 
         verify(databaseClientMock).saveItem(ITEM_NAME, FIRST_PROJECT_NAME)
-        assert(viewModel.events.value).isEqualTo(SHOW_SAVE_FAILED_DIALOG_EVENT)
+        assertThat(viewModel.events.value, instanceOf(ShowSaveFailedDialog::class.java))
     }
 
     @Test
     fun `Should save existing item Successfully`() {
-        viewModel.uuid.set(UUID)
-        viewModel.name.set(ITEM_NAME)
-        viewModel.projectName.set(FIRST_PROJECT_NAME)
+        viewModel.uuid.value = UUID
+        viewModel.name.value = ITEM_NAME
+        viewModel.projectName.value = FIRST_PROJECT_NAME
 
         whenever(databaseClientMock
                 .updateItem(UUID, ITEM_NAME, FIRST_PROJECT_NAME))
@@ -122,14 +131,14 @@ class ItemViewModelTest {
         viewModel.save()
 
         verify(databaseClientMock).updateItem(UUID, ITEM_NAME, FIRST_PROJECT_NAME)
-        assert(viewModel.events.value).isEqualTo(FINISH_ACTIVITY_EVENT)
+        assertThat(viewModel.events.value, instanceOf(FinishActivity::class.java))
     }
 
     @Test
     fun `Should show error message when saving existing item failed`() {
-        viewModel.uuid.set(UUID)
-        viewModel.name.set(ITEM_NAME)
-        viewModel.projectName.set(FIRST_PROJECT_NAME)
+        viewModel.uuid.value = UUID
+        viewModel.name.value = ITEM_NAME
+        viewModel.projectName.value = FIRST_PROJECT_NAME
 
         whenever(databaseClientMock
                 .updateItem(UUID, ITEM_NAME, FIRST_PROJECT_NAME))
@@ -138,24 +147,25 @@ class ItemViewModelTest {
         viewModel.save()
 
         verify(databaseClientMock).updateItem(UUID, ITEM_NAME, FIRST_PROJECT_NAME)
-        assert(viewModel.events.value).isEqualTo(SHOW_SAVE_FAILED_DIALOG_EVENT)
+        assertThat(viewModel.events.value, instanceOf(ShowSaveFailedDialog::class.java))
     }
 
     @Test
     fun `Should delete item successfully`() {
-        viewModel.uuid.set(UUID)
+        viewModel.uuid.value = UUID
 
         whenever(databaseClientMock.deleteItem(UUID)).thenReturn(Completable.complete())
 
         viewModel.delete()
 
         verify(databaseClientMock).deleteItem(UUID)
-        assert(viewModel.events.value).isEqualTo(FINISH_ACTIVITY_EVENT)
+        assertThat(viewModel.events.value, instanceOf(FinishActivity::class.java))
     }
 
     @Test
     fun `Should mark item as valid when name is set`() {
-        viewModel.name.set(ITEM_NAME)
+        viewModel.name.value = ITEM_NAME
+
 
         assert(viewModel.isValid()).isEqualTo(true)
     }
@@ -173,6 +183,6 @@ class ItemViewModelTest {
 
         viewModel = ItemViewModel(applicationMock, databaseClientMock, sharedPreferencesMock, analyticsMock)
 
-        assert(viewModel.projectName).valueIsEqualTo(SECOND_PROJECT_NAME)
+        assert(viewModel.projectName.value).isEqualTo(SECOND_PROJECT_NAME)
     }
 }

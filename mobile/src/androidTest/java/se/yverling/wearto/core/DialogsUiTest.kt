@@ -29,9 +29,8 @@ class DialogsUiTest {
             errorTryAgainDialog(
                     activityRule.activity,
                     R.string.login_failed_title,
-                    R.string.login_failed_due_to_general_error_message,
-                    DialogInterface.OnClickListener { _, _ -> }
-            ).show()
+                    R.string.login_failed_due_to_general_error_message
+            ) { _, _ -> }.show()
         }
 
         onView(withText((R.string.login_failed_title)))

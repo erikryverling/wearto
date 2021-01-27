@@ -23,7 +23,7 @@ class ImportDialogFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         viewModel = ViewModelProvider(activity!!, viewModelFactory).get(ItemsViewModel::class.java)
         val binding = ImportDialogFragmentBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel

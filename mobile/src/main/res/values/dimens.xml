@@ -15,7 +15,6 @@
     <!-- Login -->
 
     <dimen name="headline_height">60dp</dimen>
-    <dimen name="login_button_height">60dp</dimen>
     <item name="max_with_component_land" type="dimen" format="float">0.75</item>
 
 

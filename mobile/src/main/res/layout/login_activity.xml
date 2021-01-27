@@ -93,7 +93,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/access_token_edit"
                         android:text="@={viewModel.accessToken}"
                         tools:ignore="LabelFor"
@@ -117,7 +117,7 @@
             <com.google.android.material.button.MaterialButton
                     android:id="@+id/login_button"
                     android:onClick="@{() -> viewModel.login()}"
-                    android:enabled="@{!TextUtils.isEmpty(viewModel.accessToken.get()) &amp;&amp; !viewModel.isLoggingIn}"
+                    android:enabled="@{!TextUtils.isEmpty(viewModel.accessToken) &amp;&amp; !viewModel.isLoggingIn}"
                     android:text="@{viewModel.isLoggingIn ? @string/empty_string : @string/login_button}"
                     tools:text="Login"
                     style="@style/WearTo.Button"

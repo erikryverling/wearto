@@ -80,7 +80,7 @@
                 app:layout_constraintStart_toEndOf="@+id/step_2_icon"
                 app:layout_constraintTop_toBottomOf="@+id/step_1_description">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/access_token_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/space_default"
                 style="@style/WearTo.Button"
-                android:enabled="@{!TextUtils.isEmpty(viewModel.accessToken.get()) &amp;&amp; !viewModel.isLoggingIn}"
+                android:enabled="@{!TextUtils.isEmpty(viewModel.accessToken) &amp;&amp; !viewModel.isLoggingIn}"
                 android:onClick="@{() -> viewModel.login()}"
                 android:text="@{viewModel.isLoggingIn ? @string/empty_string : @string/login_button}"
                 app:layout_constraintBottom_toBottomOf="parent"

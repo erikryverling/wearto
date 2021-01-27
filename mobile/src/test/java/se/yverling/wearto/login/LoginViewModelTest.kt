@@ -8,6 +8,8 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -17,12 +19,13 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnit
 import se.yverling.wearto.auth.TokenManager
 import se.yverling.wearto.core.db.DatabaseClient
-import se.yverling.wearto.login.LoginViewModel.Events.*
+import se.yverling.wearto.login.LoginViewModel.Event.LoginFailedDueToGeneralError
+import se.yverling.wearto.login.LoginViewModel.Event.LoginFailedDueToNetworkDialog
+import se.yverling.wearto.login.LoginViewModel.Event.StartItemsActivity
 import se.yverling.wearto.sync.network.NetworkClient
 import se.yverling.wearto.sync.network.dtos.Project
 import se.yverling.wearto.sync.network.dtos.SyncResponse
 import se.yverling.wearto.test.RxRule
-import se.yverling.wearto.test.valueIsEqualTo
 import se.yverling.wearto.test.whenever
 import java.net.UnknownHostException
 
@@ -43,12 +46,16 @@ class LoginViewModelTest {
 
     @Mock
     lateinit var applicationMock: Application
+
     @Mock
     lateinit var networkClientMock: NetworkClient
+
     @Mock
     lateinit var tokenManagerMock: TokenManager
+
     @Mock
     lateinit var databaseClientMock: DatabaseClient
+
     @Mock
     lateinit var analyticsMock: FirebaseAnalytics
 
@@ -66,6 +73,7 @@ class LoginViewModelTest {
                 analyticsMock)
     }
 
+
     @Test
     fun `Should login successfully`() {
         val projects = listOf(Project(1, "Project1", 0))
@@ -74,16 +82,17 @@ class LoginViewModelTest {
         whenever(databaseClientMock.replaceAllProjects(projects)).thenReturn(Completable.complete())
         whenever(tokenManagerMock.persistToken(anyString())).thenReturn(Completable.complete())
 
-        viewModel.accessToken.set(ACCESS_TOKEN)
+        viewModel.accessToken.value = ACCESS_TOKEN
 
         viewModel.login()
 
         verify(databaseClientMock).replaceAllProjects(projects)
         verify(tokenManagerMock).persistToken(ACCESS_TOKEN)
 
-        assert(viewModel.accessToken).valueIsEqualTo("")
-        assert(viewModel.isLoggingIn).valueIsEqualTo(false)
-        assert(viewModel.events.value).isEqualTo(START_ITEMS_ACTIVITY_EVENT)
+        assert(viewModel.accessToken.value).isEqualTo("")
+        assert(viewModel.isLoggingIn.value).isEqualTo(false)
+        assertThat(viewModel.events.value, instanceOf(StartItemsActivity::class.java))
+
     }
 
     @Test
@@ -93,13 +102,13 @@ class LoginViewModelTest {
         // This is to make sure the Rx chain doesn't throw an NPE
         whenever(tokenManagerMock.persistToken(ACCESS_TOKEN)).thenReturn(Completable.complete())
 
-        viewModel.accessToken.set(ACCESS_TOKEN)
+        viewModel.accessToken.value = ACCESS_TOKEN
 
         viewModel.login()
 
-        assert(viewModel.events.value).isEqualTo(LOGIN_FAILED_DUE_TO_NETWORK_DIALOG_EVENT)
-        assert(viewModel.accessToken).valueIsEqualTo(ACCESS_TOKEN)
-        assert(viewModel.isLoggingIn).valueIsEqualTo(false)
+        assertThat(viewModel.events.value, instanceOf(LoginFailedDueToNetworkDialog::class.java))
+        assert(viewModel.accessToken.value).isEqualTo(ACCESS_TOKEN)
+        assert(viewModel.isLoggingIn.value).isEqualTo(false)
     }
 
 
@@ -110,12 +119,12 @@ class LoginViewModelTest {
         // This is to make sure the Rx chain doesn't throw an NPE
         whenever(tokenManagerMock.persistToken(ACCESS_TOKEN)).thenReturn(Completable.error(RuntimeException()))
 
-        viewModel.accessToken.set(ACCESS_TOKEN)
+        viewModel.accessToken.value = ACCESS_TOKEN
 
         viewModel.login()
 
-        assert(viewModel.events.value).isEqualTo(LOGIN_FAILED_DUE_TO_GENERAL_ERROR_EVENT)
-        assert(viewModel.accessToken).valueIsEqualTo(ACCESS_TOKEN)
-        assert(viewModel.isLoggingIn).valueIsEqualTo(false)
+        assertThat(viewModel.events.value, instanceOf(LoginFailedDueToGeneralError::class.java))
+        assert(viewModel.accessToken.value).isEqualTo(ACCESS_TOKEN)
+        assert(viewModel.isLoggingIn.value).isEqualTo(false)
     }
 }

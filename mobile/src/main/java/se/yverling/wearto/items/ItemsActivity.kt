@@ -12,6 +12,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.DataBindingUtil.*
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -34,16 +35,16 @@ import se.yverling.wearto.core.WearToApplication
 import se.yverling.wearto.core.db.DatabaseClient
 import se.yverling.wearto.core.di.ViewModelFactory
 import se.yverling.wearto.databinding.ItemsActivityBinding
-import se.yverling.wearto.items.ItemsViewModel.Events.DISMISS_IMPORT_DIALOG_EVENT
-import se.yverling.wearto.items.ItemsViewModel.Events.ROTATE_SYNC_ICON_EVENT
-import se.yverling.wearto.items.ItemsViewModel.Events.SHOW_ADD_TAP_TARGET_EVENT
-import se.yverling.wearto.items.ItemsViewModel.Events.SHOW_IMPORT_FAILED_DIALOG_EVENT
-import se.yverling.wearto.items.ItemsViewModel.Events.SHOW_SYNC_TAP_TARGET_EVENT
-import se.yverling.wearto.items.ItemsViewModel.Events.START_ITEM_ACTIVITY_EVENT
-import se.yverling.wearto.items.ItemsViewModel.Events.SYNC_FAILED_DUE_TO_DATA_LAYER_DIALOG_EVENT
-import se.yverling.wearto.items.ItemsViewModel.Events.SYNC_FAILED_DUE_TO_GENERAL_ERROR_EVENT
-import se.yverling.wearto.items.ItemsViewModel.Events.SYNC_FAILED_DUE_TO_NETWORK_DIALOG_EVENT
-import se.yverling.wearto.items.ItemsViewModel.Events.SYNC_SUCCEEDED_SNACKBAR_EVENT
+import se.yverling.wearto.items.ItemsViewModel.Event.DismissImportDialog
+import se.yverling.wearto.items.ItemsViewModel.Event.RotateSyncIcon
+import se.yverling.wearto.items.ItemsViewModel.Event.ShowAddTapTarget
+import se.yverling.wearto.items.ItemsViewModel.Event.ShowImportFailedDialog
+import se.yverling.wearto.items.ItemsViewModel.Event.ShowSyncTapTarget
+import se.yverling.wearto.items.ItemsViewModel.Event.StartItemActivity
+import se.yverling.wearto.items.ItemsViewModel.Event.SyncFailedDueToDataLayerDialog
+import se.yverling.wearto.items.ItemsViewModel.Event.SyncFailedDueToGeneralError
+import se.yverling.wearto.items.ItemsViewModel.Event.SyncFailedDueToNetworkDialog
+import se.yverling.wearto.items.ItemsViewModel.Event.SyncSucceededSnackbar
 import se.yverling.wearto.items.edit.ITEM_UUID_KEY
 import se.yverling.wearto.items.edit.ItemActivity
 import se.yverling.wearto.login.LoginActivity
@@ -85,12 +86,20 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
 
     private lateinit var importDialog: ImportDialogFragment
 
-    private var binding: ItemsActivityBinding? = null
+    private lateinit var binding: ItemsActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         WearToApplication.appComponent.inject(this)
 
         super.onCreate(savedInstanceState)
+
+        binding = setContentView(this, R.layout.items_activity)!!
+        binding.lifecycleOwner = this
+
+        viewModel = ViewModelProvider(this, viewModelFactory)
+                .get(ItemsViewModel::class.java)
+
+        binding.viewModel = viewModel
 
         initDialogs()
 
@@ -107,41 +116,33 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
                         onSuccess = {
                             supportActionBar?.title = getString(R.string.items_title)
 
-                            viewModel = ViewModelProvider(this, viewModelFactory)
-                                    .get(ItemsViewModel::class.java)
-
-                            binding = DataBindingUtil.setContentView(this, R.layout.items_activity)!!
-
                             viewModel.events.observe(this, {
                                 when (it) {
-                                    SHOW_ADD_TAP_TARGET_EVENT -> showAddTapTarget()
+                                    ShowAddTapTarget -> showAddTapTarget()
 
-                                    SHOW_SYNC_TAP_TARGET_EVENT -> showSyncTapTarget()
+                                    ShowSyncTapTarget -> showSyncTapTarget()
 
-                                    ROTATE_SYNC_ICON_EVENT -> rotateSyncIcon()
+                                    RotateSyncIcon -> rotateSyncIcon()
 
-                                    DISMISS_IMPORT_DIALOG_EVENT -> dismissImportDialog()
+                                    DismissImportDialog -> dismissImportDialog()
 
-                                    SYNC_SUCCEEDED_SNACKBAR_EVENT -> snackbar(binding!!.root, R.string.sync_succeeded_message)
+                                    SyncSucceededSnackbar -> snackbar(binding.root, R.string.sync_succeeded_message)
 
-                                    START_ITEM_ACTIVITY_EVENT -> startActivity<ItemActivity>()
+                                    StartItemActivity -> startActivity<ItemActivity>()
 
-                                    SYNC_FAILED_DUE_TO_NETWORK_DIALOG_EVENT -> syncFailedDueToNetworkDialog.show()
+                                    SyncFailedDueToNetworkDialog -> syncFailedDueToNetworkDialog.show()
 
-                                    SYNC_FAILED_DUE_TO_DATA_LAYER_DIALOG_EVENT -> syncFailedDueToDataLayerDialog.show()
+                                    SyncFailedDueToDataLayerDialog -> syncFailedDueToDataLayerDialog.show()
 
-                                    SYNC_FAILED_DUE_TO_GENERAL_ERROR_EVENT -> syncFailedDueToGeneralErrorDialog.show()
+                                    SyncFailedDueToGeneralError -> syncFailedDueToGeneralErrorDialog.show()
 
-                                    SHOW_IMPORT_FAILED_DIALOG_EVENT -> importFailedDueToGeneralErrorDialog.show()
-
+                                    ShowImportFailedDialog -> importFailedDueToGeneralErrorDialog.show()
                                 }
                             })
 
                             viewModel.getItemToEditEvents().observe(this, { uuid ->
                                 startActivity(intentFor<ItemActivity>(ITEM_UUID_KEY to uuid))
                             })
-
-                            binding!!.viewModel = viewModel
                         },
 
                         onError = {
@@ -166,7 +167,7 @@ class ItemsActivity : AppCompatActivity(), AnkoLogger {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding?.items?.adapter = null
+        binding.items.adapter = null
         disposables.clear()
     }
 

@@ -1,17 +1,16 @@
 package se.yverling.wearto.items
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.databinding.BindingAdapter
-import androidx.databinding.ObservableBoolean
-import androidx.databinding.ObservableField
+import android.widget.ArrayAdapter
 import androidx.annotation.VisibleForTesting
+import androidx.databinding.BindingAdapter
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.widget.ArrayAdapter
 import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -26,10 +25,18 @@ import org.jetbrains.anko.bundleOf
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
 import se.yverling.wearto.R
-import se.yverling.wearto.core.SingleLiveEvent
 import se.yverling.wearto.core.db.DatabaseClient
 import se.yverling.wearto.core.entities.Project
-import se.yverling.wearto.items.ItemsViewModel.Events.*
+import se.yverling.wearto.items.ItemsViewModel.Event.DismissImportDialog
+import se.yverling.wearto.items.ItemsViewModel.Event.RotateSyncIcon
+import se.yverling.wearto.items.ItemsViewModel.Event.ShowAddTapTarget
+import se.yverling.wearto.items.ItemsViewModel.Event.ShowImportFailedDialog
+import se.yverling.wearto.items.ItemsViewModel.Event.ShowSyncTapTarget
+import se.yverling.wearto.items.ItemsViewModel.Event.StartItemActivity
+import se.yverling.wearto.items.ItemsViewModel.Event.SyncFailedDueToDataLayerDialog
+import se.yverling.wearto.items.ItemsViewModel.Event.SyncFailedDueToGeneralError
+import se.yverling.wearto.items.ItemsViewModel.Event.SyncFailedDueToNetworkDialog
+import se.yverling.wearto.items.ItemsViewModel.Event.SyncSucceededSnackbar
 import se.yverling.wearto.items.edit.LATEST_SELECTED_PROJECT_PREFERENCES_KEY
 import se.yverling.wearto.sync.datalayer.DataLayerClient
 import se.yverling.wearto.sync.network.NetworkClient
@@ -42,6 +49,7 @@ import javax.inject.Inject
 // We'll only fetch the first 200 completed items
 @VisibleForTesting
 const val COMPLETED_ITEMS_OFFSET = 0
+
 @VisibleForTesting
 const val COMPLETED_ITEMS_LIMIT = 200
 
@@ -57,29 +65,26 @@ class ItemsViewModel @Inject constructor(
         private val analytics: FirebaseAnalytics
 ) : AndroidViewModel(app), AnkoLogger {
 
-    val hasItems = ObservableBoolean()
+    val hasItems = MutableLiveData<Boolean>()
 
-    val projectToBeImported = ObservableField<String>()
-    val includeCompletedItemsInImport = ObservableBoolean()
-    val includeRemovedItemsWhenImporting = ObservableBoolean()
-    val isImporting = ObservableBoolean()
+    val projectToBeImported = MutableLiveData<String>()
+    val includeCompletedItemsInImport = MutableLiveData<Boolean>(false)
+    val includeRemovedItemsWhenImporting = MutableLiveData<Boolean>()
+    val isImporting = MutableLiveData<Boolean>()
 
     val importItemsAdapter = ArrayAdapter<String>(getApplication() as Context, R.layout.spinner_list_header, arrayListOf())
 
-    internal val events = SingleLiveEvent<Events>()
+    internal val events = MutableLiveData<Event>()
 
     @VisibleForTesting
     internal var isSyncing = false
 
-
     private val disposables = CompositeDisposable()
 
-    private val itemToEditEvents = SingleLiveEvent<String>()
+    private val itemToEditEvents = MutableLiveData<String>()
 
     init {
-        viewAdapter.onItemClick {
-            itemToEditEvents.value = it.uuid
-        }
+        viewAdapter.init(itemToEditEvents)
 
         importItemsAdapter.setDropDownViewResource(R.layout.spinner_list_item)
 
@@ -91,11 +96,11 @@ class ItemsViewModel @Inject constructor(
                         onNext = {
                             viewAdapter.setItems(it)
                             if (it.isEmpty()) {
-                                events.value = SHOW_ADD_TAP_TARGET_EVENT
-                                hasItems.set(false)
+                                events.value = ShowAddTapTarget
+                                hasItems.value = false
                             } else {
-                                events.value = SHOW_SYNC_TAP_TARGET_EVENT
-                                hasItems.set(true)
+                                events.value = ShowSyncTapTarget
+                                hasItems.value = true
                             }
                         },
 
@@ -111,8 +116,7 @@ class ItemsViewModel @Inject constructor(
                 }
                 .flatMapMaybe {
                     Maybe.fromCallable<String> {
-                        val selectedProjectName
-                                = sharedPreferences.getString(LATEST_SELECTED_PROJECT_PREFERENCES_KEY, DEFAULT_PROJECT)
+                        val selectedProjectName = sharedPreferences.getString(LATEST_SELECTED_PROJECT_PREFERENCES_KEY, DEFAULT_PROJECT)
 
                         if (it.find { it.name == selectedProjectName } != null) {
                             selectedProjectName
@@ -125,7 +129,7 @@ class ItemsViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                         onSuccess = {
-                            projectToBeImported.set(it)
+                            projectToBeImported.value = it
                         },
 
                         onError = {
@@ -139,11 +143,11 @@ class ItemsViewModel @Inject constructor(
         disposables.clear()
     }
 
-    fun getItemToEditEvents(): SingleLiveEvent<String> = itemToEditEvents
+    fun getItemToEditEvents(): MutableLiveData<String> = itemToEditEvents
 
     internal fun sync() {
         isSyncing = true
-        events.value = ROTATE_SYNC_ICON_EVENT
+        events.value = RotateSyncIcon
         val disposable = networkClient.getProjects()
                 .doOnSuccess {
                     info("SYNC: New projects fetched")
@@ -176,7 +180,7 @@ class ItemsViewModel @Inject constructor(
                         onComplete = {
                             info("SYNC: Completed!")
                             analytics.logEvent("sync", bundleOf(Pair("result", "succeeded")))
-                            events.value = SYNC_SUCCEEDED_SNACKBAR_EVENT
+                            events.value = SyncSucceededSnackbar
                             isSyncing = false
                         },
 
@@ -185,13 +189,13 @@ class ItemsViewModel @Inject constructor(
 
                             if (it is UnknownHostException || it is SocketTimeoutException) {
                                 analytics.logEvent("sync", bundleOf(Pair("result", "failed due to network error")))
-                                events.value = SYNC_FAILED_DUE_TO_NETWORK_DIALOG_EVENT
+                                events.value = SyncFailedDueToNetworkDialog
                             } else if (it is DataLayerClient.DataLayerException) {
                                 analytics.logEvent("sync", bundleOf(Pair("result", "failed due to data layer error")))
-                                events.value = SYNC_FAILED_DUE_TO_DATA_LAYER_DIALOG_EVENT
+                                events.value = SyncFailedDueToDataLayerDialog
                             } else {
                                 analytics.logEvent("sync", bundleOf(Pair("result", "failed due to general error")))
-                                events.value = SYNC_FAILED_DUE_TO_GENERAL_ERROR_EVENT
+                                events.value = SyncFailedDueToGeneralError
                             }
                             isSyncing = false
                         }
@@ -200,20 +204,20 @@ class ItemsViewModel @Inject constructor(
     }
 
     fun importItems() {
-        events.value = DISMISS_IMPORT_DIALOG_EVENT
+        events.value = DismissImportDialog
 
-        isImporting.set(true)
+        isImporting.value = true
 
-        val disposable = databaseClient.findProjectByName(projectToBeImported.get()!!)
+        val disposable = databaseClient.findProjectByName(projectToBeImported.value!!)
                 .flatMap {
                     networkClient.getItems(it.id)
                 }
                 .mergeWith(
-                        if (!includeCompletedItemsInImport.get()) {
+                        if (!includeCompletedItemsInImport.value!!) {
                             // Pass an empty list so we don't emit events for completed items at this point
                             Single.just(ProjectDataResponse(listOf()))
                         } else {
-                            databaseClient.findProjectByName(projectToBeImported.get()!!).flatMap {
+                            databaseClient.findProjectByName(projectToBeImported.value!!).flatMap {
                                 networkClient.getCompletedItems(it.id, COMPLETED_ITEMS_OFFSET, COMPLETED_ITEMS_LIMIT)
                             }
                         }
@@ -223,9 +227,9 @@ class ItemsViewModel @Inject constructor(
                 }
                 .filter {
                     val duplicateItem = databaseClient.findByNameAndProjectId(it.content, it.projectId).blockingGet()
-                    duplicateItem == null || (includeRemovedItemsWhenImporting.get() && duplicateItem.deleted)
+                    duplicateItem == null || (includeRemovedItemsWhenImporting.value!! && duplicateItem.deleted)
                 }.flatMapCompletable {
-                    databaseClient.saveItem(it.content, projectToBeImported.get() as String)
+                    databaseClient.saveItem(it.content, projectToBeImported.value as String)
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -233,25 +237,25 @@ class ItemsViewModel @Inject constructor(
                         onComplete = {
                             info("IMPORT: Items imported")
                             analytics.logEvent("import", bundleOf(Pair("result", "succeeded")))
-                            isImporting.set(false)
+                            isImporting.value = false
                         },
 
                         onError = {
                             error(it)
                             analytics.logEvent("import", bundleOf(Pair("result", "failed")))
-                            isImporting.set(false)
-                            events.value = SHOW_IMPORT_FAILED_DIALOG_EVENT
+                            isImporting.value = false
+                            events.value = ShowImportFailedDialog
                         }
                 )
         disposables.add(disposable)
     }
 
     fun cancelItemImport() {
-        events.value = DISMISS_IMPORT_DIALOG_EVENT
+        events.value = DismissImportDialog
     }
 
     fun addItem() {
-        events.value = START_ITEM_ACTIVITY_EVENT
+        events.value = StartItemActivity
     }
 
     internal fun clear() {
@@ -267,21 +271,21 @@ class ItemsViewModel @Inject constructor(
         return ArrayList(listOf(DEFAULT_PROJECT) + names)
     }
 
-    enum class Events {
-        START_ITEM_ACTIVITY_EVENT,
+    sealed class Event {
+        object StartItemActivity : Event()
 
-        SHOW_ADD_TAP_TARGET_EVENT,
-        SHOW_SYNC_TAP_TARGET_EVENT,
+        object ShowAddTapTarget : Event()
+        object ShowSyncTapTarget : Event()
 
-        ROTATE_SYNC_ICON_EVENT,
+        object RotateSyncIcon : Event()
 
-        SYNC_SUCCEEDED_SNACKBAR_EVENT,
-        SYNC_FAILED_DUE_TO_NETWORK_DIALOG_EVENT,
-        SYNC_FAILED_DUE_TO_DATA_LAYER_DIALOG_EVENT,
-        SYNC_FAILED_DUE_TO_GENERAL_ERROR_EVENT,
+        object SyncSucceededSnackbar : Event()
+        object SyncFailedDueToNetworkDialog : Event()
+        object SyncFailedDueToDataLayerDialog : Event()
+        object SyncFailedDueToGeneralError : Event()
 
-        DISMISS_IMPORT_DIALOG_EVENT,
-        SHOW_IMPORT_FAILED_DIALOG_EVENT,
+        object DismissImportDialog : Event()
+        object ShowImportFailedDialog : Event()
     }
 }
 

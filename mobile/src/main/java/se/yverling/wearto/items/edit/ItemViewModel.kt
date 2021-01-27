@@ -1,18 +1,18 @@
 package se.yverling.wearto.items.edit
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.databinding.BindingAdapter
-import androidx.databinding.Observable
-import androidx.databinding.ObservableField
-import androidx.annotation.StringRes
-import com.google.android.material.textfield.TextInputLayout
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.TextView
+import androidx.annotation.StringRes
+import androidx.databinding.BindingAdapter
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.Completable
 import io.reactivex.Maybe
@@ -24,11 +24,12 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.bundleOf
 import org.jetbrains.anko.error
 import se.yverling.wearto.R
-import se.yverling.wearto.core.SingleLiveEvent
 import se.yverling.wearto.core.WearToApplication
 import se.yverling.wearto.core.db.DatabaseClient
 import se.yverling.wearto.core.entities.Project
-import se.yverling.wearto.items.edit.ItemViewModel.Events.*
+import se.yverling.wearto.items.edit.ItemViewModel.Event.FinishActivity
+import se.yverling.wearto.items.edit.ItemViewModel.Event.HideKeyboard
+import se.yverling.wearto.items.edit.ItemViewModel.Event.ShowSaveFailedDialog
 import javax.inject.Inject
 
 internal const val LATEST_SELECTED_PROJECT_PREFERENCES_KEY = "LATEST_SELECTED_PROJECT"
@@ -40,11 +41,11 @@ class ItemViewModel @Inject constructor(
         private val analytics: FirebaseAnalytics
 ) : AndroidViewModel(app), AnkoLogger {
 
-    val uuid = ObservableField<String>()
-    val name = ObservableField<String>()
-    val projectName = ObservableField<String>()
-    val itemErrorMessage = ObservableField("")
-    internal val events = SingleLiveEvent<Events>()
+    val uuid = MutableLiveData<String>()
+    val name = MutableLiveData<String>()
+    val projectName = MutableLiveData<String>()
+    val itemErrorMessage = MutableLiveData("")
+    internal val events = MutableLiveData<Event>()
 
     private val disposables = CompositeDisposable()
 
@@ -59,8 +60,7 @@ class ItemViewModel @Inject constructor(
                 }
                 .flatMapMaybe {
                     Maybe.fromCallable<String> {
-                        val selectedProjectName
-                                = sharedPreferences.getString(LATEST_SELECTED_PROJECT_PREFERENCES_KEY, "Inbox")
+                        val selectedProjectName = sharedPreferences.getString(LATEST_SELECTED_PROJECT_PREFERENCES_KEY, "Inbox")
 
                         if (it.find { it.name == selectedProjectName } != null) {
                             selectedProjectName
@@ -73,7 +73,7 @@ class ItemViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                         onSuccess = {
-                            projectName.set(it)
+                            projectName.value = it
                         },
 
                         onError = {
@@ -82,13 +82,12 @@ class ItemViewModel @Inject constructor(
                 )
         disposables.add(disposable)
 
-        name.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
-            override fun onPropertyChanged(sender: Observable, propertyId: Int) {
-                if (!name.get().isNullOrBlank()) {
-                    itemErrorMessage.set("")
-                }
+        // TODO Hmm...
+        Transformations.map(name) {
+            if (!name.value.isNullOrBlank()) {
+                itemErrorMessage.value = ""
             }
-        })
+        }
     }
 
     override fun onCleared() {
@@ -101,9 +100,9 @@ class ItemViewModel @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                         onSuccess = {
-                            this.uuid.set(it.item.uuid)
-                            name.set(it.item.name)
-                            projectName.set(it.project.name)
+                            this.uuid.value = it.item.uuid
+                            name.value = it.item.name
+                            projectName.value = it.project.name
                         },
 
                         onError = {
@@ -114,35 +113,35 @@ class ItemViewModel @Inject constructor(
     }
 
     fun save() {
-        if (uuid.get() != null) {
-            val disposable = databaseClient.updateItem(uuid.get()!!, name.get()!!, projectName.get()!!)
+        if (uuid.value != null) {
+            val disposable = databaseClient.updateItem(uuid.value!!, name.value!!, projectName.value!!)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                             onComplete = {
                                 analytics.logEvent("update_item", bundleOf(Pair("result", "succeeded")))
-                                events.value = FINISH_ACTIVITY_EVENT
+                                events.value = FinishActivity
                             },
 
                             onError = {
                                 analytics.logEvent("update_item", bundleOf(Pair("result", "failed")))
-                                events.value = SHOW_SAVE_FAILED_DIALOG_EVENT
+                                events.value = ShowSaveFailedDialog
                             }
                     )
             disposables.add(disposable)
         } else {
-            val disposable = databaseClient.saveItem(name.get()!!, projectName.get()!!)
+            val disposable = databaseClient.saveItem(name.value!!, projectName.value!!)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(
                             onComplete = {
                                 analytics.logEvent("save_item", bundleOf(Pair("result", "succeeded")))
-                                events.value = FINISH_ACTIVITY_EVENT
+                                events.value = FinishActivity
                             },
 
                             onError = {
                                 analytics.logEvent("save_item", bundleOf(Pair("result", "failed")))
-                                events.value = SHOW_SAVE_FAILED_DIALOG_EVENT
+                                events.value = ShowSaveFailedDialog
                             }
                     )
             disposables.add(disposable)
@@ -151,13 +150,13 @@ class ItemViewModel @Inject constructor(
     }
 
     fun delete() {
-        val disposable = databaseClient.deleteItem(uuid.get()!!)
+        val disposable = databaseClient.deleteItem(uuid.value!!)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                         onComplete = {
                             analytics.logEvent("delete_item", bundleOf(Pair("result", "succeeded")))
-                            events.value = FINISH_ACTIVITY_EVENT
+                            events.value = FinishActivity
                         },
 
                         onError = {
@@ -169,11 +168,17 @@ class ItemViewModel @Inject constructor(
     }
 
     fun isValid(): Boolean {
-        return name.get()?.isNotBlank() ?: false
+        return name.value?.isNotBlank() ?: false
     }
 
     fun showValidationMessage(message: String) {
-        itemErrorMessage.set(message)
+        itemErrorMessage.value = message
+    }
+
+    fun onNameChanged() {
+        if (!name.value.isNullOrBlank()) {
+            itemErrorMessage.value = ""
+        }
     }
 
     fun editorActionListener(): TextView.OnEditorActionListener {
@@ -181,7 +186,7 @@ class ItemViewModel @Inject constructor(
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (!isValid()) {
                     showValidationMessage(getApplication<WearToApplication>().getString(R.string.item_name_is_required_label))
-                    events.value = HIDE_KEYBOARD_EVENT
+                    events.value = HideKeyboard
                 } else {
                     save()
                 }
@@ -198,7 +203,7 @@ class ItemViewModel @Inject constructor(
     private fun saveLastSelectedProject() {
         val disposable = Completable.fromRunnable {
             val editor = sharedPreferences.edit()
-            editor.putString(LATEST_SELECTED_PROJECT_PREFERENCES_KEY, projectName.get()!!)
+            editor.putString(LATEST_SELECTED_PROJECT_PREFERENCES_KEY, projectName.value!!)
             editor.apply()
         }
                 .subscribeBy(
@@ -209,11 +214,12 @@ class ItemViewModel @Inject constructor(
         disposables.add(disposable)
     }
 
-    enum class Events {
-        FINISH_ACTIVITY_EVENT,
-        HIDE_KEYBOARD_EVENT,
-        SHOW_SAVE_FAILED_DIALOG_EVENT
+    sealed class Event {
+        object FinishActivity : Event()
+        object HideKeyboard : Event()
+        object ShowSaveFailedDialog : Event()
     }
+
 }
 
 @BindingAdapter("errorMessage")
