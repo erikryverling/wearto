@@ -1,42 +1,46 @@
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
-        <variable name="viewModel" type="se.yverling.wearto.items.ItemsViewModel" />
+
+        <variable
+                name="viewModel"
+                type="se.yverling.wearto.items.ItemsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/empty_screen_text"
-            android:text="@string/no_items_label"
-            android:visibility="@{viewModel.hasItems ? View.GONE : View.VISIBLE}"
-            android:drawableTop="@drawable/ic_sync_secondary_48dp"
-            android:drawablePadding="@dimen/empty_screen_padding"
-            android:textAppearance="@android:style/TextAppearance.Material.Body1"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+                android:id="@+id/empty_screen_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/empty_screen_padding"
+                android:text="@string/no_items_label"
+                android:textAppearance="@android:style/TextAppearance.Material.Body1"
+                android:visibility="@{viewModel.hasItems ? View.GONE : View.VISIBLE}"
+                app:drawableStartCompat="@drawable/ic_sync_secondary_48dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.wear.widget.WearableRecyclerView
-            android:id="@+id/items"
-            tools:listitem="@layout/items_list_item"
-            app:layoutManager="@{viewModel.layoutManager}"
-            app:viewAdapter="@{viewModel.viewAdapter}"
-            android:visibility="@{viewModel.hasItems ? View.VISIBLE : View.GONE}"
-            android:scrollbars="vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="0dp"
-            android:layout_height="0dp"/>
+                android:id="@+id/items"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scrollbars="vertical"
+                android:visibility="@{viewModel.hasItems ? View.VISIBLE : View.GONE}"
+                app:layoutManager="@{viewModel.layoutManager}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:viewAdapter="@{viewModel.viewAdapter}"
+                tools:listitem="@layout/items_list_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,23 +1,26 @@
-<layout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="viewModel" type="se.yverling.wearto.items.ItemsListItemViewModel"/>
+
+        <variable
+                name="viewModel"
+                type="se.yverling.wearto.items.ItemsListItemViewModel" />
     </data>
 
     <TextView
             android:id="@+id/item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/list_default_padding"
+            android:layout_marginBottom="@dimen/space_default"
+            android:drawablePadding="@dimen/space_default"
+            android:gravity="center_vertical"
             android:onClick="@{() -> viewModel.onClick()}"
             android:text="@{viewModel.text}"
             app:compoundDrawableTintList="@{viewModel.drawableColor}"
-            tools:text="Milk"
             android:drawableStart="@drawable/item_icon"
-            android:drawablePadding="@dimen/space_default"
-            android:gravity="center_vertical"
-            android:layout_marginStart="@dimen/list_default_padding"
-            android:layout_marginBottom="@dimen/space_default"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            tools:text="Milk"
+            tools:ignore="UseCompatTextViewDrawableXml" />
 </layout>

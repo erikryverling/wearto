@@ -11,6 +11,7 @@ import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.WearableListenerService
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.AnkoLogger
@@ -33,9 +34,16 @@ class DataLayerListenerService : WearableListenerService(), AnkoLogger {
     @Inject
     internal lateinit var database: AppDatabase
 
+    private val disposables = CompositeDisposable()
+
     override fun onCreate() {
         WearToApplication.appComponent.inject(this)
         super.onCreate()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposables.clear()
     }
 
     override fun onDataChanged(events: DataEventBuffer) {
@@ -61,7 +69,7 @@ class DataLayerListenerService : WearableListenerService(), AnkoLogger {
             )
         }
 
-        Completable.fromCallable {
+        val disposable = Completable.fromCallable {
             database.itemDao().deleteAll()
             database.itemDao().saveAll(items)
         }
@@ -83,5 +91,6 @@ class DataLayerListenerService : WearableListenerService(), AnkoLogger {
                             error(it)
                         }
                 )
+        disposables.add(disposable)
     }
 }

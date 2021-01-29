@@ -37,6 +37,7 @@ class CharsActivity : FragmentActivity(), AnkoLogger {
         })
 
         val binding: CharsActivityBinding = DataBindingUtil.setContentView(this, R.layout.chars_activity)!!
+        binding.lifecycleOwner = this
 
         binding.viewModel = viewModel
     }

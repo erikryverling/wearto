@@ -58,15 +58,18 @@ class ItemsActivity : FragmentActivity(), AnkoLogger {
             when (it) {
                 is ShowItemSelectionFailed -> showErrorView()
                 is ShowConfirmationAndFinish -> showConfirmationViewAndFinish(it.item)
+                is Event.SendItem -> viewModel.sendItem(it.item)
             }
         })
 
         val binding: ItemsActivityBinding = DataBindingUtil.setContentView(this, R.layout.items_activity)!!
+        binding.lifecycleOwner = this
 
         binding.viewModel = viewModel
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             FINISH_ACTIVITY -> finish()
         }

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.annotation.VisibleForTesting
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.wear.widget.WearableLinearLayoutManager
 import androidx.wear.widget.WearableRecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -12,7 +13,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
-import se.yverling.wearto.core.SingleLiveEvent
 import se.yverling.wearto.core.db.AppDatabase
 import javax.inject.Inject
 
@@ -21,7 +21,7 @@ class CharsViewModel @Inject constructor(
         dataBase: AppDatabase,
         val viewAdapter: CharsRecyclerViewAdapter
 ) : AndroidViewModel(app), AnkoLogger {
-    internal val events = SingleLiveEvent<Event>()
+    internal val events = MutableLiveData<Event>()
 
     private val disposables = CompositeDisposable()
 

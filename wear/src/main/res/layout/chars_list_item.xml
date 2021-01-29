@@ -19,5 +19,6 @@
             android:gravity="center_vertical"
             android:onClick="@{() -> viewModel.onClick()}"
             android:text="@{String.valueOf(viewModel.getChar())}"
+            tools:ignore="UseCompatTextViewDrawableXml"
             tools:text="A" />
 </layout>

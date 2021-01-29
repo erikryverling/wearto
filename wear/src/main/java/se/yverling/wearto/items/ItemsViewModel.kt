@@ -1,10 +1,9 @@
 package se.yverling.wearto.items
 
 import android.app.Application
-import androidx.annotation.VisibleForTesting
 import androidx.databinding.BindingAdapter
-import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.wear.widget.WearableLinearLayoutManager
 import androidx.wear.widget.WearableRecyclerView
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -14,7 +13,6 @@ import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.error
 import org.jetbrains.anko.info
-import se.yverling.wearto.core.SingleLiveEvent
 import se.yverling.wearto.core.db.AppDatabase
 import se.yverling.wearto.core.entities.Item
 import se.yverling.wearto.items.Event.ShowConfirmationAndFinish
@@ -28,17 +26,14 @@ class ItemsViewModel constructor(
         val viewAdapter: ItemsRecyclerViewAdapter,
         private val char: Char?
 ) : AndroidViewModel(app), AnkoLogger {
-    internal val events = SingleLiveEvent<Event>()
+    internal val events = MutableLiveData<Event>()
 
-    val hasItems = ObservableBoolean()
+    val hasItems = MutableLiveData(false)
 
     private val disposables = CompositeDisposable()
 
     init {
-        viewAdapter.onItemClick { item ->
-            info("SELECTED ITEM: Item name: ${item.name}")
-            sendItem(item)
-        }
+        viewAdapter.init(events)
 
         val disposable = dataBase.itemDao().findAll()
                 .subscribeOn(Schedulers.io())
@@ -53,7 +48,7 @@ class ItemsViewModel constructor(
                             }
 
                             viewAdapter.setItems(finalList)
-                            hasItems.set(finalList.isNotEmpty())
+                            hasItems.value = finalList.isNotEmpty()
                         },
 
                         onError = {
@@ -69,10 +64,9 @@ class ItemsViewModel constructor(
 
     fun layoutManager() = WearableLinearLayoutManager(getApplication())
 
-    @VisibleForTesting
     internal fun sendItem(item: Item) {
         info("SELECTED ITEM: Item name: ${item.name}")
-        dataLayerClient.sendSelectedItem(item)
+        val disposable = dataLayerClient.sendSelectedItem(item)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
@@ -86,12 +80,14 @@ class ItemsViewModel constructor(
                             events.value = ShowItemSelectionFailed
                         }
                 )
+        disposables.add(disposable)
     }
 }
 
 sealed class Event {
     object ShowItemSelectionFailed : Event()
     data class ShowConfirmationAndFinish(val item: Item) : Event()
+    data class SendItem(val item: Item) : Event()
 }
 
 @BindingAdapter("viewAdapter")
