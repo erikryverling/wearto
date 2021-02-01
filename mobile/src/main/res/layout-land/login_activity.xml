@@ -107,7 +107,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/space_default"
-                style="@style/WearTo.Button"
                 android:enabled="@{!TextUtils.isEmpty(viewModel.accessToken) &amp;&amp; !viewModel.isLoggingIn}"
                 android:onClick="@{() -> viewModel.login()}"
                 android:text="@{viewModel.isLoggingIn ? @string/empty_string : @string/login_button}"

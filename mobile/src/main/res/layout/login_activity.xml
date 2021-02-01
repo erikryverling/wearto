@@ -23,7 +23,7 @@
             <TextView
                     android:id="@+id/headline"
                     android:text="@string/login_heading"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     app:autoSizeTextType="uniform"
                     android:gravity="center"
                     app:layout_constraintTop_toTopOf="parent"
@@ -120,7 +120,6 @@
                     android:enabled="@{!TextUtils.isEmpty(viewModel.accessToken) &amp;&amp; !viewModel.isLoggingIn}"
                     android:text="@{viewModel.isLoggingIn ? @string/empty_string : @string/login_button}"
                     tools:text="Login"
-                    style="@style/WearTo.Button"
                     android:layout_marginTop="@dimen/space_larger"
                     app:layout_constraintTop_toBottomOf="@+id/step_2_description"
                     app:layout_constraintStart_toStartOf="parent"

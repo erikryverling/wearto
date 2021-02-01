@@ -38,7 +38,7 @@
                 app:spinnerAdapter="@{viewModel.importItemsAdapter}"
                 tools:listitem="@layout/spinner_list_header" />
 
-        <CheckBox
+        <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/include_completed_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/projects_spinner" />
 
-        <CheckBox
+        <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/include_removed_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,7 +64,6 @@
 
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/import_button"
-                style="@style/WearTo.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_larger"
@@ -77,7 +76,7 @@
 
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/cancel_button"
-                style="@style/WearTo.Button.TextButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="@{() -> viewModel.cancelItemImport()}"
