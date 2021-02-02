@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.widget.ArrayAdapter
 import androidx.annotation.VisibleForTesting
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -68,8 +69,8 @@ class ItemsViewModel @Inject constructor(
     val hasItems = MutableLiveData<Boolean>()
 
     val projectToBeImported = MutableLiveData<String>()
-    val includeCompletedItemsInImport = MutableLiveData<Boolean>(false)
-    val includeRemovedItemsWhenImporting = MutableLiveData<Boolean>()
+    val includeCompletedItemsInImport = MutableLiveData(false)
+    val includeRemovedItemsWhenImporting = MutableLiveData(false)
     val isImporting = MutableLiveData<Boolean>()
 
     val importItemsAdapter = ArrayAdapter<String>(getApplication() as Context, R.layout.spinner_list_header, arrayListOf())
@@ -262,7 +263,9 @@ class ItemsViewModel @Inject constructor(
         disposables.clear()
     }
 
-    fun itemDecoration() = DividerItemDecoration(app, LinearLayoutManager.VERTICAL)
+    fun itemDecoration() = DividerItemDecoration(app, LinearLayoutManager.VERTICAL).apply {
+        setDrawable(ContextCompat.getDrawable(app, R.drawable.line)!!)
+    }
 
     fun layoutManager() = LinearLayoutManager(app)
 
