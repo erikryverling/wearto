@@ -1,6 +1,0 @@
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <!--suppress AndroidLintUnusedResources -->
-    <string-array name="android_wear_capabilities">
-        <item>wearto_mobile_app</item>
-    </string-array>
-</resources>
