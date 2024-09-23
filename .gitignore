@@ -9,10 +9,7 @@
 *.class
 
 # Generated files
-bin/
 gen/
-out/
-release/
 
 # Gradle files
 .gradle/
@@ -42,3 +39,6 @@ captures/
 
 # Google Services files
 google-services.json
+
+# Kotlin files
+.kotlin/
