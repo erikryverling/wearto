@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">WearTo</string>
+    <string name="ping_button_label">Send ping</string>
+</resources>
