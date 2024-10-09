@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">WearTo</string>
+    <string name="todoist_link">https://app.todoist.com/app/settings/integrations/developer</string>
+</resources>
