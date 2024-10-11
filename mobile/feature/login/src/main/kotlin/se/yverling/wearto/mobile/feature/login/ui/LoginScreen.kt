@@ -1,10 +1,9 @@
-package se.yverling.wearto.mobile.feature.login
+package se.yverling.wearto.mobile.feature.login.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,25 +38,24 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import org.jetbrains.annotations.TestOnly
+import androidx.hilt.navigation.compose.hiltViewModel
 import se.yverling.wearto.mobile.common.design.theme.DefaultSpace
 import se.yverling.wearto.mobile.common.design.theme.LargeSpace
 import se.yverling.wearto.mobile.common.design.theme.VeryLargeSpace
 import se.yverling.wearto.mobile.common.design.theme.WearToTheme
+import se.yverling.wearto.mobile.feature.login.R
 import se.yverling.wearto.mobile.feature.login.theme.ItemIconSize
 import se.yverling.wearto.mobile.feature.login.theme.ItemOneDescriptionStartPadding
 import se.yverling.wearto.mobile.feature.login.theme.ItemOneTopPadding
 import se.yverling.wearto.mobile.feature.login.theme.ItemTwoTopPadding
-import timber.log.Timber
-import javax.security.auth.login.LoginException
 
 const val LoginRoute = "LoginRoute"
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = hiltViewModel(),
     onOpenUrl: () -> Unit,
-    onLogin: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -107,8 +104,13 @@ fun LoginScreen(
             }
         }
 
+        // TODO Validate input and prevent storing null-values
+        var inputValue by remember { mutableStateOf("") }
+
         Row(
-            Modifier.fillMaxWidth().padding(bottom = VeryLargeSpace),
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = VeryLargeSpace),
             horizontalArrangement = Arrangement.Start
         ) {
             Icon(
@@ -120,7 +122,6 @@ fun LoginScreen(
                 contentDescription = stringResource(R.string.item_one_icon_content_description),
             )
 
-            var inputValue by remember { mutableStateOf("") }
             var showPassword by remember { mutableStateOf(value = false) }
             val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -133,7 +134,7 @@ fun LoginScreen(
                 keyboardActions = KeyboardActions(
                     onDone = {
                         keyboardController?.hide()
-                        onLogin()
+                        viewModel.login(inputValue)
                     }
                 ),
                 value = inputValue,
@@ -164,7 +165,9 @@ fun LoginScreen(
 
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = onLogin
+            onClick = {
+                viewModel.login(inputValue)
+            }
         ) {
             Icon(
                 modifier = Modifier.padding(end = DefaultSpace),
@@ -193,7 +196,6 @@ private fun LoginScreenPreview() {
         Surface {
             LoginScreen(
                 onOpenUrl = {},
-                onLogin = {}
             )
         }
     }

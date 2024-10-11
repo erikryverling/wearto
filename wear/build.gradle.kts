@@ -4,6 +4,18 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
+dependencies {
+    implementation(platform(libs.compose.bom))
+    implementation(libs.bundles.compose.wear)
+
+    implementation(libs.timber)
+
+    implementation(libs.playServices.wearable)
+
+    implementation(libs.horologist.datalayer.watch)
+    implementation(libs.horologist.datalayer.phone)
+}
+
 android {
     namespace = "se.yverling.wearto.wear"
 
@@ -32,16 +44,4 @@ android {
         compose = true
         buildConfig = true
     }
-}
-
-dependencies {
-    implementation(platform(libs.compose.bom))
-    implementation(libs.bundles.compose.wear)
-
-    implementation(libs.timber)
-
-    implementation(libs.playServices.wearable)
-
-    implementation(libs.horologist.datalayer.watch)
-    implementation(libs.horologist.datalayer.phone)
 }

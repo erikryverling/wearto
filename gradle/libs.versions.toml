@@ -2,60 +2,82 @@
 
 # Global
 kotlin = "2.0.20"
+hilt = "2.52"
 
 # Plugins
 android = "8.6.1"
 # Need to be insync with Gradle plugin
 kotlin-dsl-plugin = "4.5.0"
+ksp = "2.0.20-1.0.25"
+hilt-navigation-compose = "1.2.0"
 versions-plugin = "0.51.0"
 
 # Libraries
 compose-bom = "2024.09.03"
-
 compose-activity = "1.9.2"
 compose-lifecycle = "2.8.6"
 compose-navigation = "2.8.2"
-
 wear-compose-material3 = "1.0.0-alpha26"
 wear-tooling-preview = "1.0.0"
 
-playServices-wearable = "18.2.0"
-
 timber = "5.0.1"
-
+kotlinx-serialization = "1.7.3"
+datastore = "1.1.1"
+playServices-wearable = "18.2.0"
 horologist-datalayer = "0.6.20"
 
+junit = "5.11.2"
+mockk = "1.13.12"
+kotest-assertions = "5.9.1"
+coroutinesTest = "1.9.0"
+turbine = "1.1.0"
+
 [libraries]
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
+
 # https://developer.android.com/develop/ui/compose/bom/bom-mapping
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 compose-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-icons = { module = "androidx.compose.material:material-icons-extended" }
 compose-material = { module = "androidx.compose.material3:material3" }
-
 compose-activity = { module = "androidx.activity:activity-compose", version.ref = "compose-activity" }
 compose-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
 compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose-lifecycle" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
-
 wear-compose-material = { module = "androidx.wear.compose:compose-material3", version.ref = "wear-compose-material3" }
 wear-tooling-preview = { module = "androidx.wear:wear-tooling-preview", version.ref = "wear-tooling-preview" }
 
-playServices-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServices-wearable" }
-
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+playServices-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServices-wearable" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 horologist-datalayer-watch = { module = "com.google.android.horologist:horologist-datalayer-watch", version.ref = "horologist-datalayer" }
 horologist-datalayer-phone = { module = "com.google.android.horologist:horologist-datalayer-phone", version.ref = "horologist-datalayer" }
+
+unitTest-junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+unitTest-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+unitTest-coroutines = { module = " org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+unitTest-kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-assertions" }
+unitTest-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android" }
 android-library = { id = "com.android.library", version.ref = "android" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlin-dsl-plugin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions-plugin" }
 
 [bundles]
+hilt = [
+    "hilt-android",
+    "hilt-android-compiler",
+]
 compose-mobile = [
     "compose-activity",
     "compose-material",
@@ -65,7 +87,6 @@ compose-mobile = [
     "compose-icons",
     "compose-navigation",
 ]
-
 compose-wear = [
     "compose-activity",
     "compose-material",
@@ -75,4 +96,11 @@ compose-wear = [
     "compose-icons",
     "wear-compose-material",
     "wear-tooling-preview",
+]
+unitTest = [
+    "unitTest-junit",
+    "unitTest-mockk",
+    "unitTest-kotest-assertions",
+    "unitTest-coroutines",
+    "unitTest-turbine",
 ]
