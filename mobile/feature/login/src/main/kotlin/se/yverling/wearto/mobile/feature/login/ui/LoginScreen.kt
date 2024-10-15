@@ -1,6 +1,7 @@
 package se.yverling.wearto.mobile.feature.login.ui
 
 import android.content.res.Configuration
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +41,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import se.yverling.wearto.mobile.common.design.theme.DefaultSpace
 import se.yverling.wearto.mobile.common.design.theme.LargeSpace
 import se.yverling.wearto.mobile.common.design.theme.VeryLargeSpace
@@ -49,13 +53,38 @@ import se.yverling.wearto.mobile.feature.login.theme.ItemOneDescriptionStartPadd
 import se.yverling.wearto.mobile.feature.login.theme.ItemOneTopPadding
 import se.yverling.wearto.mobile.feature.login.theme.ItemTwoTopPadding
 
-const val LoginRoute = "LoginRoute"
+@Serializable
+data class LoginRoute(@StringRes val errorMessage: Int? = null)
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
+    errorMessage: Int? = null,
     onOpenUrl: () -> Unit,
+    onLogin: () -> Unit,
+) {
+    val scope = rememberCoroutineScope()
+
+    MainContent(
+        onLogin = { token ->
+            scope.launch {
+                viewModel.setToken(token)
+                onLogin()
+            }
+        },
+        onOpenUrl = onOpenUrl,
+        modifier = modifier,
+        errorMessage = errorMessage,
+    )
+}
+
+@Composable
+fun MainContent(
+    onLogin: (String) -> Unit,
+    onOpenUrl: () -> Unit,
+    modifier: Modifier = Modifier,
+    errorMessage: Int? = null,
 ) {
     Column(
         modifier = modifier
@@ -104,7 +133,6 @@ fun LoginScreen(
             }
         }
 
-        // TODO Validate input and prevent storing null-values
         var inputValue by remember { mutableStateOf("") }
 
         Row(
@@ -131,17 +159,21 @@ fun LoginScreen(
                     keyboardType = KeyboardType.Password,
                     imeAction = ImeAction.Done
                 ),
+                isError = errorMessage != null,
+                supportingText = {
+                    if (errorMessage != null) Text(stringResource(errorMessage))
+                    else Text(stringResource(R.string.input_field_supporting_text))
+                },
                 keyboardActions = KeyboardActions(
                     onDone = {
                         keyboardController?.hide()
-                        viewModel.login(inputValue)
+                        onLogin(inputValue)
                     }
                 ),
                 value = inputValue,
                 singleLine = true,
                 label = { Text(stringResource(R.string.input_field_label)) },
                 onValueChange = { inputValue = it },
-                supportingText = { Text(stringResource(R.string.input_field_supporting_text)) },
                 trailingIcon = {
                     if (showPassword) {
                         IconButton(onClick = { showPassword = false }) {
@@ -166,7 +198,7 @@ fun LoginScreen(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                viewModel.login(inputValue)
+                onLogin(inputValue)
             }
         ) {
             Icon(
@@ -194,7 +226,9 @@ fun LoginScreen(
 private fun LoginScreenPreview() {
     WearToTheme {
         Surface {
-            LoginScreen(
+            MainContent(
+                errorMessage = R.string.login_error,
+                onLogin = {},
                 onOpenUrl = {},
             )
         }

@@ -11,12 +11,14 @@ plugins {
 dependencies {
     implementation(project(":mobile:common:design-system"))
     implementation(project(":mobile:feature:login"))
+    implementation(project(":mobile:feature:settings"))
 
     ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
 
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose.mobile)
+    implementation(libs.hilt.navigation)
 
     implementation(libs.timber)
     implementation(libs.playServices.wearable)

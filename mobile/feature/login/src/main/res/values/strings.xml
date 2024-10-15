@@ -12,4 +12,6 @@
     <string name="input_field_supporting_text">Paste the link then tap Login</string>
 
     <string name="login_button_icon_content_description">Login button icon</string>
+
+    <string name="login_error">Could not log in. Check your API key and try again.</string>
 </resources>

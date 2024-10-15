@@ -1,23 +1,22 @@
 [versions]
 
 # Global
-kotlin = "2.0.20"
+kotlin = "2.0.21"
 hilt = "2.52"
 
 # Plugins
-android = "8.6.1"
-# Need to be insync with Gradle plugin
-kotlin-dsl-plugin = "4.5.0"
-ksp = "2.0.20-1.0.25"
+android = "8.7.1"
+kotlin-dsl-plugin = "5.1.2"
+ksp = "2.0.21-1.0.25"
 hilt-navigation-compose = "1.2.0"
 versions-plugin = "0.51.0"
 
 # Libraries
-compose-bom = "2024.09.03"
-compose-activity = "1.9.2"
+compose-bom = "2024.10.00"
+compose-activity = "1.9.3"
 compose-lifecycle = "2.8.6"
-compose-navigation = "2.8.2"
-wear-compose-material3 = "1.0.0-alpha26"
+compose-navigation = "2.8.3"
+wear-compose-material3 = "1.0.0-alpha27"
 wear-tooling-preview = "1.0.0"
 
 timber = "5.0.1"
@@ -26,11 +25,13 @@ datastore = "1.1.1"
 playServices-wearable = "18.2.0"
 horologist-datalayer = "0.6.20"
 
-junit = "5.11.2"
-mockk = "1.13.12"
+ktor = "3.0.0"
+
+junit = "5.11.3"
+mockk = "1.13.13"
 kotest-assertions = "5.9.1"
 coroutinesTest = "1.9.0"
-turbine = "1.1.0"
+turbine = "1.2.0"
 
 [libraries]
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
@@ -57,6 +58,12 @@ kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-
 horologist-datalayer-watch = { module = "com.google.android.horologist:horologist-datalayer-watch", version.ref = "horologist-datalayer" }
 horologist-datalayer-phone = { module = "com.google.android.horologist:horologist-datalayer-phone", version.ref = "horologist-datalayer" }
 
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
 unitTest-junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 unitTest-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 unitTest-coroutines = { module = " org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTest" }
@@ -71,6 +78,7 @@ kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlin-dsl-pl
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions-plugin" }
 
 [bundles]
@@ -96,6 +104,13 @@ compose-wear = [
     "compose-icons",
     "wear-compose-material",
     "wear-tooling-preview",
+]
+ktor = [
+    "ktor-client-core",
+    "ktor-client-cio",
+    "ktor-client-auth",
+    "ktor-client-content-negotiation",
+    "ktor-serialization-kotlinx-json",
 ]
 unitTest = [
     "unitTest-junit",

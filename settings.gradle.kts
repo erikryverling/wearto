@@ -5,8 +5,11 @@ include(
     ":test:utils",
     ":mobile:app",
     ":mobile:common:design-system",
-    ":mobile:data:auth",
+    ":mobile:common:network",
+    ":mobile:data:settings",
+    ":mobile:data:token",
     ":mobile:feature:login",
+    ":mobile:feature:settings",
     ":wear",
 )
 
