@@ -10,6 +10,7 @@ plugins {
 
 dependencies {
     implementation(project(":mobile:common:design-system"))
+    implementation(project(":mobile:feature:items"))
     implementation(project(":mobile:feature:login"))
     implementation(project(":mobile:feature:settings"))
 

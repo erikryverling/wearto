@@ -5,18 +5,18 @@ kotlin = "2.0.21"
 hilt = "2.52"
 
 # Plugins
-android = "8.7.1"
+android = "8.7.2"
 kotlin-dsl-plugin = "5.1.2"
-ksp = "2.0.21-1.0.25"
+ksp = "2.0.21-1.0.26"
 hilt-navigation-compose = "1.2.0"
 versions-plugin = "0.51.0"
 
 # Libraries
-compose-bom = "2024.10.00"
+compose-bom = "2024.10.01"
 compose-activity = "1.9.3"
-compose-lifecycle = "2.8.6"
+compose-lifecycle = "2.8.7"
 compose-navigation = "2.8.3"
-wear-compose-material3 = "1.0.0-alpha27"
+wear-compose-material3 = "1.0.0-alpha28"
 wear-tooling-preview = "1.0.0"
 
 timber = "5.0.1"

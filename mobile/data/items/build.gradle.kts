@@ -8,6 +8,8 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":test:utils"))
+
     implementation(libs.bundles.hilt)
     ksp(libs.hilt.android.compiler)
 
@@ -15,6 +17,8 @@ dependencies {
     implementation(libs.room.ktx)
 
     implementation(libs.timber)
+
+    testImplementation(libs.bundles.unitTest)
 }
 
 

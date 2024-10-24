@@ -5,5 +5,7 @@ import se.yverling.wearto.mobile.data.items.model.Item
 
 interface ItemsRepository {
     fun getItems(): Flow<List<Item>>
-    suspend fun setItems(items: List<Item>)
+    suspend fun setItem(item: Item)
+    suspend fun deleteItem(item: Item)
+    suspend fun clearItems()
 }

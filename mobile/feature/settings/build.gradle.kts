@@ -11,6 +11,7 @@ plugins {
 dependencies {
     implementation(project(":mobile:common:design-system"))
     implementation(project(":mobile:common:network"))
+    implementation(project(":mobile:data:items"))
     implementation(project(":mobile:data:settings"))
     implementation(project(":mobile:data:token"))
     implementation(project(":test:utils"))

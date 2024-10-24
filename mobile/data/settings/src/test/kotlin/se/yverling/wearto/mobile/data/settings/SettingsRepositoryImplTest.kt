@@ -30,7 +30,6 @@ class SettingsRepositoryImplTest {
     @RelaxedMockK
     internal lateinit var projectDataStoreMock: ProjectDataStore
 
-
     private lateinit var repository: SettingsRepositoryImpl
 
     @BeforeEach
@@ -42,7 +41,7 @@ class SettingsRepositoryImplTest {
     }
 
     @Test
-    fun `get projects should emit successfully`() = runTest {
+    fun `getProjects should emit successfully`() = runTest {
         val responseMock = mockk<HttpResponse>()
 
         val unSortedListOfProjectDtos = listOf(
@@ -66,7 +65,7 @@ class SettingsRepositoryImplTest {
     }
 
     @Test
-    fun `get projects should throw IllegalStateException when status code is not OK`() = runTest {
+    fun `getProjects should throw IllegalStateException when status code is not OK`() = runTest {
         val responseMock = mockk<HttpResponse>()
 
         every { responseMock.status } returns HttpStatusCode.InternalServerError
@@ -78,7 +77,7 @@ class SettingsRepositoryImplTest {
     }
 
     @Test
-    fun `get project should emit successfully`() = runTest {
+    fun `getProject should emit successfully`() = runTest {
         val project = "A"
 
         coEvery { projectDataStoreMock.getProject() } returns flowOf(project)
@@ -90,7 +89,7 @@ class SettingsRepositoryImplTest {
     }
 
     @Test
-    fun `should set project successfully`() = runTest {
+    fun `setProject should call ProjectDataStore`() = runTest {
         val project = "A"
 
         repository.setProject(project)
@@ -99,7 +98,7 @@ class SettingsRepositoryImplTest {
     }
 
     @Test
-    fun `should clear project successfully`() = runTest {
+    fun `clearProject should call ProjectDataStore`() = runTest {
         repository.clearProject()
 
         coVerify { projectDataStoreMock.clearProject() }

@@ -1,6 +1,6 @@
 package se.yverling.wearto.mobile.data.items.model
 
-data class Item(val name: String)
+data class Item(val uid: Int? = null, val name: String)
 
-internal fun List<Item>.toDbItems(): List<se.yverling.wearto.mobile.data.items.db.Item> =
-    this.map { item -> se.yverling.wearto.mobile.data.items.db.Item(name = item.name) }
+internal fun Item.toEntity() = se.yverling.wearto.mobile.data.items.db.Item(uid = uid, name = name)
+internal fun List<Item>.toEntities(): List<se.yverling.wearto.mobile.data.items.db.Item> = map { it.toEntity() }

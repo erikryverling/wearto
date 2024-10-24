@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.map
 import se.yverling.wearto.mobile.data.items.db.AppDatabase
 import se.yverling.wearto.mobile.data.items.db.toModelItems
 import se.yverling.wearto.mobile.data.items.model.Item
-import se.yverling.wearto.mobile.data.items.model.toDbItems
+import se.yverling.wearto.mobile.data.items.model.toEntity
 import javax.inject.Inject
 
 internal class ItemsRepositoryImpl @Inject constructor(
@@ -17,7 +17,15 @@ internal class ItemsRepositoryImpl @Inject constructor(
     override fun getItems(): Flow<List<Item>> =
         db.itemsDao().getItems().map { it.toModelItems() }
 
-    override suspend fun setItems(items: List<Item>) {
-        db.itemsDao().setItems(items.toDbItems())
+    override suspend fun setItem(item: Item) {
+        db.itemsDao().upsertItem(item.toEntity())
+    }
+
+    override suspend fun deleteItem(item: Item) {
+        db.itemsDao().deleteItem(item.toEntity())
+    }
+
+    override suspend fun clearItems() {
+        db.itemsDao().deleteAllItems()
     }
 }

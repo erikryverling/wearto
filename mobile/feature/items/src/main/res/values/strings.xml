@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title">Items</string>
+    <string name="add_button_description">Add</string>
+    <string name="edit_item_description">Item</string>
+    <string name="delete_button_label">Delete</string>
+    <string name="save_button_label">Save</string>
+    <string name="item_input_field_label">Name</string>
+    <string name="clear_button_description">Clear</string>
+    <string name="sync_action_description">Sync</string>
+    <string name="add_icon_description">Add icon</string>
+    <string name="empty_state_description">No items</string>
+</resources>

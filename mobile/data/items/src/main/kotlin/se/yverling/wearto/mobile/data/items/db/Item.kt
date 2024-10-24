@@ -10,6 +10,5 @@ internal data class Item(
     val name: String,
 )
 
-internal fun Item.toModelItem() = se.yverling.wearto.mobile.data.items.model.Item(name = name)
-internal fun List<Item>.toModelItems(): List<se.yverling.wearto.mobile.data.items.model.Item> =
-    map { it.toModelItem() }
+internal fun Item.toModelItem() = se.yverling.wearto.mobile.data.items.model.Item(uid = uid, name = name)
+internal fun List<Item>.toModelItems(): List<se.yverling.wearto.mobile.data.items.model.Item> = map { it.toModelItem() }

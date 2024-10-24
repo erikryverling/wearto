@@ -15,13 +15,13 @@ import se.yverling.wearto.mobile.data.token.TokenRepositoryImpl
 @ExtendWith(MockKExtension::class)
 class TokenRepositoryImplTest {
     @RelaxedMockK
-    internal lateinit var dataStoreMock: TokenDataSource
+    internal lateinit var dataSourceMock: TokenDataSource
 
     private lateinit var repository: TokenRepositoryImpl
 
     @BeforeEach
     fun setUp() {
-        repository = TokenRepositoryImpl(dataStoreMock)
+        repository = TokenRepositoryImpl(dataSourceMock)
     }
 
     @Test
@@ -36,23 +36,7 @@ class TokenRepositoryImplTest {
     }
 
     @Test
-    fun `should set token successfully`() = runTest {
-        val token = "token"
-
-        repository.setToken(token)
-
-        coVerify { dataStoreMock.persistToken(token) }
-    }
-
-    @Test
-    fun `should clear token successfully`() = runTest {
-        repository.clearToken()
-
-        coVerify { dataStoreMock.clearToken() }
-    }
-
-    @Test
-    fun `should return has token successfully`() = runTest {
+    fun `should return hasToken successfully`() = runTest {
         val token = "token"
 
         repository.setToken(token)
@@ -60,5 +44,21 @@ class TokenRepositoryImplTest {
         repository.hasToken().collect {
             it.shouldBeTrue()
         }
+    }
+
+    @Test
+    fun `setToken should call date source`() = runTest {
+        val token = "token"
+
+        repository.setToken(token)
+
+        coVerify { dataSourceMock.persistToken(token) }
+    }
+
+    @Test
+    fun `clearToken should call date source`() = runTest {
+        repository.clearToken()
+
+        coVerify { dataSourceMock.clearToken() }
     }
 }

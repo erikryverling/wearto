@@ -64,13 +64,19 @@ fun LoginScreen(
     onOpenUrl: () -> Unit,
     onLogin: () -> Unit,
 ) {
+    var errorMessage by remember { mutableStateOf(errorMessage) }
+
     val scope = rememberCoroutineScope()
 
     MainContent(
         onLogin = { token ->
             scope.launch {
-                viewModel.setToken(token)
-                onLogin()
+                if (token.isBlank()) {
+                    errorMessage = R.string.login_error
+                } else {
+                    viewModel.setToken(token)
+                    onLogin()
+                }
             }
         },
         onOpenUrl = onOpenUrl,
@@ -172,7 +178,7 @@ fun MainContent(
                 ),
                 value = inputValue,
                 singleLine = true,
-                label = { Text(stringResource(R.string.input_field_label)) },
+                label = { Text(stringResource(R.string.login_input_field_label)) },
                 onValueChange = { inputValue = it },
                 trailingIcon = {
                     if (showPassword) {

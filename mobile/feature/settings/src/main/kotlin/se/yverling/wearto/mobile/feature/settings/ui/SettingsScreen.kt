@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -26,6 +28,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +40,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import se.yverling.wearto.mobile.common.design.theme.DefaultSpace
 import se.yverling.wearto.mobile.common.design.theme.LargeSpace
 import se.yverling.wearto.mobile.common.design.theme.VeryLargeSpace
@@ -49,13 +51,12 @@ import se.yverling.wearto.mobile.feature.settings.theme.DropDownMenuWidthInPerce
 import se.yverling.wearto.mobile.feature.settings.ui.LogoutReason.NoToken
 import se.yverling.wearto.mobile.feature.settings.ui.LogoutReason.RequestedByUser
 import se.yverling.wearto.mobile.feature.settings.ui.LogoutReason.Unauthorized
-import se.yverling.wearto.mobile.feature.settings.ui.SettingsViewModel.UiState.Error
-import se.yverling.wearto.mobile.feature.settings.ui.SettingsViewModel.UiState.Loading
-import se.yverling.wearto.mobile.feature.settings.ui.SettingsViewModel.UiState.LoggedOut
-import se.yverling.wearto.mobile.feature.settings.ui.SettingsViewModel.UiState.Success
+import se.yverling.wearto.mobile.feature.settings.ui.SettingsViewModel.ProjectUiState.Loading
+import se.yverling.wearto.mobile.feature.settings.ui.SettingsViewModel.ProjectUiState.Success
+import se.yverling.wearto.mobile.feature.settings.ui.SettingsViewModel.ProjectsUiState
+import se.yverling.wearto.mobile.feature.settings.ui.SettingsViewModel.ProjectsUiState.LoggedOut
 
-@Serializable
-object SettingsRoute
+const val SettingsRoute = "SettingsRoute"
 
 enum class LogoutReason {
     NoToken,
@@ -69,42 +70,59 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel(),
     onLoggedOut: (LogoutReason) -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val projectState by viewModel.projectState.collectAsState()
+    val projectsState by viewModel.projectsState.collectAsState()
     val scope = rememberCoroutineScope()
 
-    when (uiState) {
+    when (projectState) {
         Loading -> {
             // Ignore
         }
 
         is Success -> {
-            val successState = (uiState as Success)
+            val successState = (projectState as Success)
+
+            val projects by remember {
+                derivedStateOf {
+                    if (projectsState is ProjectsUiState.Success) {
+                        (projectsState as ProjectsUiState.Success).projects
+                    } else {
+                        emptyList()
+                    }
+                }
+            }
 
             MainContent(
                 project = successState.project,
-                projects = successState.projects,
+                projects = projects,
                 onLogout = {
                     scope.launch {
                         viewModel.logout()
                         onLoggedOut(RequestedByUser)
                     }
                 },
-                onProjectSelected = { viewModel.setProject(it) },
+                onProjectSelected = {
+                    scope.launch {
+                        viewModel.setProject(it)
+                    }
+                },
                 modifier = modifier,
             )
         }
+    }
 
+    when (projectsState) {
         is LoggedOut -> {
-            LaunchedEffect(uiState) {
+            LaunchedEffect(projectsState) {
                 viewModel.logout()
 
-                val loggedOutState = uiState as LoggedOut
+                val loggedOutState = projectsState as LoggedOut
                 if (!loggedOutState.hasToken) onLoggedOut(NoToken)
                 else onLoggedOut(Unauthorized)
             }
         }
 
-        Error -> {
+        else -> {
             // Ignore
         }
     }
@@ -137,6 +155,7 @@ private fun MainContent(
                 .padding(top = DefaultSpace)
                 .wrapContentSize(Alignment.TopStart)
         ) {
+
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { dropDownExpanded = !dropDownExpanded }
@@ -155,14 +174,20 @@ private fun MainContent(
                 expanded = dropDownExpanded,
                 onDismissRequest = { dropDownExpanded = false }
             ) {
-                projects.map { project ->
-                    DropdownMenuItem(
-                        text = { Text(project.name) },
-                        onClick = {
-                            onProjectSelected(project.name)
-                            dropDownExpanded = false
-                        }
-                    )
+                if (projects.isEmpty()) {
+                    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                        CircularProgressIndicator()
+                    }
+                } else {
+                    projects.map { project ->
+                        DropdownMenuItem(
+                            text = { Text(project.name) },
+                            onClick = {
+                                onProjectSelected(project.name)
+                                dropDownExpanded = false
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -255,8 +280,10 @@ private fun MainContentPreview() {
 )
 @Composable
 private fun LogoutDialogPreview() {
-    LogoutDialog(
-        onDismissRequest = {},
-        onConfirmation = {},
-    )
+    WearToTheme {
+        LogoutDialog(
+            onDismissRequest = {},
+            onConfirmation = {},
+        )
+    }
 }
