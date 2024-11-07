@@ -13,8 +13,11 @@ include(
     ":mobile:feature:items",
     ":mobile:feature:login",
     ":mobile:feature:settings",
-    ":wear",
-)
+    ":wear:app",
+    ":wear:common:design-system",
+    ":wear:data:items",
+    ":wear:feature:items",
+    )
 
 pluginManagement {
     repositories {

@@ -30,7 +30,6 @@ class ItemsRepositoryImplTest {
     @BeforeEach
     fun setUp() {
         itemsRepositoryImpl = ItemsRepositoryImpl(
-            context = contextMock,
             db = dbMock
         )
     }

@@ -1,9 +1,9 @@
-package se.yverling.wearto.mobile.data.items.db
+package se.yverling.wearto.wear.data.items.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-import se.yverling.wearto.mobile.data.items.model.Item as ItemModel
+import se.yverling.wearto.wear.data.items.model.Item as ItemModel
 
 @Entity
 internal data class Item(

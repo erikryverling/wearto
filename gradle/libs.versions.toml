@@ -18,6 +18,7 @@ compose-lifecycle = "2.8.7"
 compose-navigation = "2.8.3"
 wear-compose-material3 = "1.0.0-alpha28"
 wear-tooling-preview = "1.0.0"
+wear_compose_version = "1.4.0"
 
 timber = "5.0.1"
 kotlinx-serialization = "1.7.3"
@@ -47,6 +48,7 @@ compose-activity = { module = "androidx.activity:activity-compose", version.ref 
 compose-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
 compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose-lifecycle" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
+wear-compose-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "wear_compose_version" }
 wear-compose-material = { module = "androidx.wear.compose:compose-material3", version.ref = "wear-compose-material3" }
 wear-tooling-preview = { module = "androidx.wear:wear-tooling-preview", version.ref = "wear-tooling-preview" }
 
@@ -106,6 +108,7 @@ compose-wear = [
     "compose-viewmodel",
     "compose-icons",
     "wear-compose-material",
+    "wear-compose-navigation",
     "wear-tooling-preview",
 ]
 ktor = [
