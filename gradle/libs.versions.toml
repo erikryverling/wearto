@@ -16,9 +16,10 @@ compose-bom = "2024.10.01"
 compose-activity = "1.9.3"
 compose-lifecycle = "2.8.7"
 compose-navigation = "2.8.3"
-wear-compose-material3 = "1.0.0-alpha28"
 wear-tooling-preview = "1.0.0"
-wear_compose_version = "1.4.0"
+wear-compose-material3 = "1.0.0-alpha28"
+wear-compose-version = "1.4.0"
+horologist-compose = "0.6.20"
 
 timber = "5.0.1"
 kotlinx-serialization = "1.7.3"
@@ -48,9 +49,13 @@ compose-activity = { module = "androidx.activity:activity-compose", version.ref 
 compose-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-lifecycle" }
 compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "compose-lifecycle" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
-wear-compose-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "wear_compose_version" }
+wear-compose-navigation = { module = "androidx.wear.compose:compose-navigation", version.ref = "wear-compose-version" }
 wear-compose-material = { module = "androidx.wear.compose:compose-material3", version.ref = "wear-compose-material3" }
+wear-compose-foundation = { module = "androidx.wear.compose:compose-foundation", version.ref = "wear-compose-version" }
 wear-tooling-preview = { module = "androidx.wear:wear-tooling-preview", version.ref = "wear-tooling-preview" }
+horologist-compose-layout = { module = "com.google.android.horologist:horologist-compose-layout", version.ref = "horologist-compose" }
+horologist-compose-material = { module = "com.google.android.horologist:horologist-compose-material", version.ref = "horologist-compose" }
+
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 playServices-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServices-wearable" }
@@ -109,7 +114,10 @@ compose-wear = [
     "compose-icons",
     "wear-compose-material",
     "wear-compose-navigation",
+    "wear-compose-foundation",
     "wear-tooling-preview",
+    "horologist-compose-layout",
+    "horologist-compose-material",
 ]
 ktor = [
     "ktor-client-core",

@@ -14,5 +14,5 @@ dependencies {
 }
 
 android {
-    namespace = "se.yverling.wearto.mobile.common.ui"
+    namespace = "se.yverling.wearto.common.ui"
 }

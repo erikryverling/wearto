@@ -1,8 +1,6 @@
 package se.yverlingwearto.mobile.data.items
 
-import android.content.Context
 import io.mockk.coVerify
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
@@ -15,17 +13,15 @@ import se.yverling.wearto.mobile.data.items.db.AppDatabase
 import se.yverling.wearto.mobile.data.items.model.Item
 import se.yverling.wearto.test.MainDispatcherExtension
 
-
 @ExtendWith(MockKExtension::class)
 @ExtendWith(MainDispatcherExtension::class)
 class ItemsRepositoryImplTest {
-    @MockK
-    internal lateinit var contextMock: Context
-
     @RelaxedMockK
     internal lateinit var dbMock: AppDatabase
 
     private lateinit var itemsRepositoryImpl: ItemsRepositoryImpl
+
+    private val item = Item(name = "name")
 
     @BeforeEach
     fun setUp() {
@@ -59,10 +55,5 @@ class ItemsRepositoryImplTest {
         itemsRepositoryImpl.clearItems()
 
         coVerify { dbMock.itemsDao().deleteAllItems() }
-    }
-
-    companion object {
-        val item = Item(name = "name")
-
     }
 }

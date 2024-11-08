@@ -2,11 +2,11 @@ rootProject.name = "WearTo"
 rootProject.buildFileName = "build.gradle.kts"
 
 include(
+    ":common:ui",
     ":test:utils",
     ":mobile:app",
     ":mobile:common:design-system",
     ":mobile:common:network",
-    ":mobile:common:ui",
     ":mobile:data:items",
     ":mobile:data:settings",
     ":mobile:data:token",

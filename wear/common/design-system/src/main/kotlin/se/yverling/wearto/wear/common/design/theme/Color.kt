@@ -1,0 +1,37 @@
+package se.yverling.wearto.wear.common.design.theme
+
+import androidx.compose.ui.graphics.Color
+
+// Generated from Material Theme Builder Figma plugin
+val md_theme_dark_primary = Color(0xFF57D6F6)
+val md_theme_dark_onPrimary = Color(0xFF003641)
+val md_theme_dark_primaryContainer = Color(0xFF004E5D)
+val md_theme_dark_onPrimaryContainer = Color(0xFFAEECFF)
+val md_theme_dark_secondary = Color(0xFFB2CBD3)
+val md_theme_dark_onSecondary = Color(0xFF1D343A)
+val md_theme_dark_secondaryContainer = Color(0xFF344A51)
+val md_theme_dark_onSecondaryContainer = Color(0xFFCEE7EF)
+val md_theme_dark_tertiary = Color(0xFFC0C4EB)
+val md_theme_dark_onTertiary = Color(0xFF292E4D)
+val md_theme_dark_tertiaryContainer = Color(0xFF404565)
+val md_theme_dark_onTertiaryContainer = Color(0xFFDEE0FF)
+val md_theme_dark_error = Color(0xFFFFB4AB)
+val md_theme_dark_onError = Color(0xFF690005)
+val md_theme_dark_errorContainer = Color(0xFF93000A)
+val md_theme_dark_onErrorContainer = Color(0xFFFFDAD6)
+val md_theme_dark_outline = Color(0xFF899295)
+val md_theme_dark_background = Color(0xFF191C1D)
+val md_theme_dark_onBackground = Color(0xFFE1E3E4)
+val md_theme_dark_surface = Color(0xFF111415)
+val md_theme_dark_onSurface = Color(0xFFC5C7C8)
+val md_theme_dark_surfaceContainerHighest = Color(0xFF303638)
+val md_theme_dark_surfaceVariant = Color(0xFF3F484B)
+val md_theme_dark_onSurfaceVariant = Color(0xFFBFC8CB)
+val md_theme_dark_inverseSurface = Color(0xFFE1E3E4)
+val md_theme_dark_inverseOnSurface = Color(0xFF191C1D)
+val md_theme_dark_inversePrimary = Color(0xFF00687B)
+val md_theme_dark_surfaceTint = Color(0xFF57D6F6)
+val md_theme_dark_outlineVariant = Color(0xFF3F484B)
+val md_theme_dark_scrim = Color(0xFF000000)
+
+val seed = Color(0xFF4F99AD)

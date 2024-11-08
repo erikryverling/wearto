@@ -27,8 +27,6 @@ class DataItemsModule {
 
     @Provides
     @Singleton
-    internal fun provideItemsRepository(
-        @ApplicationContext context: Context,
-        db: AppDatabase,
-    ): ItemsRepository = ItemsRepositoryImpl(context, db)
+    internal fun provideItemsRepository(db: AppDatabase)
+            : ItemsRepository = ItemsRepositoryImpl(db)
 }

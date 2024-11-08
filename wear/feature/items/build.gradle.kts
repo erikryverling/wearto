@@ -8,6 +8,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":common:ui"))
     implementation(project(":wear:common:design-system"))
     implementation(project(":wear:data:items"))
 
