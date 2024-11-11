@@ -133,7 +133,7 @@ private fun MainContent(
     project: String?,
     projects: List<Project>,
     onLogout: () -> Unit,
-    onProjectSelected: (String) -> Unit,
+    onProjectSelected: (Project) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -183,7 +183,7 @@ private fun MainContent(
                         DropdownMenuItem(
                             text = { Text(project.name) },
                             onClick = {
-                                onProjectSelected(project.name)
+                                onProjectSelected(project)
                                 dropDownExpanded = false
                             }
                         )

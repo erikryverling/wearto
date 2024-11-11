@@ -24,7 +24,7 @@ class SettingsViewModel @Inject constructor(
     private val itemsRepository: ItemsRepository,
 ) : ViewModel() {
 
-    internal var projectState = settingsRepository.getProject().map { ProjectUiState.Success(it) }
+    internal var projectState = settingsRepository.getProject().map { ProjectUiState.Success(it?.name) }
         .stateIn(
             scope = viewModelScope,
             initialValue = ProjectUiState.Loading,
@@ -46,7 +46,7 @@ class SettingsViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed()
         )
 
-    suspend fun setProject(project: String) {
+    suspend fun setProject(project: Project) {
         settingsRepository.setProject(project)
     }
 

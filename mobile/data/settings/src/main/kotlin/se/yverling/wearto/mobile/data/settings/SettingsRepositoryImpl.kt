@@ -14,19 +14,19 @@ import javax.inject.Inject
 internal class SettingsRepositoryImpl @Inject constructor(
     private val projectsEndpoint: ProjectsEndpoint,
     private val projectDataStore: ProjectDataStore,
-): SettingsRepository {
+) : SettingsRepository {
     override fun getProjects(): Flow<List<Project>> = flow {
         val response = projectsEndpoint.getProjects()
 
         when (response.status.value) {
             HttpStatusCode.OK.value -> emit(response.body<List<ProjectDTO>>().toSortedProjects())
-            else -> throw IllegalStateException("Could not parse projects response with Ktor")
+            else -> throw IllegalStateException("Get projects request failed")
         }
     }
 
-    override fun getProject(): Flow<String?> = projectDataStore.getProject()
+    override fun getProject(): Flow<Project?> = projectDataStore.getProject()
 
-    override suspend fun setProject(project: String) {
+    override suspend fun setProject(project: Project) {
         projectDataStore.persistProject(project)
     }
 

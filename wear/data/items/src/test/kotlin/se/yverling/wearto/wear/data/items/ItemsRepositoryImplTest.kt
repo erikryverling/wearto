@@ -1,4 +1,4 @@
-package se.yverling.wearto.wear.data.items.se.yverling.wearto.wear.data.items
+package se.yverling.wearto.wear.data.items
 
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
@@ -35,8 +35,9 @@ class ItemsRepositoryImplTest {
     }
 
     @Test
-    fun `setItems() should call dao correctly`() = runTest {
-        itemsRepositoryImpl.setItems(listOf(item))
+    fun `replaceItems() should call dao correctly`() = runTest {
+        itemsRepositoryImpl.replaceItems(listOf(item))
+        coVerify { dbMock.itemsDao().deleteAllItems() }
         coVerify { dbMock.itemsDao().setItems(any()) }
     }
 }

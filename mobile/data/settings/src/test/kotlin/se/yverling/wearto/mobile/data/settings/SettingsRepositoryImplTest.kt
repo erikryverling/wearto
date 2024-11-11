@@ -78,7 +78,7 @@ class SettingsRepositoryImplTest {
 
     @Test
     fun `getProject should emit successfully`() = runTest {
-        val project = "A"
+        val project = Project(id = "1", name = "A")
 
         coEvery { projectDataStoreMock.getProject() } returns flowOf(project)
 
@@ -90,7 +90,7 @@ class SettingsRepositoryImplTest {
 
     @Test
     fun `setProject should call ProjectDataStore`() = runTest {
-        val project = "A"
+        val project = Project(id = "1", name = "A")
 
         repository.setProject(project)
 

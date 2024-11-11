@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option java_package = "se.yverling.wearto";
+option java_multiple_files = true;
+
+message Project {
+  string id = 1;
+  string name = 2;
+}

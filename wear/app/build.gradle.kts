@@ -10,6 +10,7 @@ plugins {
 
 dependencies {
     implementation(project(":wear:common:design-system"))
+    implementation(project(":wear:data:items"))
     implementation(project(":wear:feature:items"))
 
     ksp(libs.hilt.android.compiler)

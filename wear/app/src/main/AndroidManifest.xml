@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <uses-feature android:name="android.hardware.type.watch" />
 
     <application
@@ -29,5 +31,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".ui.DataLayerListenerService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
+                <action android:name="com.google.android.gms.wearable.CAPABILITY_CHANGED" />
+
+                <data
+                    android:host="*"
+                    android:scheme="wear" />
+
+                <data android:path="/items" />
+                <data android:path="/item-confirm" />
+            </intent-filter>
+        </service>
     </application>
 </manifest>

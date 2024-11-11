@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.libs
+
 apply(from = "${rootProject.projectDir}/buildSrc/build.module.android.gradle")
 
 plugins {
@@ -6,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.protobuf)
 }
 
 dependencies {
@@ -14,9 +17,12 @@ dependencies {
     implementation(libs.bundles.hilt)
     ksp(libs.hilt.android.compiler)
 
-    implementation(libs.timber)
-    implementation(libs.datastore.preferences)
     implementation(libs.bundles.ktor)
+
+    implementation(libs.datastore)
+    implementation(libs.protobuf)
+
+    implementation(libs.timber)
 
     testImplementation(libs.bundles.unitTest)
 }
@@ -24,4 +30,20 @@ dependencies {
 
 android {
     namespace = "se.yverling.wearto.mobile.data.settings"
+}
+
+protobuf {
+    protoc {
+        artifact = libs.versions.protobufCompilerArtifact.get()
+    }
+
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }

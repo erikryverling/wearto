@@ -43,6 +43,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -69,7 +70,9 @@ import se.yverling.wearto.mobile.common.ui.LoadingScreen
 import se.yverling.wearto.mobile.data.items.model.Item
 import se.yverling.wearto.mobile.feature.items.R
 import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.*
+import theme.AddItemSize
 import theme.ItemCardElevation
+import timber.log.Timber
 
 const val ItemsRoute = "ItemsRoute"
 
@@ -78,6 +81,7 @@ const val ItemsRoute = "ItemsRoute"
 fun ItemsScreen(
     viewModel: ItemsViewModel = hiltViewModel(),
     onLoggedOut: () -> Unit,
+    onSync: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -86,7 +90,6 @@ fun ItemsScreen(
 
         is UiState.LoggedOut -> onLoggedOut()
 
-        // TODO Try to refactor and modularize this
         is UiState.Success -> {
             val successState = uiState as UiState.Success
 
@@ -101,6 +104,7 @@ fun ItemsScreen(
 
             var selectedItem by remember { mutableStateOf<Item?>(null) }
             var nameInput by remember { mutableStateOf("") }
+            var isError: Boolean by remember { mutableStateOf(false) }
 
             val keyboardController = LocalSoftwareKeyboardController.current
             val focusRequester = remember { FocusRequester() }
@@ -133,19 +137,28 @@ fun ItemsScreen(
                                 .focusRequester(focusRequester)
                                 .padding(bottom = DefaultSpace),
                             value = nameInput,
+                            isError = isError,
                             keyboardOptions = KeyboardOptions(
                                 capitalization = KeyboardCapitalization.Sentences
                             ),
                             keyboardActions = KeyboardActions(
                                 onDone = {
-                                    scope.launch {
-                                        val newItem = if (selectedItem == null) Item(name = nameInput)
-                                        else selectedItem!!.copy(name = nameInput)
+                                    if (nameInput.isBlank()) {
+                                        isError = true
+                                    } else {
+                                        scope.launch {
+                                            val newItem = if (selectedItem == null) Item(name = nameInput)
+                                            else selectedItem!!.copy(name = nameInput)
 
-                                        viewModel.setItem(newItem)
-
-                                        keyboardController?.hide()
-                                        bottomSheetScaffoldState.bottomSheetState.hide()
+                                            try {
+                                                viewModel.setItem(newItem)
+                                                keyboardController?.hide()
+                                                bottomSheetScaffoldState.bottomSheetState.hide()
+                                            } catch (e: Exception) {
+                                                Timber.e(e)
+                                                isError = true
+                                            }
+                                        }
                                     }
                                 }
                             ),
@@ -178,22 +191,34 @@ fun ItemsScreen(
                             Spacer(Modifier.width(LargeSpace))
 
                             SaveButton(modifier = Modifier.weight(1f)) {
-                                scope.launch {
-                                    val newItem = if (selectedItem == null) Item(name = nameInput)
-                                    else selectedItem!!.copy(name = nameInput)
+                                if (nameInput.isBlank()) {
+                                    isError = true
+                                } else {
+                                    scope.launch {
+                                        val newItem = if (selectedItem == null) Item(name = nameInput)
+                                        else selectedItem!!.copy(name = nameInput)
 
-                                    viewModel.setItem(newItem)
-
-                                    keyboardController?.hide()
-                                    bottomSheetScaffoldState.bottomSheetState.hide()
-
+                                        try {
+                                            viewModel.setItem(newItem)
+                                            keyboardController?.hide()
+                                            bottomSheetScaffoldState.bottomSheetState.hide()
+                                        } catch (e: Exception) {
+                                            Timber.e(e)
+                                            isError = true
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-
             ) {
+                LaunchedEffect(bottomSheetScaffoldState.bottomSheetState.currentValue) {
+                    if (bottomSheetScaffoldState.bottomSheetState.currentValue == SheetValue.Hidden) {
+                        isError = false
+                    }
+                }
+
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -206,9 +231,7 @@ fun ItemsScreen(
                             },
 
                             actions = {
-                                IconButton(onClick = {
-                                    // TODO Implement sync action
-                                }) {
+                                IconButton(onClick = { onSync() }) {
                                     Icon(
                                         imageVector = Icons.Default.Sync,
                                         contentDescription = stringResource(R.string.sync_action_description)
@@ -241,6 +264,8 @@ fun ItemsScreen(
                             modifier = Modifier.padding(padding)
                         ) { item ->
                             scope.launch {
+                                isError = false
+
                                 selectedItem = item
                                 nameInput = item.name
 
@@ -255,6 +280,7 @@ fun ItemsScreen(
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -363,7 +389,7 @@ internal fun EmptyScreen(modifier: Modifier = Modifier) {
     ) {
         Icon(
             tint = MaterialTheme.colorScheme.outline,
-            modifier = Modifier.size(98.dp),
+            modifier = Modifier.size(AddItemSize),
             imageVector = Icons.Outlined.LibraryAdd,
             contentDescription = stringResource(R.string.add_icon_description)
         )

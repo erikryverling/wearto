@@ -9,6 +9,7 @@ plugins {
 
 dependencies {
     implementation(project(":common:ui"))
+    implementation(project(":test:utils"))
     implementation(project(":wear:common:design-system"))
     implementation(project(":wear:data:items"))
 

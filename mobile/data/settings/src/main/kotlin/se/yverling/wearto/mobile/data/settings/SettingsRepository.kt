@@ -5,7 +5,7 @@ import se.yverling.wearto.mobile.data.settings.model.Project
 
 interface SettingsRepository {
     fun getProjects(): Flow<List<Project>>
-    fun getProject(): Flow<String?>
-    suspend fun setProject(project: String)
+    fun getProject(): Flow<Project?>
+    suspend fun setProject(project: Project)
     suspend fun clearProject()
 }

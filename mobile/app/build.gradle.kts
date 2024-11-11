@@ -10,9 +10,12 @@ plugins {
 
 dependencies {
     implementation(project(":mobile:common:design-system"))
+    implementation(project(":mobile:data:item"))
+    implementation(project(":mobile:data:items"))
     implementation(project(":mobile:feature:items"))
     implementation(project(":mobile:feature:login"))
     implementation(project(":mobile:feature:settings"))
+    implementation(project(":test:utils"))
 
     ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.android)
@@ -24,6 +27,8 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.playServices.wearable)
     implementation(libs.horologist.datalayer.phone)
+
+    testImplementation(libs.bundles.unitTest)
 }
 
 android {

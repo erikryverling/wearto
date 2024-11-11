@@ -42,7 +42,7 @@ class SettingsViewModelTest {
 
     @Test
     fun `projectState should emit Success`() = runTest {
-        every { settingsRepositoryMock.getProject() } returns flowOf(project1.name)
+        every { settingsRepositoryMock.getProject() } returns flowOf(project1)
 
         settingsViewModel = createViewModel()
 
@@ -121,9 +121,9 @@ class SettingsViewModelTest {
     fun `setProject should call settingsRepository successfully`() = runTest {
         settingsViewModel = createViewModel()
 
-        settingsViewModel.setProject(project1.name)
+        settingsViewModel.setProject(project1)
 
-        coVerify { settingsRepositoryMock.setProject(project1.name) }
+        coVerify { settingsRepositoryMock.setProject(project1) }
     }
 
     @Test
