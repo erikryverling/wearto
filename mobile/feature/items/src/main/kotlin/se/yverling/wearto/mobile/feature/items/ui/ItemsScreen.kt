@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
@@ -64,6 +65,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import se.yverling.wearto.mobile.common.design.theme.DefaultSpace
 import se.yverling.wearto.mobile.common.design.theme.LargeSpace
+import se.yverling.wearto.mobile.common.design.theme.MaxWith
 import se.yverling.wearto.mobile.common.design.theme.SmallSpace
 import se.yverling.wearto.mobile.common.design.theme.WearToTheme
 import se.yverling.wearto.mobile.common.ui.LoadingScreen
@@ -289,13 +291,22 @@ internal fun ItemsList(
     modifier: Modifier = Modifier,
     onItemClicked: (Item) -> Unit = {},
 ) {
-    LazyColumn(modifier = modifier.padding(DefaultSpace)) {
-        itemsIndexed(items) { index, item ->
-            Item(item) {
-                onItemClicked(item)
-            }
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .padding(DefaultSpace)
+                .widthIn(max = MaxWith)
+        ) {
+            itemsIndexed(items) { index, item ->
+                Item(item) {
+                    onItemClicked(item)
+                }
 
-            Spacer(modifier = Modifier.padding(SmallSpace))
+                Spacer(modifier = Modifier.padding(SmallSpace))
+            }
         }
     }
 }

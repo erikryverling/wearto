@@ -5,10 +5,12 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -40,11 +42,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import se.yverling.wearto.mobile.common.design.theme.DefaultSpace
 import se.yverling.wearto.mobile.common.design.theme.LargeSpace
+import se.yverling.wearto.mobile.common.design.theme.MaxWith
 import se.yverling.wearto.mobile.common.design.theme.VeryLargeSpace
 import se.yverling.wearto.mobile.common.design.theme.WearToTheme
 import se.yverling.wearto.mobile.feature.login.R
@@ -93,130 +97,137 @@ fun MainContent(
     errorMessage: Int? = null,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(
-                horizontal = LargeSpace,
-                vertical = VeryLargeSpace
-            ),
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            modifier = Modifier.padding(bottom = VeryLargeSpace),
-            text = stringResource(R.string.login_title),
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.tertiary
-        )
-
-        Row(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = VeryLargeSpace),
-            horizontalArrangement = Arrangement.Start
+                .widthIn(max = MaxWith)
+                .fillMaxHeight()
+                .padding(
+                    horizontal = LargeSpace,
+                    vertical = VeryLargeSpace
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                modifier = Modifier
-                    .padding(end = DefaultSpace, top = ItemOneTopPadding)
-                    .size(ItemIconSize),
-                imageVector = Icons.Default.LooksOne,
-                tint = MaterialTheme.colorScheme.tertiary,
-                contentDescription = stringResource(R.string.item_one_icon_content_description),
+            Text(
+                modifier = Modifier.padding(bottom = VeryLargeSpace),
+                text = stringResource(R.string.login_title),
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.tertiary
             )
 
-            Column {
-                TextButton(onClick = onOpenUrl) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = VeryLargeSpace),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .padding(end = DefaultSpace, top = ItemOneTopPadding)
+                        .size(ItemIconSize),
+                    imageVector = Icons.Default.LooksOne,
+                    tint = MaterialTheme.colorScheme.tertiary,
+                    contentDescription = stringResource(R.string.item_one_icon_content_description),
+                )
+
+                Column {
+                    TextButton(onClick = onOpenUrl) {
+                        Text(
+                            stringResource(R.string.todoist_link),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+
                     Text(
-                        stringResource(R.string.todoist_link),
-                        style = MaterialTheme.typography.titleMedium
+                        modifier = Modifier.padding(start = ItemOneDescriptionStartPadding),
+                        text = stringResource(R.string.item_one_description),
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
+            }
 
-                Text(
-                    modifier = Modifier.padding(start = ItemOneDescriptionStartPadding),
-                    text = stringResource(R.string.item_one_description),
-                    style = MaterialTheme.typography.bodySmall
+            var inputValue by remember { mutableStateOf("") }
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = VeryLargeSpace),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .padding(end = DefaultSpace, top = ItemTwoTopPadding)
+                        .size(ItemIconSize),
+                    imageVector = Icons.Default.LooksTwo,
+                    tint = MaterialTheme.colorScheme.tertiary,
+                    contentDescription = stringResource(R.string.item_one_icon_content_description),
+                )
+
+                var showPassword by remember { mutableStateOf(value = false) }
+                val keyboardController = LocalSoftwareKeyboardController.current
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    isError = errorMessage != null,
+                    supportingText = {
+                        if (errorMessage != null) Text(stringResource(errorMessage))
+                        else Text(stringResource(R.string.input_field_supporting_text))
+                    },
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            keyboardController?.hide()
+                            onLogin(inputValue)
+                        }
+                    ),
+                    value = inputValue,
+                    singleLine = true,
+                    label = { Text(stringResource(R.string.login_input_field_label)) },
+                    onValueChange = { inputValue = it },
+                    trailingIcon = {
+                        if (showPassword) {
+                            IconButton(onClick = { showPassword = false }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Visibility,
+                                    contentDescription = stringResource(R.string.password_icon_visible_content_description)
+                                )
+                            }
+                        } else {
+                            IconButton(
+                                onClick = { showPassword = true }) {
+                                Icon(
+                                    imageVector = Icons.Filled.VisibilityOff,
+                                    contentDescription = stringResource(R.string.password_icon_no_visible_content_description)
+                                )
+                            }
+                        }
+                    }
                 )
             }
-        }
 
-        var inputValue by remember { mutableStateOf("") }
-
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = VeryLargeSpace),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Icon(
-                modifier = Modifier
-                    .padding(end = DefaultSpace, top = ItemTwoTopPadding)
-                    .size(ItemIconSize),
-                imageVector = Icons.Default.LooksTwo,
-                tint = MaterialTheme.colorScheme.tertiary,
-                contentDescription = stringResource(R.string.item_one_icon_content_description),
-            )
-
-            var showPassword by remember { mutableStateOf(value = false) }
-            val keyboardController = LocalSoftwareKeyboardController.current
-
-            OutlinedTextField(
-                visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                isError = errorMessage != null,
-                supportingText = {
-                    if (errorMessage != null) Text(stringResource(errorMessage))
-                    else Text(stringResource(R.string.input_field_supporting_text))
-                },
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        keyboardController?.hide()
-                        onLogin(inputValue)
-                    }
-                ),
-                value = inputValue,
-                singleLine = true,
-                label = { Text(stringResource(R.string.login_input_field_label)) },
-                onValueChange = { inputValue = it },
-                trailingIcon = {
-                    if (showPassword) {
-                        IconButton(onClick = { showPassword = false }) {
-                            Icon(
-                                imageVector = Icons.Filled.Visibility,
-                                contentDescription = stringResource(R.string.password_icon_visible_content_description)
-                            )
-                        }
-                    } else {
-                        IconButton(
-                            onClick = { showPassword = true }) {
-                            Icon(
-                                imageVector = Icons.Filled.VisibilityOff,
-                                contentDescription = stringResource(R.string.password_icon_no_visible_content_description)
-                            )
-                        }
-                    }
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    onLogin(inputValue)
                 }
-            )
-        }
+            ) {
+                Icon(
+                    modifier = Modifier.padding(end = DefaultSpace),
+                    imageVector = Icons.AutoMirrored.Default.Login,
+                    contentDescription = stringResource(R.string.login_button_icon_content_description),
+                )
 
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                onLogin(inputValue)
+                Text(
+                    text = "Login",
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
-        ) {
-            Icon(
-                modifier = Modifier.padding(end = DefaultSpace),
-                imageVector = Icons.AutoMirrored.Default.Login,
-                contentDescription = stringResource(R.string.login_button_icon_content_description),
-            )
-
-            Text(
-                text = "Login",
-                color = MaterialTheme.colorScheme.onPrimary
-            )
         }
     }
 }

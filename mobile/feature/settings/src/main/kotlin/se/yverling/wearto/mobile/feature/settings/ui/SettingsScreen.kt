@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -38,10 +38,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import se.yverling.wearto.mobile.common.design.theme.DefaultSpace
 import se.yverling.wearto.mobile.common.design.theme.LargeSpace
+import se.yverling.wearto.mobile.common.design.theme.MaxWith
 import se.yverling.wearto.mobile.common.design.theme.VeryLargeSpace
 import se.yverling.wearto.mobile.common.design.theme.WearToTheme
 import se.yverling.wearto.mobile.data.settings.model.Project
@@ -137,87 +139,92 @@ private fun MainContent(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(
-                start = LargeSpace,
-                end = LargeSpace,
-                top = VeryLargeSpace,
-                bottom = LargeSpace
-            ),
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("Todoist project to sync with", style = MaterialTheme.typography.titleLarge)
-
-        var dropDownExpanded by remember { mutableStateOf(false) }
-        Box(
-            modifier = Modifier
-                .padding(top = DefaultSpace)
-                .wrapContentSize(Alignment.TopStart)
+        Column(
+            modifier = modifier
+                .widthIn(max = MaxWith)
+                .padding(
+                    start = LargeSpace,
+                    end = LargeSpace,
+                    top = VeryLargeSpace,
+                    bottom = LargeSpace
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            Text("Todoist project to sync with", style = MaterialTheme.typography.titleLarge)
 
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { dropDownExpanded = !dropDownExpanded }
+            var dropDownExpanded by remember { mutableStateOf(false) }
+            Box(
+                modifier = Modifier
+                    .padding(top = DefaultSpace)
+                    .wrapContentSize(Alignment.TopStart)
             ) {
-                Text(project ?: stringResource(R.string.drop_down_button_empty_state_description))
+
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { dropDownExpanded = !dropDownExpanded }
+                ) {
+                    Text(project ?: stringResource(R.string.drop_down_button_empty_state_description))
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = stringResource(R.string.drop_down_content_description),
+                    )
+                }
+
+                DropdownMenu(
+                    modifier = Modifier
+                        .fillMaxHeight(DropDownMenuHeightInPercent)
+                        .fillMaxWidth(DropDownMenuWidthInPercent),
+                    expanded = dropDownExpanded,
+                    onDismissRequest = { dropDownExpanded = false }
+                ) {
+                    if (projects.isEmpty()) {
+                        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                            CircularProgressIndicator()
+                        }
+                    } else {
+                        projects.map { project ->
+                            DropdownMenuItem(
+                                text = { Text(project.name) },
+                                onClick = {
+                                    onProjectSelected(project)
+                                    dropDownExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            var showDialog by remember { mutableStateOf(false) }
+
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    showDialog = true
+                }
+            ) {
                 Icon(
-                    imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = stringResource(R.string.drop_down_content_description),
+                    modifier = Modifier.padding(end = DefaultSpace),
+                    imageVector = Icons.AutoMirrored.Default.Logout,
+                    contentDescription = stringResource(R.string.logout_button_icon_content_description),
+                )
+                Text("Logout")
+            }
+
+            if (showDialog) {
+                LogoutDialog(
+                    onDismissRequest = { showDialog = false },
+                    onConfirmation = {
+                        showDialog = false
+                        onLogout()
+                    }
                 )
             }
-
-            DropdownMenu(
-                modifier = Modifier
-                    .fillMaxHeight(DropDownMenuHeightInPercent)
-                    .fillMaxWidth(DropDownMenuWidthInPercent),
-                expanded = dropDownExpanded,
-                onDismissRequest = { dropDownExpanded = false }
-            ) {
-                if (projects.isEmpty()) {
-                    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                        CircularProgressIndicator()
-                    }
-                } else {
-                    projects.map { project ->
-                        DropdownMenuItem(
-                            text = { Text(project.name) },
-                            onClick = {
-                                onProjectSelected(project)
-                                dropDownExpanded = false
-                            }
-                        )
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        var showDialog by remember { mutableStateOf(false) }
-
-        OutlinedButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                showDialog = true
-            }
-        ) {
-            Icon(
-                modifier = Modifier.padding(end = DefaultSpace),
-                imageVector = Icons.AutoMirrored.Default.Logout,
-                contentDescription = stringResource(R.string.logout_button_icon_content_description),
-            )
-            Text("Logout")
-        }
-
-        if (showDialog) {
-            LogoutDialog(
-                onDismissRequest = { showDialog = false },
-                onConfirmation = {
-                    showDialog = false
-                    onLogout()
-                }
-            )
         }
     }
 }
