@@ -5,6 +5,7 @@ import android.os.VibrationEffect
 import android.os.VibratorManager
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -138,7 +139,9 @@ private fun ItemsList(
 
 
     ScalingLazyColumn(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.Black),
         columnState = columnState,
     ) {
         items(items) { item ->
@@ -184,6 +187,7 @@ private fun ItemsList(
                     Box(modifier = Modifier.padding(end = SmallSpace)) {
                         if (item.state == Loading) {
                             ChipIconWithProgress(
+                                progressIndicatorColor = MaterialTheme.colorScheme.primary,
                                 largeIcon = true,
                                 icon = ImageVectorPaintable(Icons.Default.AddTask)
                             )
