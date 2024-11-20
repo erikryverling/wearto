@@ -6,7 +6,7 @@ import se.yverling.wearto.mobile.data.items.model.Item
 import se.yverling.wearto.mobile.data.items.db.Item as DbItem
 import se.yverling.wearto.mobile.data.items.model.toEntity
 
-class ItemTest {
+private class ItemTest {
     @Test
     fun `toEntity should map successfully`() {
         val model = Item(uid = 1, name = "name")

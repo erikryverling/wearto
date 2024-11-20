@@ -23,14 +23,14 @@ import se.yverling.wearto.mobile.data.settings.network.ProjectsEndpoint
 import se.yverling.wearto.mobile.data.settings.network.dto.ProjectDTO
 
 @ExtendWith(MockKExtension::class)
-class SettingsRepositoryImplTest {
+private class SettingsRepositoryImplTest {
     @RelaxedMockK
-    internal lateinit var projectsEndpointMock: ProjectsEndpoint
+    lateinit var projectsEndpointMock: ProjectsEndpoint
 
     @RelaxedMockK
-    internal lateinit var projectDataStoreMock: ProjectDataStore
+    lateinit var projectDataStoreMock: ProjectDataStore
 
-    private lateinit var repository: SettingsRepositoryImpl
+    lateinit var repository: SettingsRepositoryImpl
 
     @BeforeEach
     fun setup() {

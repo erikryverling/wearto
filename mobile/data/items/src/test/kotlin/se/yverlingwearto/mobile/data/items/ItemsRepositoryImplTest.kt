@@ -15,13 +15,13 @@ import se.yverling.wearto.test.MainDispatcherExtension
 
 @ExtendWith(MockKExtension::class)
 @ExtendWith(MainDispatcherExtension::class)
-class ItemsRepositoryImplTest {
+private class ItemsRepositoryImplTest {
     @RelaxedMockK
-    internal lateinit var dbMock: AppDatabase
+    lateinit var dbMock: AppDatabase
 
-    private lateinit var itemsRepositoryImpl: ItemsRepositoryImpl
+    lateinit var itemsRepositoryImpl: ItemsRepositoryImpl
 
-    private val item = Item(name = "name")
+    val item = Item(name = "name")
 
     @BeforeEach
     fun setUp() {

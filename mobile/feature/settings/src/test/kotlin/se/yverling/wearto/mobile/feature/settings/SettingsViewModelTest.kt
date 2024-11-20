@@ -28,17 +28,17 @@ import se.yverling.wearto.test.MainDispatcherExtension
 
 @ExtendWith(MockKExtension::class)
 @ExtendWith(MainDispatcherExtension::class)
-class SettingsViewModelTest {
+private class SettingsViewModelTest {
     @RelaxedMockK
-    internal lateinit var settingsRepositoryMock: SettingsRepository
+    lateinit var settingsRepositoryMock: SettingsRepository
 
     @RelaxedMockK
-    internal lateinit var tokenRepositoryMock: TokenRepository
+    lateinit var tokenRepositoryMock: TokenRepository
 
     @RelaxedMockK
-    internal lateinit var itemsRepositoryMock: ItemsRepository
+    lateinit var itemsRepositoryMock: ItemsRepository
 
-    private lateinit var settingsViewModel: SettingsViewModel
+    lateinit var settingsViewModel: SettingsViewModel
 
     @Test
     fun `projectState should emit Success`() = runTest {
@@ -137,7 +137,7 @@ class SettingsViewModelTest {
         coVerify { itemsRepositoryMock.clearItems() }
     }
 
-    private fun createViewModel() = SettingsViewModel(
+    fun createViewModel() = SettingsViewModel(
         settingsRepositoryMock,
         tokenRepositoryMock,
         itemsRepositoryMock

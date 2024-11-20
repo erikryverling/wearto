@@ -1,6 +1,5 @@
 package se.yverling.wearto
 
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
@@ -13,7 +12,7 @@ import se.yverling.wearto.test.MainDispatcherExtension
 
 @ExtendWith(MockKExtension::class)
 @ExtendWith(MainDispatcherExtension::class)
-class MainViewModelTest {
+private class MainViewModelTest {
     @RelaxedMockK
     internal lateinit var itemsRepositoryMock: ItemsRepository
 

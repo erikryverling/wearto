@@ -1,5 +1,4 @@
 import io.mockk.coVerify
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.test.runTest
@@ -11,7 +10,7 @@ import se.yverling.wearto.test.MainDispatcherExtension
 
 @ExtendWith(MockKExtension::class)
 @ExtendWith(MainDispatcherExtension::class)
-class LoginViewModelTest {
+private class LoginViewModelTest {
     @RelaxedMockK
     lateinit var tokenRepositoryMock: TokenRepository
 

@@ -13,11 +13,11 @@ import se.yverling.wearto.mobile.data.token.datastore.TokenDataSource
 import se.yverling.wearto.mobile.data.token.TokenRepositoryImpl
 
 @ExtendWith(MockKExtension::class)
-class TokenRepositoryImplTest {
+private class TokenRepositoryImplTest {
     @RelaxedMockK
-    internal lateinit var dataSourceMock: TokenDataSource
+    lateinit var dataSourceMock: TokenDataSource
 
-    private lateinit var repository: TokenRepositoryImpl
+    lateinit var repository: TokenRepositoryImpl
 
     @BeforeEach
     fun setUp() {
