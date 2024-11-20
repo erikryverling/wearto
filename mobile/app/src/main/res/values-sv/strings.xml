@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="items_item_label">Uppgifter</string>
+    <string name="items_item_icon_content_description">Uppgifter</string>
+    <string name="settings_item_label">Inställningar</string>
+    <string name="settings_item_icon_content_description">Inställningar</string>
+</resources>

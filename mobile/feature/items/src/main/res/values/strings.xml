@@ -8,6 +8,6 @@
     <string name="item_input_field_label">Name</string>
     <string name="clear_button_description">Clear</string>
     <string name="sync_action_description">Sync</string>
-    <string name="add_icon_description">Add icon</string>
+    <string name="add_icon_description">Add</string>
     <string name="empty_state_description">No items</string>
 </resources>

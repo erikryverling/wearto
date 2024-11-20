@@ -153,7 +153,7 @@ private fun MainContent(
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text("Todoist project to sync with", style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.title), style = MaterialTheme.typography.titleLarge)
 
             var dropDownExpanded by remember { mutableStateOf(false) }
             Box(

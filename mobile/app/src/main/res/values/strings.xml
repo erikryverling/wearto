@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">WearTo</string>
-    <string name="todoist_link">https://app.todoist.com/app/settings/integrations/developer</string>
+    <string name="app_name" translatable="false">WearTo</string>
+    <string name="todoist_link" translatable="false">https://app.todoist.com/app/settings/integrations/developer</string>
 
     <string name="items_item_label">Items</string>
-    <string name="items_item_icon_content_description">Items icon</string>
+    <string name="items_item_icon_content_description">Items</string>
     <string name="settings_item_label">Settings</string>
-    <string name="settings_item_icon_content_description">Settings icon</string>
+    <string name="settings_item_icon_content_description">Settings</string>
 </resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_title">Nu kör vi!</string>
+    <string name="item_one_icon_content_description">Punkt ett</string>
+    <string name="item_one_description">Besök länken ovan och kopiera API-token</string>
+    <string name="item_two_icon_content_description">Punkt två</string>
+    <string name="login_input_field_label">API-token</string>
+    <string name="password_icon_visible_content_description">Lösenordet är synligt</string>
+    <string name="password_icon_no_visible_content_description">Lösenordet är dolt</string>
+    <string name="input_field_supporting_text">Klistra in API-token och klicka på Login</string>
+    <string name="login_button_icon_content_description">Logga in</string>
+    <string name="login_error">Kontrollera din API-token och försök igen.</string>
+</resources>
