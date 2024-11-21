@@ -36,6 +36,7 @@ android {
 
     defaultConfig {
         applicationId = "se.yverling.wearto"
+        targetSdk = Versions.targetSdk
 
         versionCode = 10000 // Version & release number
         versionName = "1.0.0"

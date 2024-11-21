@@ -44,6 +44,7 @@ android {
 
     defaultConfig {
         minSdk = Versions.minSdk
+        targetSdk = Versions.targetSdk
 
         applicationId = "se.yverling.wearto"
 

@@ -7,18 +7,17 @@ hilt = "2.52"
 # Plugins
 android = "8.7.2"
 kotlin-dsl-plugin = "5.1.2"
-ksp = "2.0.21-1.0.26"
+ksp = "2.0.21-1.0.28"
 hilt-navigation-compose = "1.2.0"
 protobuf-plugin = "0.9.4"
-versions-plugin = "0.51.0"
 
 # Libraries
-compose-bom = "2024.10.01"
+compose-bom = "2024.11.00"
 compose-activity = "1.9.3"
 compose-lifecycle = "2.8.7"
-compose-navigation = "2.8.3"
+compose-navigation = "2.8.4"
 wear-tooling-preview = "1.0.0"
-wear-compose-material3 = "1.0.0-alpha28"
+wear-compose-material3 = "1.0.0-alpha29"
 wear-compose-version = "1.4.0"
 horologist-compose = "0.6.20"
 
@@ -26,13 +25,13 @@ timber = "5.0.1"
 kotlinx-serialization = "1.7.3"
 datastore = "1.1.1"
 
-protobuf = "4.27.3"
+protobuf = "4.28.3"
 # This needs to be synced with protobuf
 protobufCompilerArtifact = "com.google.protobuf:protoc:4.27.3:osx-x86_64"
 
 playServices-wearable = "18.2.0"
 horologist-datalayer = "0.6.20"
-ktor = "3.0.0"
+ktor = "3.0.1"
 room = "2.6.1"
 
 junit = "5.11.3"
@@ -100,7 +99,6 @@ hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobuf-plugin" }
-versions = { id = "com.github.ben-manes.versions", version.ref = "versions-plugin" }
 
 [bundles]
 hilt = [
