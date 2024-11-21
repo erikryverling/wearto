@@ -10,13 +10,9 @@ internal class TokenRepositoryImpl @Inject constructor(
 ) : TokenRepository {
     override fun getToken() = dataStore.tokenFlow
 
-    override suspend fun setToken(token: String) {
-        dataStore.persistToken(token)
-    }
+    override suspend fun setToken(token: String) = dataStore.persistToken(token)
 
-    override suspend fun clearToken() {
-        dataStore.clearToken()
-    }
+    override suspend fun clearToken() = dataStore.clearToken()
 
     override fun hasToken(): Flow<Boolean> = getToken().map { it != null }
 }

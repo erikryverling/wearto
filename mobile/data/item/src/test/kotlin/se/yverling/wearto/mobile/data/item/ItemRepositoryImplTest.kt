@@ -30,7 +30,7 @@ private class ItemRepositoryImplTest {
     lateinit var repository: ItemRepositoryImpl
 
     @Test
-    fun `addItem should call SettingsRepository and SettingsRepository`() = runTest {
+    fun `addItem should call SettingsRepository and TasksEndpoint`() = runTest {
         every { settingsRepositoryMock.getProject() } returns flowOf(Project(id = "Id", name = "Project"))
 
         mockResponse(HttpStatusCode.OK)

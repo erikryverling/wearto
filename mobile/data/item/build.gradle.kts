@@ -13,8 +13,8 @@ dependencies {
     implementation(project(":mobile:data:settings"))
     implementation(project(":test:utils"))
 
-    implementation(libs.bundles.hilt)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.bundles.hilt)
 
     implementation(libs.bundles.ktor)
 

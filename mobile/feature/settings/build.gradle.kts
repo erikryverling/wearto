@@ -9,6 +9,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":common:ui"))
     implementation(project(":mobile:common:design-system"))
     implementation(project(":mobile:common:network"))
     implementation(project(":mobile:data:items"))
@@ -18,7 +19,7 @@ dependencies {
 
     ksp(libs.hilt.android.compiler)
     implementation(libs.bundles.hilt)
-    implementation(libs.hilt.navigation)
+    implementation(libs.hilt.navigation.compose)
 
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose.mobile)

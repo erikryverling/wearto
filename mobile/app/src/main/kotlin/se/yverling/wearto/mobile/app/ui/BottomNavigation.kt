@@ -1,6 +1,5 @@
 package se.yverling.wearto.mobile.app.ui
 
-
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -14,16 +13,16 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 internal fun BottomNavigation(
-    modifier: Modifier = Modifier,
-    navController: NavController,
     items: List<NavigationItem>,
+    navController: NavController,
+    modifier: Modifier = Modifier,
 ) {
     NavigationBar(modifier = modifier) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
         items.forEach { item ->
-            val selected = (currentRoute == item.route)
+            val selected = currentRoute == item.route
 
             NavigationBarItem(
                 label = { Text(stringResource(item.title)) },
@@ -34,9 +33,7 @@ internal fun BottomNavigation(
                     )
                 },
                 selected = selected,
-                onClick = {
-                    navController.navigate(item.route)
-                }
+                onClick = { navController.navigate(item.route) }
             )
         }
     }

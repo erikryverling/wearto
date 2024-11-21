@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import se.yverling.wearto.test.MainDispatcherExtension
-import se.yverling.wearto.wear.data.items.ItemsRepositoryImpl
 import se.yverling.wearto.wear.data.items.db.AppDatabase
 import se.yverling.wearto.wear.data.items.model.Item
 
@@ -19,24 +18,26 @@ private class ItemsRepositoryImplTest {
     @RelaxedMockK
     lateinit var dbMock: AppDatabase
 
-    lateinit var itemsRepositoryImpl: ItemsRepositoryImpl
+    lateinit var repository: ItemsRepositoryImpl
 
     val item = Item(name = "name")
 
     @BeforeEach
     fun setUp() {
-        itemsRepositoryImpl = ItemsRepositoryImpl(db = dbMock)
+        repository = ItemsRepositoryImpl(db = dbMock)
     }
 
     @Test
     fun `getItems() should call dao correctly`() = runTest {
-        itemsRepositoryImpl.getItems()
+        repository.getItems()
+
         verify { dbMock.itemsDao().getItems() }
     }
 
     @Test
     fun `replaceItems() should call dao correctly`() = runTest {
-        itemsRepositoryImpl.replaceItems(listOf(item))
+        repository.replaceItems(listOf(item))
+
         coVerify { dbMock.itemsDao().deleteAllItems() }
         coVerify { dbMock.itemsDao().setItems(any()) }
     }

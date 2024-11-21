@@ -29,6 +29,9 @@ import se.yverling.wearto.test.MainDispatcherExtension
 @ExtendWith(MockKExtension::class)
 @ExtendWith(MainDispatcherExtension::class)
 private class SettingsViewModelTest {
+    val project1 = Project(id = "0", name = "Project1")
+    val project2 = Project(id = "1", name = "Project2")
+
     @RelaxedMockK
     lateinit var settingsRepositoryMock: SettingsRepository
 
@@ -142,9 +145,4 @@ private class SettingsViewModelTest {
         tokenRepositoryMock,
         itemsRepositoryMock
     )
-
-    companion object {
-        val project1 = Project(id = "0", name = "Project1")
-        val project2 = Project(id = "1", name = "Project2")
-    }
 }

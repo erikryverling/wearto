@@ -15,7 +15,7 @@ dependencies {
 
     ksp(libs.hilt.android.compiler)
     implementation(libs.bundles.hilt)
-    implementation(libs.hilt.navigation)
+    implementation(libs.hilt.navigation.compose)
 
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose.wear)

@@ -21,6 +21,7 @@ internal class CryptoManager @Inject constructor() {
     fun encrypt(bytes: ByteArray, outputStream: DataOutputStream): ByteArray {
         val encryptCipher = getEncryptCipher()
         val encryptedBytes = encryptCipher.doFinal(bytes)
+
         outputStream.use {
             it.write(encryptCipher.iv.size)
             it.write(encryptCipher.iv)

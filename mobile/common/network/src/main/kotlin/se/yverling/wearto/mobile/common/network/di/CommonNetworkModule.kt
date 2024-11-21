@@ -22,21 +22,14 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class DataSettingsModule {
+class CommonNetworkModule {
     @Singleton
     @Provides
     @Named("todoist")
     fun provideTodoistHttpClient(tokenRepository: TokenRepository): HttpClient {
         val client = HttpClient(CIO) {
-            install(ContentNegotiation) {
-                json(Json {
-                    ignoreUnknownKeys = true
-                })
-            }
-
-            defaultRequest {
-                url(BASE_URL)
-            }
+            install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
+            defaultRequest { url(BASE_URL) }
         }
 
         client.plugin(HttpSend).intercept { request ->

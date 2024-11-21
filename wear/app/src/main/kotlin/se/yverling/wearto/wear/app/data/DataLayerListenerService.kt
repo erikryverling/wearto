@@ -1,4 +1,4 @@
-package se.yverling.wearto.wear.app.ui
+package se.yverling.wearto.wear.app.data
 
 import android.os.VibrationEffect
 import android.os.VibratorManager
@@ -17,7 +17,6 @@ import se.yverling.wearto.wear.data.items.ItemsRepository
 import se.yverling.wearto.wear.data.items.model.Item
 import se.yverling.wearto.wear.data.items.model.ItemState
 import se.yverling.wearto.wear.data.items.model.ItemState.*
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -42,8 +41,6 @@ class DataLayerListenerService : WearableListenerService() {
                 val item = event.dataItem
                 if (item.uri.path == ITEMS_PATH) {
                     DataMapItem.fromDataItem(item).dataMap.getStringArrayList(ITEMS_KEY)?.let { itemsAsStrings ->
-                        Timber.tag("WearTo").d("Got add items request for $itemsAsStrings")
-
                         val items = itemsAsStrings.map { Item(name = it) }
 
                         vibratorManager.defaultVibrator.vibrate(
@@ -71,7 +68,6 @@ class DataLayerListenerService : WearableListenerService() {
     }
 
     private fun confirmState(itemName: String, state: ItemState) {
-        Timber.tag("WearTo").d("Got $state for $itemName")
         serviceScope.launch {
             itemsRepository.updateItemState(itemName, state)
             delay(CONFIRMATION_DELAY)

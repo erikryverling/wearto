@@ -44,7 +44,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -64,11 +63,11 @@ data class LoginRoute(@StringRes val errorMessage: Int? = null)
 
 @Composable
 fun LoginScreen(
+    onLogin: () -> Unit,
+    onOpenUrl: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
     errorMessage: Int? = null,
-    onOpenUrl: () -> Unit,
-    onLogin: () -> Unit,
 ) {
     var errorMessage by remember { mutableStateOf(errorMessage) }
 
@@ -80,8 +79,10 @@ fun LoginScreen(
                 if (token.isBlank()) {
                     errorMessage = R.string.login_error
                 } else {
-                    viewModel.setToken(token)
-                    onLogin()
+                    scope.launch {
+                        viewModel.setToken(token)
+                        onLogin()
+                    }
                 }
             }
         },
@@ -120,118 +121,150 @@ fun MainContent(
                 color = MaterialTheme.colorScheme.tertiary
             )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = VeryLargeSpace),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .padding(end = DefaultSpace, top = ItemOneTopPadding)
-                        .size(ItemIconSize),
-                    imageVector = Icons.Default.LooksOne,
-                    tint = MaterialTheme.colorScheme.tertiary,
-                    contentDescription = stringResource(R.string.item_one_icon_content_description),
-                )
-
-                Column {
-                    TextButton(onClick = onOpenUrl) {
-                        Text(
-                            stringResource(R.string.todoist_link),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-
-                    Text(
-                        modifier = Modifier.padding(start = ItemOneDescriptionStartPadding),
-                        text = stringResource(R.string.item_one_description),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
+            ItemOne {
+                onOpenUrl()
             }
 
-            var inputValue by remember { mutableStateOf("") }
+            var apiTokenInputValue by remember { mutableStateOf("") }
 
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = VeryLargeSpace),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .padding(end = DefaultSpace, top = ItemTwoTopPadding)
-                        .size(ItemIconSize),
-                    imageVector = Icons.Default.LooksTwo,
-                    tint = MaterialTheme.colorScheme.tertiary,
-                    contentDescription = stringResource(R.string.item_one_icon_content_description),
-                )
-
-                var showPassword by remember { mutableStateOf(value = false) }
-                val keyboardController = LocalSoftwareKeyboardController.current
-
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
-                    isError = errorMessage != null,
-                    supportingText = {
-                        if (errorMessage != null) Text(stringResource(errorMessage))
-                        else Text(stringResource(R.string.input_field_supporting_text))
-                    },
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            keyboardController?.hide()
-                            onLogin(inputValue)
-                        }
-                    ),
-                    value = inputValue,
-                    singleLine = true,
-                    label = { Text(stringResource(R.string.login_input_field_label)) },
-                    onValueChange = { inputValue = it },
-                    trailingIcon = {
-                        if (showPassword) {
-                            IconButton(onClick = { showPassword = false }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Visibility,
-                                    contentDescription = stringResource(R.string.password_icon_visible_content_description)
-                                )
-                            }
-                        } else {
-                            IconButton(
-                                onClick = { showPassword = true }) {
-                                Icon(
-                                    imageVector = Icons.Filled.VisibilityOff,
-                                    contentDescription = stringResource(R.string.password_icon_no_visible_content_description)
-                                )
-                            }
-                        }
-                    }
-                )
+            ItemTwo(apiTokenInputValue, errorMessage) { inputValue ->
+                apiTokenInputValue = inputValue
             }
 
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    onLogin(inputValue)
-                }
-            ) {
-                Icon(
-                    modifier = Modifier.padding(end = DefaultSpace),
-                    imageVector = Icons.AutoMirrored.Default.Login,
-                    contentDescription = stringResource(R.string.login_button_icon_content_description),
-                )
-
-                Text(
-                    text = "Login",
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
+            LoginButton {
+                onLogin(apiTokenInputValue)
             }
         }
+    }
+}
+
+@Composable
+private fun ItemOne(
+    modifier: Modifier = Modifier,
+    onOpenUrl: () -> Unit,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = VeryLargeSpace),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Icon(
+            modifier = Modifier
+                .padding(end = DefaultSpace, top = ItemOneTopPadding)
+                .size(ItemIconSize),
+            imageVector = Icons.Default.LooksOne,
+            tint = MaterialTheme.colorScheme.tertiary,
+            contentDescription = stringResource(R.string.item_one_icon_content_description),
+        )
+
+        Column {
+            TextButton(onClick = onOpenUrl) {
+                Text(
+                    stringResource(R.string.todoist_link),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+            Text(
+                modifier = Modifier.padding(start = ItemOneDescriptionStartPadding),
+                text = stringResource(R.string.item_one_description),
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
+
+@Composable
+private fun ItemTwo(
+    inputValue: String,
+    errorMessage: Int?,
+    onInputValueChanged: (String) -> Unit,
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(bottom = VeryLargeSpace),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Icon(
+            modifier = Modifier
+                .padding(end = DefaultSpace, top = ItemTwoTopPadding)
+                .size(ItemIconSize),
+            imageVector = Icons.Default.LooksTwo,
+            tint = MaterialTheme.colorScheme.tertiary,
+            contentDescription = stringResource(R.string.item_one_icon_content_description),
+        )
+
+        var showPassword by remember { mutableStateOf(value = false) }
+        val keyboardController = LocalSoftwareKeyboardController.current
+
+        OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
+
+            isError = errorMessage != null,
+
+            supportingText = {
+                if (errorMessage != null) Text(stringResource(errorMessage))
+                else Text(stringResource(R.string.input_field_supporting_text))
+            },
+
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+            ),
+
+            value = inputValue,
+            singleLine = true,
+            label = { Text(stringResource(R.string.login_input_field_label)) },
+
+            onValueChange = { onInputValueChanged(it) },
+
+            trailingIcon = {
+                if (showPassword) {
+                    IconButton(onClick = { showPassword = false }) {
+                        Icon(
+                            imageVector = Icons.Filled.Visibility,
+                            contentDescription = stringResource(R.string.password_icon_visible_content_description)
+                        )
+                    }
+                } else {
+                    IconButton(
+                        onClick = { showPassword = true }) {
+                        Icon(
+                            imageVector = Icons.Filled.VisibilityOff,
+                            contentDescription = stringResource(R.string.password_icon_no_visible_content_description)
+                        )
+                    }
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun LoginButton(onClick: () -> Unit) {
+    Button(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick
+    ) {
+        Icon(
+            modifier = Modifier.padding(end = DefaultSpace),
+            imageVector = Icons.AutoMirrored.Default.Login,
+            contentDescription = stringResource(R.string.login_button_icon_content_description),
+        )
+
+        Text(
+            text = stringResource(R.string.login_button_label),
+            color = MaterialTheme.colorScheme.onPrimary
+        )
     }
 }
 
@@ -252,5 +285,55 @@ private fun LoginScreenPreview() {
                 onOpenUrl = {},
             )
         }
+    }
+}
+
+@Preview(
+    name = "Light Mode"
+)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun ItemOnePreview() {
+    WearToTheme {
+        Surface {
+            ItemOne {}
+        }
+    }
+}
+
+@Preview(
+    name = "Light Mode"
+)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun ItemTwoPreview() {
+    WearToTheme {
+        Surface {
+            ItemTwo(
+                inputValue = "",
+                errorMessage = R.string.login_error,
+                onInputValueChanged = {}
+            )
+        }
+    }
+}
+
+@Preview(
+    name = "Light Mode"
+)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun LoginButtonPreview() {
+    WearToTheme {
+        LoginButton {}
     }
 }

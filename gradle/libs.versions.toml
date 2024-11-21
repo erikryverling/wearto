@@ -29,8 +29,7 @@ protobuf = "4.28.3"
 # This needs to be synced with protobuf
 protobufCompilerArtifact = "com.google.protobuf:protoc:4.27.3:osx-x86_64"
 
-playServices-wearable = "18.2.0"
-horologist-datalayer = "0.6.20"
+playServices-wearable = "19.0.0"
 ktor = "3.0.1"
 room = "2.6.1"
 
@@ -43,7 +42,7 @@ turbine = "1.2.0"
 [libraries]
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
-hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
 
 # https://developer.android.com/develop/ui/compose/bom/bom-mapping
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
@@ -61,7 +60,6 @@ wear-tooling-preview = { module = "androidx.wear:wear-tooling-preview", version.
 horologist-compose-layout = { module = "com.google.android.horologist:horologist-compose-layout", version.ref = "horologist-compose" }
 horologist-compose-material = { module = "com.google.android.horologist:horologist-compose-material", version.ref = "horologist-compose" }
 
-
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 playServices-wearable = { module = "com.google.android.gms:play-services-wearable", version.ref = "playServices-wearable" }
 
@@ -70,9 +68,6 @@ protobuf = { module = "com.google.protobuf:protobuf-javalite", version.ref = "pr
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-
-horologist-datalayer-watch = { module = "com.google.android.horologist:horologist-datalayer-watch", version.ref = "horologist-datalayer" }
-horologist-datalayer-phone = { module = "com.google.android.horologist:horologist-datalayer-phone", version.ref = "horologist-datalayer" }
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }

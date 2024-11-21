@@ -23,21 +23,19 @@ class ItemsViewModel @Inject constructor(
     tokenRepository: TokenRepository,
     private val itemsRepository: ItemsRepository,
 ) : ViewModel() {
-    internal var uiState: StateFlow<UiState> = tokenRepository.hasToken()
-        .flatMapConcat { hasToken ->
-            if (!hasToken) {
-                flowOf(LoggedOut(hasToken = false))
-            } else {
-                itemsRepository.getItems().map {
-                    UiState.Success(items = it)
-                }
-
+    internal var uiState: StateFlow<UiState> = tokenRepository.hasToken().flatMapConcat { hasToken ->
+        if (!hasToken) {
+            flowOf(LoggedOut(hasToken = false))
+        } else {
+            itemsRepository.getItems().map {
+                UiState.Success(items = it)
             }
-        }.stateIn(
-            scope = viewModelScope,
-            initialValue = Loading,
-            started = SharingStarted.WhileSubscribed()
-        )
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        initialValue = Loading,
+        started = SharingStarted.WhileSubscribed()
+    )
 
     internal suspend fun setItem(item: Item) {
         itemsRepository.setItem(item)

@@ -1,4 +1,4 @@
-package se.yverling.wearto.mobile.common.ui
+package se.yverling.wearto.common.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

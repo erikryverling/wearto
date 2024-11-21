@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.flow
 import se.yverling.wearto.mobile.data.settings.datastore.ProjectDataStore
 import se.yverling.wearto.mobile.data.settings.model.Project
 import se.yverling.wearto.mobile.data.settings.network.ProjectsEndpoint
-import se.yverling.wearto.mobile.data.settings.network.dto.ProjectDTO
+import se.yverling.wearto.mobile.data.settings.network.dto.ProjectDto
 import se.yverling.wearto.mobile.data.settings.network.dto.toSortedProjects
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ internal class SettingsRepositoryImpl @Inject constructor(
         val response = projectsEndpoint.getProjects()
 
         when (response.status.value) {
-            HttpStatusCode.OK.value -> emit(response.body<List<ProjectDTO>>().toSortedProjects())
+            HttpStatusCode.OK.value -> emit(response.body<List<ProjectDto>>().toSortedProjects())
             else -> throw IllegalStateException("Get projects request failed")
         }
     }

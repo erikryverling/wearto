@@ -1,17 +1,17 @@
-package se.yverling.wearto.mobile.app.ui
+package se.yverling.wearto.mobile.app.data
 
+import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.DataMapItem
 import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import se.yverling.wearto.mobile.data.item.ItemRepository
 import timber.log.Timber
 import java.util.UUID
@@ -21,6 +21,9 @@ import javax.inject.Inject
 class DataLayerListenerService : WearableListenerService() {
     @Inject
     internal lateinit var itemRepository: ItemRepository
+
+    @Inject
+    internal lateinit var dataClient: DataClient
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -35,10 +38,10 @@ class DataLayerListenerService : WearableListenerService() {
                 val item = event.dataItem
                 if (item.uri.path == ITEM_PATH) {
                     DataMapItem.fromDataItem(item).dataMap.getString(ITEM_KEY).let { itemName ->
-                        Timber.tag("WearTo").d("Got add item request for $itemName")
                         if (itemName == null) throw IllegalArgumentException("Item name is null")
-                        serviceScope.launch {
 
+                        // We need to make sure that the service is not destroyed while the request is running
+                        runBlocking {
                             var isSuccessful = try {
                                 itemRepository.addItem(itemName)
                                 true
@@ -47,10 +50,7 @@ class DataLayerListenerService : WearableListenerService() {
                                 false
                             }
 
-                            confirmItem(
-                                itemName = itemName,
-                                isSuccess = isSuccessful
-                            )
+                            confirmItem(itemName, isSuccessful)
                         }
                     }
                 }
@@ -69,8 +69,6 @@ class DataLayerListenerService : WearableListenerService() {
 
         val request = dataMapRequest.asPutDataRequest()
         dataMapRequest.setUrgent()
-
-        val dataClient = Wearable.getDataClient(this)
 
         dataClient.putDataItem(request)
             .addOnFailureListener {

@@ -38,9 +38,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.launch
+import se.yverling.wearto.common.ui.LoadingScreen
 import se.yverling.wearto.mobile.common.design.theme.DefaultSpace
 import se.yverling.wearto.mobile.common.design.theme.LargeSpace
 import se.yverling.wearto.mobile.common.design.theme.MaxWith
@@ -68,22 +68,19 @@ enum class LogoutReason {
 
 @Composable
 fun SettingsScreen(
+    onLoggedOut: (LogoutReason) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
-    onLoggedOut: (LogoutReason) -> Unit,
 ) {
-    val projectState by viewModel.projectState.collectAsState()
-    val projectsState by viewModel.projectsState.collectAsState()
     val scope = rememberCoroutineScope()
 
+    val projectState by viewModel.projectState.collectAsState()
+    val projectsState by viewModel.projectsState.collectAsState()
+
     when (projectState) {
-        Loading -> {
-            // Ignore
-        }
+        Loading -> LoadingScreen()
 
         is Success -> {
-            val successState = (projectState as Success)
-
             val projects by remember {
                 derivedStateOf {
                     if (projectsState is ProjectsUiState.Success) {
@@ -93,6 +90,8 @@ fun SettingsScreen(
                     }
                 }
             }
+
+            val successState = (projectState as Success)
 
             MainContent(
                 project = successState.project,
@@ -153,67 +152,35 @@ private fun MainContent(
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(stringResource(R.string.title), style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.setting_title), style = MaterialTheme.typography.titleLarge)
 
             var dropDownExpanded by remember { mutableStateOf(false) }
-            Box(
-                modifier = Modifier
-                    .padding(top = DefaultSpace)
-                    .wrapContentSize(Alignment.TopStart)
-            ) {
 
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { dropDownExpanded = !dropDownExpanded }
-                ) {
-                    Text(project ?: stringResource(R.string.drop_down_button_empty_state_description))
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = stringResource(R.string.drop_down_content_description),
-                    )
-                }
+            DropDownMenu(
+                selectedProject = project,
+                projects = projects,
+                dropDownExpanded = dropDownExpanded,
 
-                DropdownMenu(
-                    modifier = Modifier
-                        .fillMaxHeight(DropDownMenuHeightInPercent)
-                        .fillMaxWidth(DropDownMenuWidthInPercent),
-                    expanded = dropDownExpanded,
-                    onDismissRequest = { dropDownExpanded = false }
-                ) {
-                    if (projects.isEmpty()) {
-                        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                            CircularProgressIndicator()
-                        }
-                    } else {
-                        projects.map { project ->
-                            DropdownMenuItem(
-                                text = { Text(project.name) },
-                                onClick = {
-                                    onProjectSelected(project)
-                                    dropDownExpanded = false
-                                }
-                            )
-                        }
-                    }
+                onShowMenu = {
+                    dropDownExpanded = true
+                },
+
+                onDismissMenu = {
+                    dropDownExpanded = false
+                },
+
+                onItemClick = { project ->
+                    onProjectSelected(project)
+                    dropDownExpanded = false
                 }
-            }
+            )
 
             Spacer(modifier = Modifier.weight(1f))
 
             var showDialog by remember { mutableStateOf(false) }
 
-            OutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    showDialog = true
-                }
-            ) {
-                Icon(
-                    modifier = Modifier.padding(end = DefaultSpace),
-                    imageVector = Icons.AutoMirrored.Default.Logout,
-                    contentDescription = stringResource(R.string.logout_button_icon_content_description),
-                )
-                Text("Logout")
+            LogoutButton {
+                showDialog = true
             }
 
             if (showDialog) {
@@ -226,6 +193,73 @@ private fun MainContent(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun DropDownMenu(
+    selectedProject: String?,
+    projects: List<Project>,
+    dropDownExpanded: Boolean,
+    onShowMenu: () -> Unit,
+    onDismissMenu: () -> Unit,
+    onItemClick: (Project) -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .padding(top = DefaultSpace)
+            .wrapContentSize(Alignment.TopStart)
+    ) {
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = { onShowMenu() }
+        ) {
+            Text(selectedProject ?: stringResource(R.string.drop_down_button_empty_state_description))
+
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
+                contentDescription = stringResource(R.string.drop_down_content_description),
+            )
+        }
+
+        DropdownMenu(
+            modifier = Modifier
+                .fillMaxHeight(DropDownMenuHeightInPercent)
+                .fillMaxWidth(DropDownMenuWidthInPercent),
+            expanded = dropDownExpanded,
+            onDismissRequest = { onDismissMenu() }
+        ) {
+            if (projects.isEmpty()) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                projects.map { project ->
+                    DropdownMenuItem(
+                        text = { Text(project.name) },
+                        onClick = { onItemClick(project) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LogoutButton(onLogout: () -> Unit) {
+    OutlinedButton(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onLogout
+    ) {
+        Icon(
+            modifier = Modifier.padding(end = DefaultSpace),
+            imageVector = Icons.AutoMirrored.Default.Logout,
+            contentDescription = stringResource(R.string.logout_button_icon_content_description),
+        )
+        Text(stringResource(R.string.logout_button_label))
     }
 }
 
@@ -274,6 +308,45 @@ private fun MainContentPreview() {
                 onProjectSelected = {},
                 onLogout = {}
             )
+        }
+    }
+}
+
+@Preview(
+    name = "Light Mode"
+)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun DropDrownMenuPreview() {
+    WearToTheme {
+        Surface {
+            DropDownMenu(
+                selectedProject = "Livsmedel",
+                projects = emptyList(),
+                dropDownExpanded = false,
+                onShowMenu = {},
+                onDismissMenu = {},
+                onItemClick = {}
+            )
+        }
+    }
+}
+
+@Preview(
+    name = "Light Mode"
+)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun LogoutButtonPreview() {
+    WearToTheme {
+        Surface {
+            LogoutButton { }
         }
     }
 }

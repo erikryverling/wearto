@@ -11,11 +11,12 @@ plugins {
 dependencies {
     implementation(project(":mobile:data:token"))
 
-    implementation(libs.bundles.hilt)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.bundles.hilt)
+
+    implementation(libs.bundles.ktor)
 
     implementation(libs.timber)
-    implementation(libs.bundles.ktor)
 
     testImplementation(libs.bundles.unitTest)
 }

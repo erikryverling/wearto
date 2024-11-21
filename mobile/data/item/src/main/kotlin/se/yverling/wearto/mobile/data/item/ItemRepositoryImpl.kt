@@ -13,7 +13,7 @@ class ItemRepositoryImpl @Inject constructor(
     override suspend fun addItem(itemName: String) {
         val project = settingsRepository.getProject().first()
 
-        if (project == null) throw IllegalStateException("No item selected")
+        if (project == null) throw IllegalStateException("No project selected")
 
         val response = tasksEndpoint.addTask(
             projectId = project.id,

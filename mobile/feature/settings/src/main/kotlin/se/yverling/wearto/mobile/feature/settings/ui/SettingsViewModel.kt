@@ -23,28 +23,28 @@ class SettingsViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val itemsRepository: ItemsRepository,
 ) : ViewModel() {
+    internal var projectState = settingsRepository.getProject().map {
+        ProjectUiState.Success(it?.name)
+    }.stateIn(
+        scope = viewModelScope,
+        initialValue = ProjectUiState.Loading,
+        started = SharingStarted.WhileSubscribed()
+    )
 
-    internal var projectState = settingsRepository.getProject().map { ProjectUiState.Success(it?.name) }
-        .stateIn(
-            scope = viewModelScope,
-            initialValue = ProjectUiState.Loading,
-            started = SharingStarted.WhileSubscribed()
-        )
-
-    internal var projectsState = settingsRepository.getProjects().map { ProjectsUiState.Success(it) as ProjectsUiState }
-        .catch { throwable ->
-            val state: ProjectsUiState = when (throwable) {
-                is InvalidTokenException -> LoggedOut(hasToken = true)
-                is NoTokenException -> LoggedOut(hasToken = false)
-                else -> ProjectsUiState.Error
-            }
-            emit(state)
+    internal var projectsState = settingsRepository.getProjects().map {
+        ProjectsUiState.Success(it) as ProjectsUiState
+    }.catch { throwable ->
+        val state: ProjectsUiState = when (throwable) {
+            is InvalidTokenException -> LoggedOut(hasToken = true)
+            is NoTokenException -> LoggedOut(hasToken = false)
+            else -> ProjectsUiState.Error
         }
-        .stateIn(
-            scope = viewModelScope,
-            initialValue = ProjectsUiState.Loading,
-            started = SharingStarted.WhileSubscribed()
-        )
+        emit(state)
+    }.stateIn(
+        scope = viewModelScope,
+        initialValue = ProjectsUiState.Loading,
+        started = SharingStarted.WhileSubscribed()
+    )
 
     suspend fun setProject(project: Project) {
         settingsRepository.setProject(project)

@@ -1,7 +1,9 @@
 package se.yverling.wearto.mobile.feature.login.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import se.yverling.wearto.mobile.data.token.TokenRepository
 import javax.inject.Inject
 

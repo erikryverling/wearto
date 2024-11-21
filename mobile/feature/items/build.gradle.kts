@@ -14,12 +14,12 @@ dependencies {
     implementation(project(":mobile:common:network"))
     implementation(project(":mobile:data:items"))
     implementation(project(":mobile:data:token"))
-    implementation(project(":test:utils"))
     implementation(project(":mobile:feature:settings"))
+    implementation(project(":test:utils"))
 
     ksp(libs.hilt.android.compiler)
     implementation(libs.bundles.hilt)
-    implementation(libs.hilt.navigation)
+    implementation(libs.hilt.navigation.compose)
 
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose.mobile)

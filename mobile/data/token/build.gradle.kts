@@ -8,12 +8,13 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.bundles.hilt)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.bundles.hilt)
 
-    implementation(libs.timber)
     implementation(libs.datastore.preferences)
     implementation(libs.kotlinx.serialization)
+
+    implementation(libs.timber)
 
     testImplementation(libs.bundles.unitTest)
 }

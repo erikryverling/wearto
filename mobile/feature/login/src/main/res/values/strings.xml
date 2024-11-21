@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="login_title">Let\'s get started!</string>
+
     <string name="item_one_icon_content_description">First item</string>
-    <string name="todoist_link" translatable="false">https://app.todoist.com/app/settings/integrations/developer</string>
     <string name="item_one_description">Visit the above link and copy the API-token</string>
+    <string name="todoist_link" translatable="false">https://app.todoist.com/app/settings/integrations/developer</string>
 
     <string name="item_two_icon_content_description">Second item</string>
+
     <string name="login_input_field_label">API-token</string>
     <string name="password_icon_visible_content_description">Password is shown</string>
     <string name="password_icon_no_visible_content_description">Password is hidden</string>
     <string name="input_field_supporting_text">Paste the API-token then tap Login</string>
-
-    <string name="login_button_icon_content_description">Login button</string>
-
     <string name="login_error">Check your API-token and try again.</string>
+
+    <string name="login_button_label">Login</string>
+    <string name="login_button_icon_content_description">Login button</string>
 </resources>

@@ -9,8 +9,6 @@ plugins {
 dependencies {
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose.wear)
-
-    implementation(libs.timber)
 }
 
 android {

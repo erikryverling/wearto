@@ -20,7 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import se.yverling.wearto.mobile.data.settings.datastore.ProjectDataStore
 import se.yverling.wearto.mobile.data.settings.model.Project
 import se.yverling.wearto.mobile.data.settings.network.ProjectsEndpoint
-import se.yverling.wearto.mobile.data.settings.network.dto.ProjectDTO
+import se.yverling.wearto.mobile.data.settings.network.dto.ProjectDto
 
 @ExtendWith(MockKExtension::class)
 private class SettingsRepositoryImplTest {
@@ -45,8 +45,8 @@ private class SettingsRepositoryImplTest {
         val responseMock = mockk<HttpResponse>()
 
         val unSortedListOfProjectDtos = listOf(
-            ProjectDTO(id = "1", name = "B"),
-            ProjectDTO(id = "2", name = "A")
+            ProjectDto(id = "1", name = "B"),
+            ProjectDto(id = "2", name = "A")
         )
 
         val sortedListOfProjectModels = listOf(
@@ -55,7 +55,7 @@ private class SettingsRepositoryImplTest {
         )
 
         every { responseMock.status } returns HttpStatusCode.OK
-        coEvery { responseMock.body<List<ProjectDTO>>() } returns unSortedListOfProjectDtos
+        coEvery { responseMock.body<List<ProjectDto>>() } returns unSortedListOfProjectDtos
 
         coEvery { projectsEndpointMock.getProjects() } returns responseMock
 

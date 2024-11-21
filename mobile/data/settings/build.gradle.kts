@@ -14,8 +14,8 @@ plugins {
 dependencies {
     implementation(project(":mobile:common:network"))
 
-    implementation(libs.bundles.hilt)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.bundles.hilt)
 
     implementation(libs.bundles.ktor)
 

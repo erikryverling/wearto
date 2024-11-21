@@ -28,7 +28,7 @@ internal class TokenDataStoreSerializer @Inject constructor(
         } catch (e: NegativeArraySizeException) {
             Timber.d(e, "UserPreferences decrypt failed")
             defaultValue
-        } catch (e: Exception) { // SerializationException and BadPaddingException (Maybe more?)
+        } catch (e: Exception) {
             Timber.d(e, "UserPreferences serialization failed")
             defaultValue
         }

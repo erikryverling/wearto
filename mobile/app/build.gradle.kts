@@ -22,11 +22,11 @@ dependencies {
 
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose.mobile)
-    implementation(libs.hilt.navigation)
+    implementation(libs.hilt.navigation.compose)
+
+    implementation(libs.playServices.wearable)
 
     implementation(libs.timber)
-    implementation(libs.playServices.wearable)
-    implementation(libs.horologist.datalayer.phone)
 
     testImplementation(libs.bundles.unitTest)
 }
@@ -36,9 +36,27 @@ android {
 
     defaultConfig {
         applicationId = "se.yverling.wearto"
-        targetSdk = Versions.targetSdk
 
-        versionCode = 10000 // Version & release number
-        versionName = "1.0.0"
+        targetSdk = Versions.targetSdkMobile
+
+        // Target SDK, version, build number, multi-apk number (00 = mobile, 01 = wear)
+        versionCode = 352000000
+
+        versionName = "2.0.0"
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+        }
+
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+        }
     }
 }

@@ -19,40 +19,39 @@ private class ItemsRepositoryImplTest {
     @RelaxedMockK
     lateinit var dbMock: AppDatabase
 
-    lateinit var itemsRepositoryImpl: ItemsRepositoryImpl
+    lateinit var repository: ItemsRepositoryImpl
 
     val item = Item(name = "name")
 
     @BeforeEach
     fun setUp() {
-        itemsRepositoryImpl = ItemsRepositoryImpl(
-            db = dbMock
-        )
+        repository = ItemsRepositoryImpl(dbMock)
     }
 
     @Test
     fun `getItems() should call dao correctly`() = runTest {
-        itemsRepositoryImpl.getItems()
+        repository.getItems()
+
         verify { dbMock.itemsDao().getItems() }
     }
 
     @Test
     fun `setItem() should call dao correctly`() = runTest {
-        itemsRepositoryImpl.setItem(item)
+        repository.setItem(item)
 
         coVerify { dbMock.itemsDao().upsertItem(any<se.yverling.wearto.mobile.data.items.db.Item>()) }
     }
 
     @Test
     fun `deleteItem() should call dao correctly`() = runTest {
-        itemsRepositoryImpl.deleteItem(item)
+        repository.deleteItem(item)
 
         coVerify { dbMock.itemsDao().deleteItem(any<se.yverling.wearto.mobile.data.items.db.Item>()) }
     }
 
     @Test
     fun `clearItems() should call dao correctly`() = runTest {
-        itemsRepositoryImpl.clearItems()
+        repository.clearItems()
 
         coVerify { dbMock.itemsDao().deleteAllItems() }
     }

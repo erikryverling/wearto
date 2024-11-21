@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-internal const val DATASTORE_FILE_NAME = "token"
 
 internal class TokenDataSource @Inject constructor(
     @ApplicationContext context: Context,
@@ -33,5 +32,9 @@ internal class TokenDataSource @Inject constructor(
         withContext(Dispatchers.IO) {
             dataStore.updateData { null }
         }
+    }
+
+    companion object {
+        private const val DATASTORE_FILE_NAME = "token"
     }
 }

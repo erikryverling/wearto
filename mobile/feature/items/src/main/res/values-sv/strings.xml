@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title">Uppgifter</string>
-    <string name="add_button_description">Lägg till</string>
-    <string name="edit_item_description">Uppgift</string>
-    <string name="delete_button_label">Ta bort</string>
-    <string name="save_button_label">Spara</string>
+    <string name="items_title">Uppgifter</string>
+
+    <string name="empty_state_description">Inga uppgifter</string>
+
     <string name="item_input_field_label">Namn</string>
     <string name="clear_button_description">Rensa</string>
-    <string name="sync_action_description">Synka</string>
+
+    <string name="add_button_description">Lägg till</string>
     <string name="add_icon_description">Lägg till</string>
-    <string name="empty_state_description">Inga uppgifter</string>
+
+    <string name="edit_item_description">Uppgift</string>
+
+    <string name="delete_button_label">Ta bort</string>
+
+    <string name="save_button_label">Spara</string>
+
+    <string name="sync_action_description">Synka</string>
 </resources>

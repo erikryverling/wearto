@@ -13,5 +13,5 @@ internal data class Item(
     val name: String,
 )
 
-private fun Item.toModelItem() = ItemModel(uid = uid, name = name)
-internal fun List<Item>.toModelItems(): List<ItemModel> = map { it.toModelItem() }
+private fun Item.toModel() = ItemModel(uid = uid, name = name)
+internal fun List<Item>.toModels(): List<ItemModel> = map { it.toModel() }

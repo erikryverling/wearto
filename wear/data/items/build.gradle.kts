@@ -10,8 +10,8 @@ plugins {
 dependencies {
     implementation(project(":test:utils"))
 
-    implementation(libs.bundles.hilt)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.bundles.hilt)
 
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
@@ -20,7 +20,6 @@ dependencies {
 
     testImplementation(libs.bundles.unitTest)
 }
-
 
 android {
     namespace = "se.yverling.wearto.wear.data.items"

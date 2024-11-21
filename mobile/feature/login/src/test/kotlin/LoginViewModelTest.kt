@@ -15,7 +15,7 @@ private class LoginViewModelTest {
     lateinit var tokenRepositoryMock: TokenRepository
 
     @Test
-    fun `setToken should call repository`() = runTest {
+    fun `setToken should call TokenRepository`() = runTest {
         val viewModel = LoginViewModel(tokenRepositoryMock)
 
         viewModel.setToken("Token")

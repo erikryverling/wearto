@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="setting_title">Todoist project to sync with</string>
+
     <string name="drop_down_content_description">Drop down</string>
-    <string name="logout_button_icon_content_description">Log out</string>
-    <string name="logout_dialog_icon_content_description">Warning</string>
+
+    <string name="drop_down_button_loading_state_description">Loading</string>
+    <string name="drop_down_button_empty_state_description">No project selected</string>
+
     <string name="logout_dialog_title">Warning</string>
+    <string name="logout_dialog_icon_content_description">Warning</string>
     <string name="logout_dialog_text">Do you really want to logout? All your data will be erased.</string>
     <string name="logout_dialog_confirm">Log out</string>
     <string name="logout_dialog_dismiss">Cancel</string>
-    <string name="drop_down_button_loading_state_description">Loading</string>
-    <string name="drop_down_button_empty_state_description">No project selected</string>
-    <string name="title">Todoist project to sync with</string>
+
+
+    <string name="logout_button_label">Log out</string>
+    <string name="logout_button_icon_content_description">Log out</string>
 </resources>

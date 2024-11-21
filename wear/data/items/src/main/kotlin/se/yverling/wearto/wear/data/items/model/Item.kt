@@ -8,5 +8,5 @@ data class Item(
     val state: ItemState = ItemState.Init,
 )
 
-internal fun Item.toEntity() = ItemEntity(uid = uid, name = name)
+private fun Item.toEntity() = ItemEntity(uid = uid, name = name)
 internal fun List<Item>.toEntities(): List<ItemEntity> = map { it.toEntity() }
