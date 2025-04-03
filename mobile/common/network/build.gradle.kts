@@ -19,6 +19,7 @@ dependencies {
     implementation(libs.timber)
 
     testImplementation(libs.bundles.unitTest)
+    testRuntimeOnly(libs.unitTest.junit.platformLauncher)
 }
 
 android {

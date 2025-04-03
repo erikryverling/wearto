@@ -2,39 +2,40 @@
 
 # Global
 kotlin = "2.1.10"
-hilt = "2.55"
+hilt = "2.56.1"
 
 # Plugins
-android = "8.7.3"
+android = "8.9.1"
 kotlin-dsl-plugin = "5.2.0"
 ksp = "2.1.10-1.0.29"
 hilt-navigation-compose = "1.2.0"
 protobuf-plugin = "0.9.4"
 
 # Libraries
-compose-bom = "2025.01.01"
-compose-activity = "1.10.0"
+compose-bom = "2025.03.01"
+compose-activity = "1.10.1"
 compose-lifecycle = "2.8.7"
-compose-navigation = "2.8.6"
+compose-navigation = "2.8.9"
 wear-tooling-preview = "1.0.0"
-wear-compose-material3 = "1.0.0-alpha32"
-wear-compose-version = "1.4.0"
+wear-compose-material3 = "1.0.0-alpha35"
+wear-compose-version = "1.4.1"
 horologist-compose = "0.6.20"
 
 timber = "5.0.1"
-kotlinx-serialization = "1.8.0"
-datastore = "1.1.2"
+kotlinx-serialization = "1.8.1"
+datastore = "1.1.4"
 
-protobuf = "4.28.3"
+protobuf = "4.30.2"
 # This needs to be synced with protobuf
-protobufCompilerArtifact = "com.google.protobuf:protoc:4.27.3:osx-x86_64"
+protobufCompilerArtifact = "com.google.protobuf:protoc:4.30.2:osx-x86_64"
 
 playServices-wearable = "19.0.0"
-ktor = "3.0.3"
+ktor = "3.1.2"
 room = "2.6.1"
 
-junit = "5.11.4"
-mockk = "1.13.16"
+junit = "5.12.1"
+junit-platformLauncher = "1.12.1"
+mockk = "1.13.17"
 kotest-assertions = "5.9.1"
 coroutinesTest = "1.10.1"
 turbine = "1.2.0"
@@ -79,6 +80,8 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 
 unitTest-junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+unitTest-junit-platformLauncher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platformLauncher" }
+
 unitTest-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 unitTest-coroutines = { module = " org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 unitTest-kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-assertions" }
