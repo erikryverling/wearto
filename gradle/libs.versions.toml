@@ -1,29 +1,29 @@
 [versions]
 
 # Global
-kotlin = "2.1.10"
+kotlin = "2.1.20"
 hilt = "2.56.1"
 
 # Plugins
-android = "8.9.1"
+android = "8.9.2"
 kotlin-dsl-plugin = "5.2.0"
-ksp = "2.1.10-1.0.29"
+ksp = "2.1.20-1.0.32"
 hilt-navigation-compose = "1.2.0"
 protobuf-plugin = "0.9.4"
 
 # Libraries
-compose-bom = "2025.03.01"
+compose-bom = "2025.04.01"
 compose-activity = "1.10.1"
 compose-lifecycle = "2.8.7"
 compose-navigation = "2.8.9"
 wear-tooling-preview = "1.0.0"
-wear-compose-material3 = "1.0.0-alpha35"
+wear-compose-material3 = "1.0.0-alpha37"
 wear-compose-version = "1.4.1"
 horologist-compose = "0.6.20"
 
 timber = "5.0.1"
 kotlinx-serialization = "1.8.1"
-datastore = "1.1.4"
+datastore = "1.1.5"
 
 protobuf = "4.30.2"
 # This needs to be synced with protobuf
@@ -31,7 +31,7 @@ protobufCompilerArtifact = "com.google.protobuf:protoc:4.30.2:osx-x86_64"
 
 playServices-wearable = "19.0.0"
 ktor = "3.1.2"
-room = "2.6.1"
+room = "2.7.1"
 
 junit = "5.12.1"
 junit-platformLauncher = "1.12.1"
