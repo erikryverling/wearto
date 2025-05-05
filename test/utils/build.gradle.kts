@@ -1,7 +1,5 @@
-apply(from = "${rootProject.projectDir}/buildSrc/build.module.android.gradle")
-
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.convention.android.library)
     alias(libs.plugins.kotlin.android)
 }
 

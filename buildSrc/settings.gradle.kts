@@ -1,3 +1,5 @@
+rootProject.name = "build-src"
+
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {

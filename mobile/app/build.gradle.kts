@@ -1,35 +1,19 @@
-apply(from = "${rootProject.projectDir}/buildSrc/build.module.android.compose.gradle")
-
 plugins {
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.convention.application)
 }
 
 dependencies {
-    implementation(project(":mobile:common:design-system"))
-    implementation(project(":mobile:data:item"))
-    implementation(project(":mobile:data:items"))
-    implementation(project(":mobile:feature:items"))
-    implementation(project(":mobile:feature:login"))
-    implementation(project(":mobile:feature:settings"))
-    implementation(project(":test:utils"))
+    implementation(projects.mobile.common.designSystem)
+    implementation(projects.mobile.data.item)
+    implementation(projects.mobile.data.items)
+    implementation(projects.mobile.feature.items)
+    implementation(projects.mobile.feature.login)
+    implementation(projects.mobile.feature.settings)
+    implementation(projects.test.utils)
 
-    ksp(libs.hilt.android.compiler)
-    implementation(libs.hilt.android)
-
-    implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose.mobile)
+
     implementation(libs.hilt.navigation.compose)
-
-    implementation(libs.playServices.wearable)
-
-    implementation(libs.timber)
-
-    testImplementation(libs.bundles.unitTest)
-    testRuntimeOnly(libs.unitTest.junit.platformLauncher)
 }
 
 android {
@@ -44,20 +28,5 @@ android {
         versionCode = 352000000
 
         versionName = "2.0.0"
-    }
-
-    buildTypes {
-        debug {
-            applicationIdSuffix = ".debug"
-        }
-
-        release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
-        }
     }
 }

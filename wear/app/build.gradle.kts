@@ -1,31 +1,14 @@
-apply(from = "${rootProject.projectDir}/buildSrc/build.module.android.compose.gradle")
-
 plugins {
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.convention.application)
 }
 
 dependencies {
-    implementation(project(":wear:common:design-system"))
-    implementation(project(":wear:data:items"))
-    implementation(project(":wear:feature:items"))
-    implementation(project(":test:utils"))
+    implementation(projects.wear.common.designSystem)
+    implementation(projects.wear.data.items)
+    implementation(projects.wear.feature.items)
+    implementation(projects.test.utils)
 
-    ksp(libs.hilt.android.compiler)
-    implementation(libs.hilt.android)
-
-    implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose.wear)
-
-    implementation(libs.playServices.wearable)
-
-    implementation(libs.timber)
-
-    testImplementation(libs.bundles.unitTest)
-    testRuntimeOnly(libs.unitTest.junit.platformLauncher)
 }
 
 android {
@@ -40,20 +23,5 @@ android {
         versionCode = 352000201
 
         versionName = "2.0.0"
-    }
-
-    buildTypes {
-        debug {
-            applicationIdSuffix = ".debug"
-        }
-
-        release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
-        }
     }
 }

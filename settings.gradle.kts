@@ -1,5 +1,14 @@
-rootProject.name = "WearTo"
-rootProject.buildFileName = "build.gradle.kts"
+rootProject.name = "wearto"
+
+pluginManagement {
+    includeBuild("gradle/build-logic")
+
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
 
 include(
     ":common:ui",
@@ -18,12 +27,7 @@ include(
     ":wear:common:design-system",
     ":wear:data:items",
     ":wear:feature:items",
-    )
+)
 
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
-    }
-}
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

@@ -1,31 +1,17 @@
 import org.gradle.kotlin.dsl.libs
 
-apply(from = "${rootProject.projectDir}/buildSrc/build.module.android.gradle")
-
 plugins {
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.serialization)
+    alias(libs.plugins.convention.android.library)
+    alias(libs.plugins.convention.hilt)
+    alias(libs.plugins.convention.ktor)
     alias(libs.plugins.protobuf)
 }
 
 dependencies {
-    implementation(project(":mobile:common:network"))
-
-    ksp(libs.hilt.android.compiler)
-    implementation(libs.bundles.hilt)
-
-    implementation(libs.bundles.ktor)
+    implementation(projects.mobile.common.network)
 
     implementation(libs.datastore)
     implementation(libs.protobuf)
-
-    implementation(libs.timber)
-
-    testImplementation(libs.bundles.unitTest)
-    testRuntimeOnly(libs.unitTest.junit.platformLauncher)
 }
 
 

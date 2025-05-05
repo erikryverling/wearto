@@ -5,10 +5,10 @@ kotlin = "2.1.20"
 hilt = "2.56.1"
 
 # Plugins
-android = "8.9.2"
+android-plugin = "8.9.2"
 kotlin-dsl-plugin = "5.2.0"
-ksp = "2.1.20-1.0.32"
-hilt-navigation-compose = "1.2.0"
+ksp-plugin = "2.1.20-1.0.32"
+hilt-navigation-compose-plugin = "1.2.0"
 protobuf-plugin = "0.9.4"
 
 # Libraries
@@ -19,7 +19,7 @@ compose-navigation = "2.8.9"
 wear-tooling-preview = "1.0.0"
 wear-compose-material3 = "1.0.0-alpha37"
 wear-compose-version = "1.4.1"
-horologist-compose = "0.6.20"
+horologist-compose = "0.6.23"
 
 timber = "5.0.1"
 kotlinx-serialization = "1.8.1"
@@ -35,15 +35,18 @@ room = "2.7.1"
 
 junit = "5.12.1"
 junit-platformLauncher = "1.12.1"
-mockk = "1.13.17"
+mockk = "1.14.0"
 kotest-assertions = "5.9.1"
 coroutinesTest = "1.10.1"
 turbine = "1.2.0"
 
 [libraries]
+android-tools-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
+kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose-plugin" }
 
 # https://developer.android.com/develop/ui/compose/bom/bom-mapping
 compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
@@ -88,37 +91,38 @@ unitTest-kotest-assertions = { module = "io.kotest:kotest-assertions-core", vers
 unitTest-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "android" }
-android-library = { id = "com.android.library", version.ref = "android" }
+android-application = { id = "com.android.application", version.ref = "android-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlin-dsl-plugin" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-plugin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobuf-plugin" }
 
+convention-android-library = { id = "se.yverling.wearto.convention.android.library" }
+convention-compose-common = { id = "se.yverling.wearto.convention.compose" }
+convention-compose-mobile = { id = "se.yverling.wearto.convention.compose.mobile" }
+convention-compose-wear = { id = "se.yverling.wearto.convention.compose.wear" }
+convention-hilt = { id = "se.yverling.wearto.convention.hilt" }
+convention-ktor = { id = "se.yverling.wearto.convention.ktor" }
+convention-application = { id = "se.yverling.wearto.convention.application" }
+
 [bundles]
-hilt = [
-    "hilt-android",
-    "hilt-android-compiler",
-]
-compose-mobile = [
-    "compose-activity",
+
+compose = [
     "compose-material",
+    "compose-activity",
     "compose-tooling",
     "compose-lifecycle",
     "compose-viewmodel",
     "compose-icons",
+]
+compose-mobile = [
     "compose-navigation",
 ]
 compose-wear = [
-    "compose-activity",
-    "compose-material",
-    "compose-tooling",
-    "compose-lifecycle",
-    "compose-viewmodel",
-    "compose-icons",
     "wear-compose-material",
     "wear-compose-navigation",
     "wear-compose-foundation",

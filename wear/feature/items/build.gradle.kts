@@ -1,29 +1,15 @@
-apply(from = "${rootProject.projectDir}/buildSrc/build.module.android.compose.gradle")
-
 plugins {
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.convention.hilt)
+    alias(libs.plugins.convention.compose.wear)
 }
 
 dependencies {
-    implementation(project(":common:ui"))
-    implementation(project(":test:utils"))
-    implementation(project(":wear:common:design-system"))
-    implementation(project(":wear:data:items"))
+    implementation(projects.common.ui)
+    implementation(projects.test.utils)
+    implementation(projects.wear.common.designSystem)
+    implementation(projects.wear.data.items)
 
-    ksp(libs.hilt.android.compiler)
-    implementation(libs.bundles.hilt)
     implementation(libs.hilt.navigation.compose)
-
-    implementation(platform(libs.compose.bom))
-    implementation(libs.bundles.compose.wear)
-
-    implementation(libs.timber)
-
-    testImplementation(libs.bundles.unitTest)
-    testRuntimeOnly(libs.unitTest.junit.platformLauncher)
 }
 
 android {
