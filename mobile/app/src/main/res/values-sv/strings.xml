@@ -5,4 +5,10 @@
 
     <string name="settings_item_label">Inställningar</string>
     <string name="settings_item_icon_content_description">Inställningar</string>
+
+    <string name="import_success_message">Importen lyckades</string>
+    <string name="import_error_message">Kunde inte importera filen</string>
+
+    <string name="export_success_message">Exporten lyckades</string>
+    <string name="export_error_message">Kunde inte exportera filen</string>
 </resources>

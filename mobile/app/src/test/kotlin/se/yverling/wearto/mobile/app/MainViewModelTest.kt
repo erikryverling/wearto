@@ -14,6 +14,7 @@ import se.yverling.wearto.mobile.data.items.ItemsRepository
 import se.yverling.wearto.mobile.data.items.model.Item
 import se.yverling.wearto.test.MainDispatcherExtension
 
+// TODO Add tests
 @ExtendWith(MockKExtension::class)
 @ExtendWith(MainDispatcherExtension::class)
 private class MainViewModelTest {
