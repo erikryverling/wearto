@@ -329,7 +329,6 @@ fun BottomSheet(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ItemsList(
     items: List<Item>,
@@ -417,8 +416,8 @@ internal fun SaveButton(
 
 @Composable
 internal fun DeleteButton(
-    enabled: Boolean = false,
     modifier: Modifier = Modifier,
+    enabled: Boolean = false,
     onDelete: () -> Unit,
 ) {
     OutlinedButton(

@@ -8,11 +8,21 @@
 
     <string name="logout_button_icon_content_description">Logga ut</string>
 
-    <string name="logout_dialog_title">Varning</string>
-    <string name="logout_dialog_icon_content_description">Varning</string>
+    <string name="warning_dialog_title">Varning</string>
+    <string name="warning_dialog_icon_content_description">Varning</string>
+    <string name="warning_dialog_dismiss">Avbryt</string>
+
     <string name="logout_dialog_text">Vill du verkligen logga ut? All din data kommer raderas.</string>
     <string name="logout_dialog_confirm">Logga ut</string>
-    <string name="logout_dialog_dismiss">Avbryt</string>
+
+    <string name="import_dialog_text">Vill du verkligen importera? Alla dina uppgifter kommer att ersättas.</string>
+    <string name="import_dialog_confirm">Importera</string>
 
     <string name="logout_button_label">Logga ut</string>
+
+    <string name="import_button_label">Importera</string>
+    <string name="import_button_icon_content_description">Importera</string>
+
+    <string name="export_button_label">Exportera</string>
+    <string name="export_button_icon_content_description">Exportera</string>
 </resources>
