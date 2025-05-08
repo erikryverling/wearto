@@ -28,7 +28,7 @@ internal fun Project.configureAndroidBase() {
         }
 
         packagingOptions {
-            resources.excludes += listOf("META-INF/**")
+            resources.excludes += "META-INF/**"
         }
 
         tasks.withType<KotlinCompile>().configureEach {

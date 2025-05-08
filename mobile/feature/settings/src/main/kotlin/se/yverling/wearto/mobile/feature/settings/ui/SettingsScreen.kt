@@ -3,6 +3,7 @@ package se.yverling.wearto.mobile.feature.settings.ui
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,11 +15,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.WarningAmber
+import androidx.compose.material.icons.outlined.FileDownload
+import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -44,6 +48,7 @@ import se.yverling.wearto.common.ui.LoadingScreen
 import se.yverling.wearto.mobile.common.design.theme.DefaultSpace
 import se.yverling.wearto.mobile.common.design.theme.LargeSpace
 import se.yverling.wearto.mobile.common.design.theme.MaxWith
+import se.yverling.wearto.mobile.common.design.theme.SmallSpace
 import se.yverling.wearto.mobile.common.design.theme.VeryLargeSpace
 import se.yverling.wearto.mobile.common.design.theme.WearToTheme
 import se.yverling.wearto.mobile.data.settings.model.Project
@@ -69,6 +74,8 @@ enum class LogoutReason {
 @Composable
 fun SettingsScreen(
     onLoggedOut: (LogoutReason) -> Unit,
+    onImport: () -> Unit,
+    onExport: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -96,17 +103,19 @@ fun SettingsScreen(
             MainContent(
                 project = successState.project,
                 projects = projects,
+                onProjectSelected = {
+                    scope.launch {
+                        viewModel.setProject(it)
+                    }
+                },
                 onLogout = {
                     scope.launch {
                         viewModel.logout()
                         onLoggedOut(RequestedByUser)
                     }
                 },
-                onProjectSelected = {
-                    scope.launch {
-                        viewModel.setProject(it)
-                    }
-                },
+                onImport = onImport,
+                onExport = onExport,
                 modifier = modifier,
             )
         }
@@ -133,8 +142,10 @@ fun SettingsScreen(
 private fun MainContent(
     project: String?,
     projects: List<Project>,
-    onLogout: () -> Unit,
     onProjectSelected: (Project) -> Unit,
+    onLogout: () -> Unit,
+    onImport: () -> Unit,
+    onExport: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -177,21 +188,78 @@ private fun MainContent(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            var showDialog by remember { mutableStateOf(false) }
+            var showImportDialog by remember { mutableStateOf(false) }
+            var showLogoutDialog by remember { mutableStateOf(false) }
 
-            LogoutButton {
-                showDialog = true
+            ImportExportRow(
+                onImport = { showImportDialog = true },
+                onExport = onExport
+            )
+
+            LogoutButton { showLogoutDialog = true }
+
+            if (showImportDialog) {
+                WarningDialog(
+                    text = stringResource(R.string.import_dialog_text),
+                    confirmTitle = stringResource(R.string.import_dialog_confirm),
+                    onDismissRequest = { showImportDialog = false },
+                    onConfirmation = {
+                        showImportDialog = false
+                        onImport()
+                    }
+                )
             }
 
-            if (showDialog) {
-                LogoutDialog(
-                    onDismissRequest = { showDialog = false },
+            if (showLogoutDialog) {
+                WarningDialog(
+                    text = stringResource(R.string.logout_dialog_text),
+                    confirmTitle = stringResource(R.string.logout_dialog_confirm),
+                    onDismissRequest = { showLogoutDialog = false },
                     onConfirmation = {
-                        showDialog = false
+                        showLogoutDialog = false
                         onLogout()
                     }
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun ImportExportRow(onImport: () -> Unit, onExport: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = DefaultSpace)
+    ) {
+        FilledTonalButton(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            onClick = onImport
+        ) {
+            Icon(
+                modifier = Modifier.padding(end = DefaultSpace),
+                imageVector = Icons.Outlined.FileDownload,
+                contentDescription = stringResource(R.string.import_button_icon_content_description),
+            )
+            Text(stringResource(R.string.import_button_label))
+        }
+
+        Spacer(Modifier.padding(SmallSpace))
+
+        FilledTonalButton(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            onClick = onExport
+        ) {
+            Icon(
+                modifier = Modifier.padding(end = DefaultSpace),
+                imageVector = Icons.Outlined.FileUpload,
+                contentDescription = stringResource(R.string.export_button_icon_content_description),
+            )
+            Text(stringResource(R.string.export_button_label))
         }
     }
 }
@@ -264,7 +332,9 @@ private fun LogoutButton(onLogout: () -> Unit) {
 }
 
 @Composable
-fun LogoutDialog(
+fun WarningDialog(
+    text: String,
+    confirmTitle: String,
     onConfirmation: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
@@ -272,20 +342,20 @@ fun LogoutDialog(
         icon = {
             Icon(
                 imageVector = Icons.Default.WarningAmber,
-                contentDescription = stringResource(R.string.logout_dialog_icon_content_description)
+                contentDescription = stringResource(R.string.warning_dialog_icon_content_description)
             )
         },
-        title = { Text(text = stringResource(R.string.logout_dialog_title)) },
-        text = { Text(text = stringResource(R.string.logout_dialog_text)) },
+        title = { Text(text = stringResource(R.string.warning_dialog_title)) },
+        text = { Text(text) },
         onDismissRequest = { onDismissRequest() },
         confirmButton = {
             TextButton(onClick = { onConfirmation() }) {
-                Text(stringResource(R.string.logout_dialog_confirm))
+                Text(confirmTitle)
             }
         },
         dismissButton = {
             TextButton(onClick = { onDismissRequest() }) {
-                Text(stringResource(R.string.logout_dialog_dismiss))
+                Text(stringResource(R.string.warning_dialog_dismiss))
             }
         }
     )
@@ -306,7 +376,9 @@ private fun MainContentPreview() {
                 project = "Livsmedel",
                 projects = emptyList(),
                 onProjectSelected = {},
-                onLogout = {}
+                onLogout = {},
+                onImport = {},
+                onExport = {},
             )
         }
     }
@@ -336,6 +408,23 @@ private fun DropDrownMenuPreview() {
 }
 
 @Preview(
+    name = "Light Mode",
+)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun ImportExportPreview() {
+    WearToTheme {
+        ImportExportRow(
+            onExport = {},
+            onImport = {}
+        )
+    }
+}
+
+@Preview(
     name = "Light Mode"
 )
 @Preview(
@@ -359,9 +448,11 @@ private fun LogoutButtonPreview() {
     uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
-private fun LogoutDialogPreview() {
+private fun WarningDialogPreview() {
     WearToTheme {
-        LogoutDialog(
+        WarningDialog(
+            text = stringResource(R.string.logout_dialog_text),
+            confirmTitle = stringResource(R.string.logout_dialog_confirm),
             onDismissRequest = {},
             onConfirmation = {},
         )

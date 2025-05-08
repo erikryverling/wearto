@@ -6,6 +6,7 @@ import se.yverling.wearto.mobile.data.items.db.AppDatabase
 import se.yverling.wearto.mobile.data.items.db.toModels
 import se.yverling.wearto.mobile.data.items.model.Item
 import se.yverling.wearto.mobile.data.items.model.toEntity
+import se.yverling.wearto.mobile.data.items.model.toEntities
 import javax.inject.Inject
 
 internal class ItemsRepositoryImpl @Inject constructor(
@@ -16,6 +17,10 @@ internal class ItemsRepositoryImpl @Inject constructor(
 
     override suspend fun setItem(item: Item) {
         db.itemsDao().upsertItem(item.toEntity())
+    }
+
+    override suspend fun setItems(items: List<Item>) {
+        db.itemsDao().insertItems(items.toEntities())
     }
 
     override suspend fun deleteItem(item: Item) {

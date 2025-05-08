@@ -2,6 +2,7 @@ package se.yverling.wearto.mobile.data.items.db
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,9 @@ internal interface ItemsDao {
 
     @Upsert
     suspend fun upsertItem(item: Item)
+
+    @Insert
+    suspend fun insertItems(items: List<Item>)
 
     @Delete
     suspend fun deleteItem(item: Item)
