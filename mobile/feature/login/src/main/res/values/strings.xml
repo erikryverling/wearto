@@ -6,8 +6,6 @@
     <string name="item_one_description">Visit the above link and copy the API-token</string>
     <string name="todoist_link" translatable="false">https://app.todoist.com/app/settings/integrations/developer</string>
 
-    <string name="item_two_icon_content_description">Second item</string>
-
     <string name="login_input_field_label">API-token</string>
     <string name="password_icon_visible_content_description">Password is shown</string>
     <string name="password_icon_no_visible_content_description">Password is hidden</string>

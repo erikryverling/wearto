@@ -4,7 +4,6 @@
 
     <string name="drop_down_content_description">Drop down</string>
 
-    <string name="drop_down_button_loading_state_description">Loading</string>
     <string name="drop_down_button_empty_state_description">No project selected</string>
 
     <string name="logout_dialog_title">Warning</string>

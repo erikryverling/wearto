@@ -1,5 +1,6 @@
 package se.yverling.wearto.convention.plugins
 
+import groovyjarjarantlr4.v4.runtime.misc.RuleDependencyChecker.checkDependencies
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
@@ -36,6 +37,15 @@ class ApplicationConventionPlugin : Plugin<Project> {
                             "proguard-rules.pro",
                         )
                     }
+                }
+
+                lintOptions {
+                    // This will generate a single report for all dependent modules
+                    isCheckDependencies = true
+                    isWarningsAsErrors = true
+                    xmlReport = false
+                    htmlReport = true
+                    htmlOutput = file("${project.rootDir}/build/reports/android-lint.html")
                 }
             }
 

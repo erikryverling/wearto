@@ -5,8 +5,6 @@
     <string name="item_one_icon_content_description">Punkt ett</string>
     <string name="item_one_description">Besök länken ovan och kopiera din API-token</string>
 
-    <string name="item_two_icon_content_description">Punkt två</string>
-
     <string name="login_input_field_label">API-token</string>
     <string name="password_icon_visible_content_description">Lösenordet är synligt</string>
     <string name="password_icon_no_visible_content_description">Lösenordet är dolt</string>

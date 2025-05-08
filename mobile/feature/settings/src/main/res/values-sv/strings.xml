@@ -4,7 +4,6 @@
 
     <string name="drop_down_content_description">Rullgardinsmeny</string>
 
-    <string name="drop_down_button_loading_state_description">Laddar</string>
     <string name="drop_down_button_empty_state_description">Inget projekt valt</string>
 
     <string name="logout_button_icon_content_description">Logga ut</string>
