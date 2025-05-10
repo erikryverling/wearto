@@ -25,8 +25,8 @@ android {
         targetSdk = Versions.targetSdkMobile
 
         // Target SDK, version, build number, multi-apk number (00 = mobile, 01 = wear)
-        versionCode = 352000000
+        versionCode = 362100000
 
-        versionName = "2.0.0"
+        versionName = "2.1.0"
     }
 }
