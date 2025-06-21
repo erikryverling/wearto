@@ -1,0 +1,21 @@
+#!/usr/bin/env fish
+
+function verify -a status_code success_message rescue_message rescue_command
+    if test $status_code -eq 0
+        echo $success_message
+    else
+        if test -n "$rescue_message"
+            echo $rescue_message
+            eval $rescue_command
+        end
+        exit 1
+    end
+end
+
+./gradlew lintDebug
+verify $status "No lint issues found"
+
+./gradlew testDebugUnitTest
+verify $status "No failed unit tests"
+
+exit 0
