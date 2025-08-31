@@ -1,43 +1,43 @@
 [versions]
 
 # Global
-kotlin = "2.1.21"
-hilt = "2.56.2"
+kotlin = "2.2.10"
+hilt = "2.57.1"
 
 # Plugins
-android-plugin = "8.9.3"
-kotlin-dsl-plugin = "5.2.0"
-ksp-plugin = "2.1.21-2.0.1"
+android-plugin = "8.12.2"
+kotlin-dsl-plugin = "6.2.0"
+ksp-plugin = "2.2.10-2.0.2"
 hilt-navigation-compose-plugin = "1.2.0"
 protobuf-plugin = "0.9.5"
 
 # Libraries
-compose-bom = "2025.05.01"
+compose-bom = "2025.08.01"
 compose-activity = "1.10.1"
-compose-lifecycle = "2.9.0"
-compose-navigation = "2.9.0"
+compose-lifecycle = "2.9.3"
+compose-navigation = "2.9.3"
 wear-tooling-preview = "1.0.0"
-wear-compose = "1.5.0-beta02"
-horologist-compose = "0.7.14-beta"
+wear-compose = "1.5.0"
+horologist-compose = "0.7.15"
 
 timber = "5.0.1"
-kotlinx-serialization = "1.8.1"
+kotlinx-serialization = "1.9.0"
 datastore = "1.1.7"
 
-protobuf = "4.31.0"
+protobuf = "4.32.0"
 # This needs to be synced with protobuf
-protobufCompilerArtifact = "com.google.protobuf:protoc:4.31.0:osx-x86_64"
+protobufCompilerArtifact = "com.google.protobuf:protoc:4.32.0:osx-x86_64"
 
 playServices-wearable = "19.0.0"
-ktor = "3.1.2"
-room = "2.7.1"
+ktor = "3.2.3"
+room = "2.7.2"
 
-junit = "5.12.2"
-junit-platformLauncher = "1.12.2"
-mockk = "1.14.2"
-kotest-assertions = "5.9.1"
+junit = "5.13.4"
+junit-platformLauncher = "1.13.4"
+mockk = "1.14.5"
+kotest-assertions = "6.0.1"
 coroutinesTest = "1.10.2"
-turbine = "1.2.0"
+turbine = "1.2.1"
 
 [libraries]
 android-tools-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
