@@ -6,7 +6,7 @@ import se.yverling.wearto.mobile.data.item.network.TasksEndpoint
 import se.yverling.wearto.mobile.data.settings.SettingsRepository
 import javax.inject.Inject
 
-class ItemRepositoryImpl @Inject constructor(
+internal class ItemRepositoryImpl @Inject constructor(
     private val tasksEndpoint: TasksEndpoint,
     private val settingsRepository: SettingsRepository,
 ) : ItemRepository {

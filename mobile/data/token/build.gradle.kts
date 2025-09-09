@@ -8,7 +8,6 @@ dependencies {
     implementation(libs.kotlinx.serialization)
 }
 
-
 android {
     namespace = "se.yverling.wearto.mobile.data.token"
 }

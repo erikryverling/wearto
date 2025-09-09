@@ -1,6 +1,5 @@
 package se.yverling.wearto.convention.plugins
 
-import groovyjarjarantlr4.v4.runtime.misc.RuleDependencyChecker.checkDependencies
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies

@@ -15,7 +15,7 @@ import javax.inject.Singleton
 class DataItemModule {
     @Provides
     @Singleton
-    internal fun provideSettingsRepository(
+    internal fun provideItemRepository(
         tasksEndpoint: TasksEndpoint,
         settingsRepository: SettingsRepository,
     ): ItemRepository = ItemRepositoryImpl(tasksEndpoint, settingsRepository)

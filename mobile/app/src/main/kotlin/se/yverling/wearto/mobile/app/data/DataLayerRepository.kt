@@ -4,16 +4,18 @@ import com.google.android.gms.wearable.DataClient
 import com.google.android.gms.wearable.PutDataMapRequest
 import se.yverling.wearto.mobile.data.items.model.Item
 import timber.log.Timber
-import java.util.UUID
 import javax.inject.Inject
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
 internal class DataLayerRepository @Inject constructor(private val dataClient: DataClient) {
     fun sendItems(items: List<Item>) {
         val dataMapRequest: PutDataMapRequest = PutDataMapRequest.create(ITEMS_PATH)
         val dataMap = dataMapRequest.dataMap
 
         dataMap.putStringArrayList(ITEMS_KEY, items.toStringArrayList())
-        dataMap.putString(REQUEST_UUID_KEY, UUID.randomUUID().toString())
+        dataMap.putString(REQUEST_UUID_KEY, Uuid.random().toString())
 
         val request = dataMapRequest.asPutDataRequest()
         dataMapRequest.setUrgent()

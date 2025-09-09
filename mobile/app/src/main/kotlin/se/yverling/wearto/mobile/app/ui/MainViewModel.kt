@@ -49,7 +49,7 @@ internal class MainViewModel @Inject constructor(
     }
 
     internal sealed class UiState {
-        data class Message(@StringRes val message: Int) : UiState()
+        data class Message(@param:StringRes val message: Int) : UiState()
         data object Default : UiState()
     }
 

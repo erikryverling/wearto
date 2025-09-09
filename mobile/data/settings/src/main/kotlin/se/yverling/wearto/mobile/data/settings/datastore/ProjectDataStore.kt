@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 import se.yverling.wearto.mobile.data.settings.model.Project
 import javax.inject.Inject
 
-internal class ProjectDataStore @Inject constructor(@ApplicationContext private val context: Context) {
+internal class ProjectDataStore @Inject constructor(@param:ApplicationContext private val context: Context) {
     suspend fun persistProject(project: Project) {
         context.dataStore.updateData {
             it.toBuilder()

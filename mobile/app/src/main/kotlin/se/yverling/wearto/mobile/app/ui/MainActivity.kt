@@ -22,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -47,7 +46,6 @@ import kotlin.getValue
 import se.yverling.wearto.mobile.feature.login.R as LoginR
 import androidx.core.net.toUri
 import kotlinx.coroutines.flow.first
-import se.yverling.wearto.mobile.app.ui.MainViewModel.*
 import se.yverling.wearto.mobile.app.ui.MainViewModel.UiState
 import timber.log.Timber
 
@@ -247,6 +245,6 @@ class MainActivity : ComponentActivity() {
 
     private fun openTodoist() {
         val intent = Intent(Intent.ACTION_VIEW, getString(R.string.todoist_link).toUri())
-        ContextCompat.startActivity(this@MainActivity, intent, null)
+        startActivity(intent)
     }
 }

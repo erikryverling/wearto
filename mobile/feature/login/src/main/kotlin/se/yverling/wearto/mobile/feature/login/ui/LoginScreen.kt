@@ -59,7 +59,7 @@ import se.yverling.wearto.mobile.feature.login.theme.ItemOneTopPadding
 import se.yverling.wearto.mobile.feature.login.theme.ItemTwoTopPadding
 
 @Serializable
-data class LoginRoute(@StringRes val errorMessage: Int? = null)
+data class LoginRoute(@param:StringRes val errorMessage: Int? = null)
 
 @Composable
 fun LoginScreen(

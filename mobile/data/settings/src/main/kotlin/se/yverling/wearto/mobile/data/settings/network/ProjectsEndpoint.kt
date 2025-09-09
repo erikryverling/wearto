@@ -6,6 +6,6 @@ import io.ktor.client.statement.HttpResponse
 import javax.inject.Inject
 import javax.inject.Named
 
-class ProjectsEndpoint @Inject constructor(@Named("todoist") private val client: HttpClient) {
+class ProjectsEndpoint @Inject constructor(@param:Named("todoist") private val client: HttpClient) {
     suspend fun getProjects(): HttpResponse = client.get("projects")
 }

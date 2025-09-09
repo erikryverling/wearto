@@ -13,10 +13,10 @@ import se.yverling.wearto.mobile.feature.settings.ui.SettingsRoute
 
 internal sealed class NavigationItem(
     val route: String,
-    @StringRes val title: Int,
+    @param:StringRes val title: Int,
     val icon: ImageVector,
     val selectedIcon: ImageVector,
-    @StringRes val iconContentDescription: Int,
+    @param:StringRes val iconContentDescription: Int,
 ) {
     data object Items : NavigationItem(
         route = ItemsRoute,

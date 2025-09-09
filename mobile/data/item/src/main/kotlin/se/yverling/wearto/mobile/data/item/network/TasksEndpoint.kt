@@ -10,7 +10,7 @@ import se.yverling.wearto.mobile.data.item.network.dto.RequestDto
 import javax.inject.Inject
 import javax.inject.Named
 
-class TasksEndpoint @Inject constructor(@Named("todoist") private val client: HttpClient) {
+class TasksEndpoint @Inject constructor(@param:Named("todoist") private val client: HttpClient) {
     suspend fun addTask(projectId: String, itemName: String): HttpResponse = client.post("tasks") {
         contentType(ContentType.Application.Json)
         setBody(

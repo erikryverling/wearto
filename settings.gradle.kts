@@ -29,5 +29,4 @@ include(
     ":wear:feature:items",
 )
 
-
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

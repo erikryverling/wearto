@@ -14,9 +14,11 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
 import se.yverling.wearto.mobile.data.item.ItemRepository
 import timber.log.Timber
-import java.util.UUID
 import javax.inject.Inject
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
+@OptIn(ExperimentalUuidApi::class)
 @AndroidEntryPoint
 class DataLayerListenerService : WearableListenerService() {
     @Inject
@@ -42,7 +44,7 @@ class DataLayerListenerService : WearableListenerService() {
 
                         // We need to make sure that the service is not destroyed while the request is running
                         runBlocking {
-                            var isSuccessful = try {
+                            val isSuccessful = try {
                                 itemRepository.addItem(itemName)
                                 true
                             } catch (e: Exception) {
@@ -65,7 +67,7 @@ class DataLayerListenerService : WearableListenerService() {
         val key = if (isSuccess) ITEM_SUCCESS_KEY else ITEM_ERROR_KEY
 
         dataMap.putString(key, itemName)
-        dataMap.putString(REQUEST_UUID_KEY, UUID.randomUUID().toString())
+        dataMap.putString(REQUEST_UUID_KEY, Uuid.random().toString())
 
         val request = dataMapRequest.asPutDataRequest()
         dataMapRequest.setUrgent()
