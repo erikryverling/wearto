@@ -1,6 +1,7 @@
 package se.yverling.wearto.mobile.feature.settings.ui
 
 import android.content.res.Configuration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -148,6 +149,14 @@ private fun MainContent(
     onExport: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+    val versionName = remember {
+        try {
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        } catch (e: Exception) {
+            "Unknown"
+        }
+    }
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -197,6 +206,13 @@ private fun MainContent(
             )
 
             LogoutButton { showLogoutDialog = true }
+
+            Text(
+                text = stringResource(R.string.version_label, versionName ?: "Unknown"),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = DefaultSpace)
+            )
 
             if (showImportDialog) {
                 WarningDialog(
