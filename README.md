@@ -5,6 +5,35 @@ _WearTo lets you add items to Todoist with minimal effort using your wearable. J
 [![google-play-badge](https://user-images.githubusercontent.com/1917608/36116679-614bba4e-1037-11e8-891f-9bd7bca10e97.png)
 ](https://play.google.com/store/apps/details?id=se.yverling.wearto)
 
+## Getting Started
+
+To get started with this project, you'll need to have Android Studio installed. You can then clone the project and open it in Android Studio.
+
+### Prerequisites
+
+* Android Studio
+* JDK 17
+
+### Building the Project
+
+To build the project, you can use the following Gradle command:
+
+```
+./gradlew assemble
+```
+
+This will assemble both the mobile and wear modules.
+
+### Running the Project
+
+To run the project, you can use the following Gradle command:
+
+```
+./gradlew installDebug
+```
+
+This will install the debug version of the app on your connected device or emulator.
+
 ### License and acknowledgments
 This projects is gratefully using the following third party libraries:
 * [Kotlin](https://github.com/JetBrains/kotlin/tree/master/license)
