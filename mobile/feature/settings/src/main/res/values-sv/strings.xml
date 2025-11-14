@@ -25,4 +25,6 @@
 
     <string name="export_button_label">Exportera</string>
     <string name="export_button_icon_content_description">Exportera</string>
+
+    <string name="version_prefix">Version:</string>
 </resources>

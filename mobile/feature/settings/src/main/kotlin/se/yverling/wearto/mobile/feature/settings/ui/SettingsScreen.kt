@@ -1,5 +1,6 @@
 package se.yverling.wearto.mobile.feature.settings.ui
 
+import android.content.Context
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -148,6 +150,8 @@ private fun MainContent(
     onExport: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -198,6 +202,13 @@ private fun MainContent(
 
             LogoutButton { showLogoutDialog = true }
 
+            Spacer(modifier = Modifier.weight(1f))
+
+            Text(
+                text = "${stringResource(R.string.version_prefix)} ${getVersionName(context)}",
+                style = MaterialTheme.typography.labelSmall,
+            )
+
             if (showImportDialog) {
                 WarningDialog(
                     text = stringResource(R.string.import_dialog_text),
@@ -224,6 +235,9 @@ private fun MainContent(
         }
     }
 }
+
+private fun getVersionName(context: Context): String =
+    context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: ""
 
 @Composable
 private fun ImportExportRow(onImport: () -> Unit, onExport: () -> Unit) {
@@ -455,6 +469,5 @@ private fun WarningDialogPreview() {
             confirmTitle = stringResource(R.string.logout_dialog_confirm),
             onDismissRequest = {},
             onConfirmation = {},
-        )
-    }
+        )    }
 }
