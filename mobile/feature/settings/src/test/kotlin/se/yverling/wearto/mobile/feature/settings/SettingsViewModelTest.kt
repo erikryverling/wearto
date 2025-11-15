@@ -1,18 +1,16 @@
 package se.yverling.wearto.mobile.feature.settings
 
+import android.content.Context
 import app.cash.turbine.test
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.verify
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import se.yverling.wearto.mobile.common.network.exception.InvalidTokenException
@@ -40,6 +38,9 @@ private class SettingsViewModelTest {
 
     @RelaxedMockK
     lateinit var itemsRepositoryMock: ItemsRepository
+
+    @RelaxedMockK
+    lateinit var contextMock: Context
 
     lateinit var settingsViewModel: SettingsViewModel
 
@@ -140,9 +141,12 @@ private class SettingsViewModelTest {
         coVerify { itemsRepositoryMock.clearItems() }
     }
 
-    fun createViewModel() = SettingsViewModel(
-        settingsRepositoryMock,
-        tokenRepositoryMock,
-        itemsRepositoryMock
-    )
+    fun createViewModel(): SettingsViewModel {
+        return SettingsViewModel(
+            contextMock,
+            settingsRepositoryMock,
+            tokenRepositoryMock,
+            itemsRepositoryMock
+        )
+    }
 }
