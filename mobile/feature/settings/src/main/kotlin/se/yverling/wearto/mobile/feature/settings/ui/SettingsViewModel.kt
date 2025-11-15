@@ -1,8 +1,10 @@
 package se.yverling.wearto.mobile.feature.settings.ui
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -19,12 +21,13 @@ import javax.inject.Inject
 @Suppress("OPT_IN_USAGE")
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val settingsRepository: SettingsRepository,
     private val tokenRepository: TokenRepository,
     private val itemsRepository: ItemsRepository,
 ) : ViewModel() {
     internal var projectState = settingsRepository.getProject().map {
-        ProjectUiState.Success(it?.name)
+        ProjectUiState.Success(it?.name, getVersionName(context))
     }.stateIn(
         scope = viewModelScope,
         initialValue = ProjectUiState.Loading,
@@ -56,9 +59,12 @@ class SettingsViewModel @Inject constructor(
         itemsRepository.clearItems()
     }
 
+    private fun getVersionName(context: Context): String =
+        context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: ""
+
     internal sealed class ProjectUiState {
         data object Loading : ProjectUiState()
-        data class Success(val project: String?) : ProjectUiState()
+        data class Success(val project: String?, val versionName: String) : ProjectUiState()
     }
 
     internal sealed class ProjectsUiState {
