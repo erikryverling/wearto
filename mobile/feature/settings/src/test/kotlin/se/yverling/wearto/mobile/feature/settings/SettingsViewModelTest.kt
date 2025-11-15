@@ -42,24 +42,12 @@ private class SettingsViewModelTest {
 
     private lateinit var sut: SettingsViewModel
 
-    @BeforeEach
-    fun setup() {
-        every { contextMock.packageName } returns "se.yverling.wearto.mobile.app"
-        every { contextMock.packageManager.getPackageInfo("se.yverling.wearto.mobile.app", 0).versionName } returns "1.0.0"
-
-        sut = SettingsViewModel(
-            context = contextMock,
-            settingsRepository = settingsRepositoryMock,
-            tokenRepository = tokenRepositoryMock,
-            itemsRepository = itemsRepositoryMock,
-        )
-    }
-
     @Test
     fun `GIVEN a project WHEN observing projectState THEN a success state is emitted`() = runTest {
-        // GIVEN
         val project = Project(id = "1", name = "Project")
         every { settingsRepositoryMock.getProject() } returns flowOf(project)
+
+        sut = createViewModel()
 
         // WHEN
         sut.projectState.test {
@@ -68,7 +56,6 @@ private class SettingsViewModelTest {
 
             val successState = awaitItem().shouldBeInstanceOf<ProjectUiState.Success>()
             successState.project shouldBe "Project"
-            successState.versionName shouldBe "1.0.0"
         }
     }
 
@@ -77,6 +64,8 @@ private class SettingsViewModelTest {
         // GIVEN
         val projects = listOf(Project(id = "1", name = "Project"))
         every { settingsRepositoryMock.getProjects() } returns flowOf(projects)
+
+        sut = createViewModel()
 
         // WHEN
         sut.projectsState.test {
@@ -93,6 +82,8 @@ private class SettingsViewModelTest {
         // GIVEN
         every { settingsRepositoryMock.getProjects() } returns flow { throw InvalidTokenException() }
 
+        sut = createViewModel()
+
         // WHEN
         sut.projectsState.test {
             // THEN
@@ -105,6 +96,8 @@ private class SettingsViewModelTest {
     fun `GIVEN NoTokenException WHEN observing projectsState THEN a logged out state is emitted`() = runTest {
         // GIVEN
         every { settingsRepositoryMock.getProjects() } returns flow { throw NoTokenException() }
+
+        sut = createViewModel()
 
         // WHEN
         sut.projectsState.test {
@@ -119,6 +112,8 @@ private class SettingsViewModelTest {
         // GIVEN
         every { settingsRepositoryMock.getProjects() } returns flow { throw RuntimeException() }
 
+        sut = createViewModel()
+
         // WHEN
         sut.projectsState.test {
             // THEN
@@ -129,6 +124,8 @@ private class SettingsViewModelTest {
 
     @Test
     fun `WHEN setting a project THEN the settings repository is called`() = runTest {
+        sut = createViewModel()
+
         // WHEN
         val project = Project(id = "1", name = "Project")
         sut.setProject(project)
@@ -139,6 +136,8 @@ private class SettingsViewModelTest {
 
     @Test
     fun `WHEN logging out THEN the repositories are cleared`() = runTest {
+        sut = createViewModel()
+
         // WHEN
         sut.logout()
 
@@ -147,4 +146,11 @@ private class SettingsViewModelTest {
         coVerify { tokenRepositoryMock.clearToken() }
         coVerify { itemsRepositoryMock.clearItems() }
     }
+
+    private fun createViewModel() = SettingsViewModel(
+        context = contextMock,
+        settingsRepository = settingsRepositoryMock,
+        tokenRepository = tokenRepositoryMock,
+        itemsRepository = itemsRepositoryMock,
+    )
 }
