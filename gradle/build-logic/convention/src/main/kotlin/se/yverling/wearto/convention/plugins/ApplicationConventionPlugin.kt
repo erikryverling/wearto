@@ -28,6 +28,19 @@ class ApplicationConventionPlugin : Plugin<Project> {
                         applicationIdSuffix = ".debug"
                     }
 
+                    val releaseSigningConfigName = "release"
+                    signingConfigs {
+                        register(releaseSigningConfigName) {
+                            val storeFilePath = System.getenv("SIGNING_STORE_FILE")
+                            if (storeFilePath != null) {
+                                storeFile = file(storeFilePath)
+                            }
+                            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+                            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+                            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+                        }
+                    }
+
                     getByName("release") {
                         isMinifyEnabled = true
                         isShrinkResources = true
@@ -35,6 +48,7 @@ class ApplicationConventionPlugin : Plugin<Project> {
                             getDefaultProguardFile("proguard-android-optimize.txt"),
                             "proguard-rules.pro",
                         )
+                        signingConfig = signingConfigs.getByName(releaseSigningConfigName)
                     }
                 }
 

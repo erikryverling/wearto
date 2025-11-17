@@ -1,0 +1,26 @@
+before_all do
+  skip_docs
+end
+
+lane :verify_debug do
+  gradle(task: 'assembleDebug')
+  gradle(task: 'lint')
+  gradle(task: 'testDebugUnitTest')
+end
+
+lane :deploy_mobile do
+  gradle(task: 'bundle')
+  upload_to_play_store(
+    skip_upload_apk: true,
+    aab: 'mobile/app/build/outputs/bundle/release/app-release.aab',
+  )
+end
+
+lane :deploy_wear do
+  gradle(task: 'bundle')
+  upload_to_play_store(
+    track: 'wear:production',
+    skip_upload_apk: true,
+    aab: 'wear/app/build/outputs/bundle/release/app-release.aab',
+  )
+end
