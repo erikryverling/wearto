@@ -38,8 +38,14 @@ captures/
 # Keystore files
 *.jks
 
-# Google Services files
+# Google Services file
 google-services.json
 
 # Kotlin files
 .kotlin/
+
+# Service account file
+service-account.json
+
+# Fastlane
+**/fastlane/report.xml
