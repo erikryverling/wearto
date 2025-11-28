@@ -1,6 +1,6 @@
 [versions]
 
-# Global
+# Common
 kotlin = "2.2.21"
 hilt = "2.57.2"
 
