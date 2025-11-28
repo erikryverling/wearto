@@ -3,6 +3,7 @@ package se.yverling.wearto.convention.plugins
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
+import se.yverling.wearto.convention.alias
 import se.yverling.wearto.convention.implementation
 import se.yverling.wearto.convention.ksp
 import se.yverling.wearto.convention.libs
@@ -12,12 +13,12 @@ import se.yverling.wearto.convention.testRuntimeOnly
 class ApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            with(pluginManager) {
-                apply(libs.plugins.android.application.get().pluginId)
-                apply(libs.plugins.kotlin.android.get().pluginId)
-                apply(libs.plugins.ksp.get().pluginId)
-                apply(libs.plugins.hilt.android.get().pluginId)
-                apply(libs.plugins.kotlin.compose.get().pluginId)
+            plugins.run {
+                alias(libs.plugins.android.application)
+                alias(libs.plugins.kotlin.android)
+                alias(libs.plugins.ksp)
+                alias(libs.plugins.hilt.android)
+                alias(libs.plugins.kotlin.compose)
             }
 
             configureAndroidBase()
