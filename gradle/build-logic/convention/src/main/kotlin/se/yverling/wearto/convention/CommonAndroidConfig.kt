@@ -1,4 +1,4 @@
-package se.yverling.wearto.convention.plugins
+package se.yverling.wearto.convention
 
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.JavaVersion
@@ -8,7 +8,7 @@ import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
-internal fun Project.configureAndroidBase() {
+internal fun Project.commonAndroidConfig() {
     android {
         compileSdkVersion(Versions.compileSdk)
 

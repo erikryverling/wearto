@@ -4,6 +4,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import se.yverling.wearto.convention.alias
+import se.yverling.wearto.convention.commonAndroidConfig
 import se.yverling.wearto.convention.implementation
 import se.yverling.wearto.convention.libs
 import se.yverling.wearto.convention.testImplementation
@@ -16,8 +17,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 alias(libs.plugins.android.library)
                 alias(libs.plugins.kotlin.android)
             }
-
-            configureAndroidBase()
+            commonAndroidConfig()
 
             dependencies {
                 implementation(libs.timber)

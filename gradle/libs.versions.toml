@@ -40,10 +40,26 @@ kotest-assertions = "6.0.5"
 coroutinesTest = "1.10.2"
 turbine = "1.2.1"
 
-[libraries]
-android-tools-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
-kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+[plugins]
+convention-android-library = { id = "se.yverling.wearto.convention.android.library" }
+convention-compose-common = { id = "se.yverling.wearto.convention.compose" }
+convention-compose-mobile = { id = "se.yverling.wearto.convention.compose.mobile" }
+convention-compose-wear = { id = "se.yverling.wearto.convention.compose.wear" }
+convention-hilt = { id = "se.yverling.wearto.convention.hilt" }
+convention-ktor = { id = "se.yverling.wearto.convention.ktor" }
+convention-application = { id = "se.yverling.wearto.convention.application" }
 
+kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlin-dsl-plugin" }
+android-application = { id = "com.android.application", version.ref = "android-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-plugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-plugin" }
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+protobuf = { id = "com.google.protobuf", version.ref = "protobuf-plugin" }
+
+[libraries]
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose-plugin" }
@@ -82,6 +98,7 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 
+# Test
 unitTest-junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 unitTest-junit-platformLauncher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platformLauncher" }
 
@@ -90,24 +107,9 @@ unitTest-coroutines = { module = " org.jetbrains.kotlinx:kotlinx-coroutines-test
 unitTest-kotest-assertions = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest-assertions" }
 unitTest-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
-[plugins]
-android-application = { id = "com.android.application", version.ref = "android-plugin" }
-android-library = { id = "com.android.library", version.ref = "android-plugin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-dsl = { id = "org.gradle.kotlin.kotlin-dsl", version.ref = "kotlin-dsl-plugin" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-plugin" }
-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-protobuf = { id = "com.google.protobuf", version.ref = "protobuf-plugin" }
-
-convention-android-library = { id = "se.yverling.wearto.convention.android.library" }
-convention-compose-common = { id = "se.yverling.wearto.convention.compose" }
-convention-compose-mobile = { id = "se.yverling.wearto.convention.compose.mobile" }
-convention-compose-wear = { id = "se.yverling.wearto.convention.compose.wear" }
-convention-hilt = { id = "se.yverling.wearto.convention.hilt" }
-convention-ktor = { id = "se.yverling.wearto.convention.ktor" }
-convention-application = { id = "se.yverling.wearto.convention.application" }
+# Used by Convention plugins
+android-tools-gradle = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
+kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
 [bundles]
 

@@ -16,42 +16,38 @@ kotlin {
 }
 
 gradlePlugin {
-    plugins {
-        plugins {
-            create("AndroidLibraryConventionPlugin") {
-                id = "se.yverling.wearto.convention.android.library"
-                implementationClass = "se.yverling.wearto.convention.plugins.AndroidLibraryConventionPlugin"
-            }
+    plugins.register("se.yverling.wearto.convention.android.library") {
+        id = name
+        implementationClass = "se.yverling.wearto.convention.plugins.AndroidLibraryConventionPlugin"
+    }
 
-            create("ComposeConventionPlugin") {
-                id = "se.yverling.wearto.convention.compose"
-                implementationClass = "se.yverling.wearto.convention.plugins.ComposeConventionPlugin"
-            }
+    plugins.register("se.yverling.wearto.convention.compose") {
+        id = name
+        implementationClass = "se.yverling.wearto.convention.plugins.ComposeConventionPlugin"
+    }
 
-            create("ComposeMobileConventionPlugin") {
-                id = "se.yverling.wearto.convention.compose.mobile"
-                implementationClass = "se.yverling.wearto.convention.plugins.ComposeMobileConventionPlugin"
-            }
+    plugins.register("se.yverling.wearto.convention.compose.mobile") {
+        id = name
+        implementationClass = "se.yverling.wearto.convention.plugins.ComposeMobileConventionPlugin"
+    }
 
-            create("ComposeWearConventionPlugin") {
-                id = "se.yverling.wearto.convention.compose.wear"
-                implementationClass = "se.yverling.wearto.convention.plugins.ComposeWearConventionPlugin"
-            }
+    plugins.register("se.yverling.wearto.convention.compose.wear") {
+        id = name
+        implementationClass = "se.yverling.wearto.convention.plugins.ComposeWearConventionPlugin"
+    }
 
-            create("HiltConventionPlugin") {
-                id = "se.yverling.wearto.convention.hilt"
-                implementationClass = "se.yverling.wearto.convention.plugins.HiltConventionPlugin"
-            }
+    plugins.register("se.yverling.wearto.convention.hilt") {
+        id = name
+        implementationClass = "se.yverling.wearto.convention.plugins.HiltConventionPlugin"
+    }
 
-            create("KtorConventionPlugin") {
-                id = "se.yverling.wearto.convention.ktor"
-                implementationClass = "se.yverling.wearto.convention.plugins.KtorConventionPlugin"
-            }
+    plugins.register("se.yverling.wearto.convention.ktor") {
+        id = name
+        implementationClass = "se.yverling.wearto.convention.plugins.KtorConventionPlugin"
+    }
 
-            create("ApplicationConventionPlugin") {
-                id = "se.yverling.wearto.convention.application"
-                implementationClass = "se.yverling.wearto.convention.plugins.ApplicationConventionPlugin"
-            }
-        }
+    plugins.create("se.yverling.wearto.convention.application") {
+        id = name
+        implementationClass = "se.yverling.wearto.convention.plugins.ApplicationConventionPlugin"
     }
 }
