@@ -2,10 +2,10 @@
 
 # Common
 kotlin = "2.3.10"
-hilt = "2.58"
+hilt = "2.58" # 2.59+ requires AGP 9.0+, which is not yet available in Maven repos
 
 # Plugins
-android-plugin = "8.13.1" # Latest available in Maven repositories as of Feb 2026
+android-plugin = "8.13.1" # AGP 9.x is documented but not yet published to Maven Central
 #noinspection NewerVersionAvailable
 kotlin-dsl-plugin = "6.4.2" # Needs to be in sync with Gradle
 ksp-plugin = "2.3.5"
