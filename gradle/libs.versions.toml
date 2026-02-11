@@ -18,16 +18,16 @@ compose-activity = "1.12.3"
 compose-lifecycle = "2.10.0"
 compose-navigation = "2.9.7"
 wear-tooling-preview = "1.0.0"
-wear-compose = "1.5.5"
+wear-compose = "1.5.6"
 horologist-compose = "0.7.15"
 
 timber = "5.0.1"
 kotlinx-serialization = "1.10.0"
 datastore = "1.2.0"
 
-protobuf = "4.33.1"
+protobuf = "4.33.5"
 # This needs to be synced with protobuf
-protobufCompilerArtifact = "com.google.protobuf:protoc:4.33.1:osx-x86_64"
+protobufCompilerArtifact = "com.google.protobuf:protoc:4.33.5:osx-x86_64"
 
 playServices-wearable = "19.0.0"
 ktor = "3.4.0"
