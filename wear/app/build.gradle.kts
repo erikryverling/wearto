@@ -20,7 +20,7 @@ android {
         targetSdk = Versions.targetSdkWear
 
         // Target SDK, version, build number, multi-apk number (00 = mobile, 01 = wear)
-        versionCode = 352010101
+        versionCode = 35_201_01_01
 
         versionName = "2.0.1"
     }
