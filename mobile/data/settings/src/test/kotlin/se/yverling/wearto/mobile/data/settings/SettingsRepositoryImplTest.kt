@@ -21,6 +21,7 @@ import se.yverling.wearto.mobile.data.settings.datastore.ProjectDataStore
 import se.yverling.wearto.mobile.data.settings.model.Project
 import se.yverling.wearto.mobile.data.settings.network.ProjectsEndpoint
 import se.yverling.wearto.mobile.data.settings.network.dto.ProjectDto
+import se.yverling.wearto.mobile.data.settings.network.dto.ProjectsDto
 
 @ExtendWith(MockKExtension::class)
 private class SettingsRepositoryImplTest {
@@ -44,10 +45,14 @@ private class SettingsRepositoryImplTest {
     fun `getProjects should emit successfully`() = runTest {
         val responseMock = mockk<HttpResponse>()
 
-        val unSortedListOfProjectDtos = listOf(
-            ProjectDto(id = "1", name = "B"),
-            ProjectDto(id = "2", name = "A")
-        )
+        val projectsDtoWithUnsortedListOfProjects =
+            ProjectsDto(
+                results =
+                    listOf(
+                        ProjectDto(id = "1", name = "B"),
+                        ProjectDto(id = "2", name = "A")
+                    )
+            )
 
         val sortedListOfProjectModels = listOf(
             Project(id = "2", name = "A"),
@@ -55,7 +60,7 @@ private class SettingsRepositoryImplTest {
         )
 
         every { responseMock.status } returns HttpStatusCode.OK
-        coEvery { responseMock.body<List<ProjectDto>>() } returns unSortedListOfProjectDtos
+        coEvery { responseMock.body<ProjectsDto>() } returns projectsDtoWithUnsortedListOfProjects
 
         coEvery { projectsEndpointMock.getProjects() } returns responseMock
 

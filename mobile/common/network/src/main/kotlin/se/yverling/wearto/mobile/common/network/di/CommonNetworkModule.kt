@@ -49,6 +49,6 @@ class CommonNetworkModule {
     }
 
     companion object {
-        private const val BASE_URL = "https://api.todoist.com/rest/v2/"
+        private const val BASE_URL = "https://api.todoist.com/api/v1/"
     }
 }
