@@ -5,16 +5,16 @@ kotlin = "2.3.10"
 hilt = "2.58" # 2.59+ requires AGP 9.0+, which is not yet available in Maven repos
 
 # Plugins
-android-plugin = "8.13.1" # AGP 9.x is documented but not yet published to Maven Central
+android-plugin = "8.13.1" # AGP 9.x is documented but not yet published to Maven Central, so staying on 8.13.1
 #noinspection NewerVersionAvailable
 kotlin-dsl-plugin = "6.4.2" # Needs to be in sync with Gradle
-ksp-plugin = "2.3.5"
+ksp-plugin = "2.3.6"
 hilt-navigation-compose-plugin = "1.3.0"
 protobuf-plugin = "0.9.6"
 
 # Libraries
-compose-bom = "2026.01.01"
-compose-activity = "1.12.3"
+compose-bom = "2026.02.00"
+compose-activity = "1.12.4"
 compose-lifecycle = "2.10.0"
 compose-navigation = "2.9.7"
 wear-tooling-preview = "1.0.0"
@@ -33,8 +33,8 @@ playServices-wearable = "19.0.0"
 ktor = "3.4.0"
 room = "2.8.4"
 
-junit = "6.0.2"
-junit-platformLauncher = "6.0.2"
+junit = "6.0.3"
+junit-platformLauncher = "6.0.3"
 mockk = "1.14.9"
 kotest-assertions = "6.1.3"
 coroutinesTest = "1.10.2"
