@@ -31,7 +31,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import se.yverling.wearto.common.ui.LoadingScreen
 import se.yverling.wearto.mobile.common.design.theme.DefaultSpace
@@ -81,8 +81,8 @@ fun SettingsScreen(
 ) {
     val scope = rememberCoroutineScope()
 
-    val projectState by viewModel.projectState.collectAsState()
-    val projectsState by viewModel.projectsState.collectAsState()
+    val projectState by viewModel.projectState.collectAsStateWithLifecycle()
+    val projectsState by viewModel.projectsState.collectAsStateWithLifecycle()
 
     when (projectState) {
         Loading -> LoadingScreen()
