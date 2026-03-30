@@ -49,3 +49,6 @@ service-account.json
 
 # Fastlane
 **/fastlane/report.xml
+
+# Nano banana
+.env
