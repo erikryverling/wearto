@@ -8,6 +8,7 @@ description: Upgrades the project dependencies
 - Analyze libs.versions.toml and gradle-wrapper.properties
 - Upgrade all dependencies in libs.versions.toml and gradle-wrapper.properties
 - Always prefer stable version of dependencies, if possible
+- Add comments to libs.versions.toml on the versions you decide not to upgrade with an explanation why
 - Fix any compilation errors
 - Verify the changes by doing the following:
   - Staring the Pixel_9_Pro_API_36 Android emulator
