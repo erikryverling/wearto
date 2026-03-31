@@ -8,9 +8,11 @@ description: Upgrades the project dependencies
 - Analyze libs.versions.toml and gradle-wrapper.properties
 - Upgrade all dependencies in libs.versions.toml and gradle-wrapper.properties
 - Always prefer stable version of dependencies, if possible
+- If Gradle fails to resolve newly released versions that are confirmed to exist, use the `--refresh-dependencies` flag (e.g., `./gradlew assembleDebug --refresh-dependencies`)
 - Add comments to libs.versions.toml on the versions you decide not to upgrade with an explanation why
 - Fix any compilation errors
 - Verify the changes by doing the following:
+  - Run tests with ./gradlew test
   - Staring the Pixel_9_Pro_API_36 Android emulator
   - Building the app with ./gradlew assembleDebug
   - Installing the build APK with adb install 
