@@ -1,2 +1,2 @@
 #!/bin/sh
-claude "/upgrade-dependencies"
+gemini upgrade-dependencies --yolo
