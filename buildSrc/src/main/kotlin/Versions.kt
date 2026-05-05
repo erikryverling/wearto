@@ -1,7 +1,7 @@
 object Versions {
-    const val targetSdkMobile = 36
-    const val targetSdkWear = 35
+    const val targetSdkMobile = 37
+    const val targetSdkWear = 36
     const val minSdk = 31
 
-    const val compileSdk = 36
+    const val compileSdk = 37
 }
