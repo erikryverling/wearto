@@ -139,7 +139,15 @@ private fun Item(
     onAddItem: (Item) -> Unit,
 ) {
     Chip(
-        label = item.name,
+        label = {
+            Text(
+                text = item.name,
+                style = MaterialTheme.typography.labelMedium.copy(
+                    hyphens = androidx.compose.ui.text.style.Hyphens.Auto,
+                    lineBreak = androidx.compose.ui.text.style.LineBreak.Paragraph,
+                ),
+            )
+        },
         colors = ChipDefaults.primaryChipColors(
             backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             contentColor = itemStateColor,
@@ -204,6 +212,29 @@ fun ItemsListPreview() {
                     Item(name = "Milk"),
                     Item(name = "Paper"),
                     Item(name = "Flour"),
+                ),
+                columnState = rememberResponsiveColumnState(),
+            ) {}
+        }
+    }
+}
+
+@OptIn(ExperimentalHorologistApi::class)
+@Preview(
+    device = WearDevices.SMALL_ROUND,
+    showSystemUi = true,
+    locale = "sv",
+)
+@Composable
+fun HyphenationPreview() {
+    WearToTheme {
+        Surface {
+            ItemsList(
+                items = listOf(
+                    Item(name = "Matlagningsgrädde"),
+                    Item(name = "Hushållspapper"),
+                    Item(name = "Diskmaskinstabletter"),
+                    Item(name = "Kolsyrepatroner"),
                 ),
                 columnState = rememberResponsiveColumnState(),
             ) {}
