@@ -8,8 +8,8 @@ _WearTo lets you add items to Todoist with minimal effort using your wearable. J
 ### Running locally
 
 #### Prerequisites
-* Java 17
-* Android Studio Otter | 2025.2.1 Patch 1 or higher
+* Java 17+ (and `$JAVA_HOME` set to your local installation folder)
+* [Android Studio](https://developer.android.com/studio)
 
 #### Steps
 1. Clone the project
