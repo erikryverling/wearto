@@ -30,6 +30,10 @@ description: Updates the project dependencies
     8. Install the build APK with adb install
     9. Verify the app is running and doesn't crash
 
+# If failing to update
+If you fail to update a library add or update a comment on the corresponding line in libs.versions.toml or
+gradle.wrapper.properties
+
 # Final step
 - Summerize all changes in libs.versions.toml and gradle-wrapper.properties and let the user approve them
 - When approved create a commit for the changes named "Update dependencies"
