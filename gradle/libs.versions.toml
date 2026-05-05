@@ -1,42 +1,42 @@
 [versions]
 
 # Common
-kotlin = "2.3.20"
+kotlin = "2.3.21"
 hilt = "2.58" # 2.59+ requires AGP 9.0+, which is currently incompatible with the Protobuf plugin
 
 # Plugins
 android-plugin = "8.13.2" # AGP 9.0+ breaks the com.google.protobuf plugin (Issue #793)
 #noinspection NewerVersionAvailable
-kotlin-dsl-plugin = "6.5.2" # Matching Gradle 9.4.1
-ksp-plugin = "2.3.6" # Latest stable for Kotlin 2.3.20
+kotlin-dsl-plugin = "6.5.7" # Matching Gradle 9.5.0
+ksp-plugin = "2.3.7" # Latest stable for Kotlin 2.3.21
 hilt-navigation-compose-plugin = "1.3.0" # Latest stable (1.4.0-alpha01 available)
-protobuf-plugin = "0.9.6" # Latest stable, but has casting issues on AGP 9.0+
+protobuf-plugin = "0.10.0" # Latest stable, but has casting issues on AGP 9.0+
 
 # Libraries
-compose-bom = "2026.03.01"
-compose-activity = "1.12.4"
+compose-bom = "2026.04.01"
+compose-activity = "1.13.0"
 compose-lifecycle = "2.10.0"
-compose-navigation = "2.9.7"
+compose-navigation = "2.9.8"
 wear-tooling-preview = "1.0.0"
-wear-compose = "1.6.0"
+wear-compose = "1.6.1"
 horologist-compose = "0.7.15"
 
 timber = "5.0.1"
-kotlinx-serialization = "1.10.0"
+kotlinx-serialization = "1.11.0"
 datastore = "1.2.1"
 
 protobuf = "4.34.1"
 # This needs to be synced with protobuf
 protobufCompilerArtifact = "com.google.protobuf:protoc:4.34.1:osx-x86_64"
 
-playServices-wearable = "19.0.0"
-ktor = "3.4.1"
+playServices-wearable = "20.0.1"
+ktor = "3.4.3"
 room = "2.8.4"
 
 junit = "6.0.3"
 junit-platformLauncher = "6.0.3"
 mockk = "1.14.9"
-kotest-assertions = "6.1.9"
+kotest-assertions = "6.1.11"
 coroutinesTest = "1.10.2"
 turbine = "1.2.1"
 
