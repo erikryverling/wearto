@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -28,8 +29,8 @@ import androidx.compose.ui.text.style.LineBreak
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.lazy.items
-import androidx.wear.compose.material3.Chip
-import androidx.wear.compose.material3.ChipDefaults
+import androidx.wear.compose.material3.Button
+import androidx.wear.compose.material3.ButtonDefaults
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import androidx.wear.tooling.preview.devices.WearDevices
@@ -140,7 +141,8 @@ private fun Item(
     itemStateColor: Color,
     onAddItem: (Item) -> Unit,
 ) {
-    Chip(
+    Button(
+        modifier = Modifier.fillMaxWidth(),
         label = {
             Text(
                 text = item.name,
@@ -150,9 +152,9 @@ private fun Item(
                 ),
             )
         },
-        colors = ChipDefaults.chipColors(
+        colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            labelColor = itemStateColor,
+            contentColor = itemStateColor,
             iconColor = itemStateColor,
         ),
         icon = {
