@@ -1,9 +1,10 @@
 # Tasks
 
-- [ ] **Research Horologist Chip flexibility**
+- [x] **Research Horologist Chip flexibility**
   Check if `com.google.android.horologist.compose.material.Chip` supports a `label` as a Composable or if it only accepts a `String`. If it only accepts a `String`, plan to switch to `androidx.wear.compose.material3.Chip`.
+  *Result: Horologist Chip only accepts a String. Decided to switch to `androidx.wear.compose.material3.Chip` to support custom Text styling for hyphenation.*
 
-- [ ] **Update Item composable to support hyphenation**
+- [x] **Update Item composable to support hyphenation**
   Modify the `Item` composable in `ItemsScreen.kt`. Use a `Text` composable for the label and apply a `TextStyle` that includes `hyphens = Hyphens.Auto` and `lineBreak = LineBreak.Paragraph`.
   ```kotlin
   Text(
@@ -15,7 +16,7 @@
   )
   ```
 
-- [ ] **Add visual regression previews**
+- [x] **Add visual regression previews**
   Add a new `@Preview` in `ItemsScreen.kt` specifically containing the problematic Swedish words from the user story ("Matlagningsgrädde", "Hushållspapper", "Diskmaskinstabletter", "Kolsyrepatroner") to verify the hyphenation rules visually in the IDE.
 
 - [ ] **Verify on Wearable Emulator**
