@@ -15,7 +15,6 @@ import androidx.compose.material.icons.filled.AddTask
 import androidx.compose.material.icons.outlined.LibraryAdd
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -24,17 +23,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.Hyphens
+import androidx.compose.ui.text.style.LineBreak
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.lazy.items
-import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material3.Chip
+import androidx.wear.compose.material3.ChipDefaults
 import androidx.wear.compose.material3.MaterialTheme
+import androidx.wear.compose.material3.Text
 import androidx.wear.tooling.preview.devices.WearDevices
 import com.google.android.horologist.annotations.ExperimentalHorologistApi
 import com.google.android.horologist.compose.layout.ScalingLazyColumn
 import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
-import com.google.android.horologist.compose.material.Chip
 import com.google.android.horologist.compose.material.ChipIconWithProgress
 import com.google.android.horologist.images.base.paintable.ImageVectorPaintable
 import kotlinx.coroutines.launch
@@ -143,14 +145,14 @@ private fun Item(
             Text(
                 text = item.name,
                 style = MaterialTheme.typography.labelMedium.copy(
-                    hyphens = androidx.compose.ui.text.style.Hyphens.Auto,
-                    lineBreak = androidx.compose.ui.text.style.LineBreak.Paragraph,
+                    hyphens = Hyphens.Auto,
+                    lineBreak = LineBreak.Paragraph,
                 ),
             )
         },
-        colors = ChipDefaults.primaryChipColors(
-            backgroundColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            contentColor = itemStateColor,
+        colors = ChipDefaults.chipColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            labelColor = itemStateColor,
             iconColor = itemStateColor,
         ),
         icon = {
@@ -183,17 +185,17 @@ fun EmptyScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         Icon(
-            tint = androidx.compose.material3.MaterialTheme.colorScheme.outline,
+            tint = MaterialTheme.colorScheme.outline,
             modifier = Modifier.size(AddIconSize),
             imageVector = Icons.Outlined.LibraryAdd,
             contentDescription = stringResource(R.string.add_icon_description)
         )
 
         Text(
-            color = androidx.compose.material3.MaterialTheme.colorScheme.outline,
+            color = MaterialTheme.colorScheme.outline,
             modifier = Modifier.padding(top = DefaultSpace),
             text = stringResource(R.string.empty_state_description),
-            style = androidx.compose.material3.MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }
