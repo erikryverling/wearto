@@ -9,7 +9,7 @@ lane :verify_debug do
 end
 
 lane :deploy_mobile do
-  gradle(task: 'bundle')
+  gradle(task: 'bundleRelease')
   upload_to_play_store(
     skip_upload_apk: true,
     aab: 'mobile/app/build/outputs/bundle/release/app-release.aab',
@@ -17,7 +17,7 @@ lane :deploy_mobile do
 end
 
 lane :deploy_wear do
-  gradle(task: 'bundle')
+  gradle(task: 'bundleRelease')
   upload_to_play_store(
     track: 'wear:production',
     skip_upload_apk: true,
