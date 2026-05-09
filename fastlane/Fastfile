@@ -10,7 +10,7 @@ lane :deploy_mobile do
   )
 end
 
-lane :deploy_wear do
+lane :release_wear do
   gradle(task: 'bundleRelease')
   upload_to_play_store(
     track: 'wear:production',
