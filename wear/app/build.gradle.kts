@@ -19,8 +19,8 @@ android {
 
         targetSdk = Versions.targetSdkWear
 
-        versionCode = 400000000
+        versionCode = 400000001
 
-        versionName = "2.0.1"
+        versionName = "2.1.0"
     }
 }
