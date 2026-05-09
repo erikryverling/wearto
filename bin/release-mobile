@@ -1,0 +1,57 @@
+#!/bin/bash
+
+show_help() {
+  echo "Usage: $0 [version]"
+  echo ""
+  echo "Arguments:"
+  echo "  version    The version to release in semantic versioning format (e.g., 2.1.0)."
+  echo ""
+  echo "Options:"
+  echo "  --help     Show this help message."
+}
+
+if [[ "$1" == "--help" ]] || [[ -z "$1" ]]; then
+  show_help
+  exit 0
+fi
+
+# Semantic Versioning validation (e.g., 1.2.3)
+SEMVER_REGEX="^[0-9]+\.[0-9]+\.[0-9]+$"
+if [[ ! $1 =~ $SEMVER_REGEX ]]; then
+  echo "Error: Invalid version format '$1'. Expected semantic versioning (e.g., 2.1.0)."
+  show_help
+  exit 1
+fi
+
+VERSION=$1
+
+# Increment version code
+current_version_code=$(grep "versionCode = " mobile/app/build.gradle.kts | tr -d -c 0-9)
+new_version_code=$((current_version_code + 1))
+sed -i "" "s/versionCode = .*/versionCode = $new_version_code/" mobile/app/build.gradle.kts
+
+# Update version name
+sed -i "" "s/versionName = \"[^\"]*\"/versionName = \"$VERSION\"/" mobile/app/build.gradle.kts
+
+# Commit changes
+if git commit -am "Bump mobile version to $VERSION"; then
+  git push
+else
+  echo "Version $VERSION already set"
+  exit 1
+fi
+
+TAG="w$VERSION"
+
+# Create tag
+if ! git show-ref --tags --verify --quiet "refs/tags/$TAG"; then
+  git tag "$TAG"
+  git push origin "$TAG"
+else
+  echo "Tag $TAG already exists"
+  exit 1
+fi
+
+# Build .aab and deploy to Google Play
+bundle update
+bundle exec fastlane release_mobile
