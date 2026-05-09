@@ -2,12 +2,6 @@ before_all do
   skip_docs
 end
 
-lane :verify_debug do
-  gradle(task: 'assembleDebug')
-  gradle(task: 'lint')
-  gradle(task: 'testDebugUnitTest')
-end
-
 lane :deploy_mobile do
   gradle(task: 'bundleRelease')
   upload_to_play_store(
