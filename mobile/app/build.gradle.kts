@@ -24,7 +24,7 @@ android {
 
         targetSdk = Versions.targetSdkMobile
 
-        versionCode = 400000000
+        versionCode = 500000000
 
         versionName = "2.2.0"
     }
