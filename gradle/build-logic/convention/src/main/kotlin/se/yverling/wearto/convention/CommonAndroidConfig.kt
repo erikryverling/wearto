@@ -30,6 +30,8 @@ internal fun Project.commonAndroidConfig() {
 
         lintOptions {
             disable += "NewerVersionAvailable"
+            disable += "AndroidGradlePluginVersion"
+            disable += "GradleDependency"
         }
 
         packagingOptions {
