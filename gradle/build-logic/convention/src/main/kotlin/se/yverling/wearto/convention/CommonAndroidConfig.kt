@@ -28,6 +28,10 @@ internal fun Project.commonAndroidConfig() {
             }
         }
 
+        lintOptions {
+            disable += "NewerVersionAvailable"
+        }
+
         packagingOptions {
             resources.excludes += "META-INF/**"
         }
