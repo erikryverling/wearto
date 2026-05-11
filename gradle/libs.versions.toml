@@ -5,6 +5,7 @@ kotlin = "2.3.21"
 hilt = "2.58" # 2.59+ requires AGP 9.0+, which is currently incompatible with the Protobuf plugin
 
 # Plugins
+#noinspection NewerVersionAvailable
 android-plugin = "8.13.2" # AGP 9.0+ breaks the com.google.protobuf plugin (Issue #793)
 #noinspection NewerVersionAvailable
 kotlin-dsl-plugin = "6.5.7" # Matching Gradle 9.5.0
@@ -13,7 +14,7 @@ hilt-navigation-compose-plugin = "1.3.0" # Latest stable (1.4.0-alpha01 availabl
 protobuf-plugin = "0.10.0" # Latest stable, but has casting issues on AGP 9.0+
 
 # Libraries
-compose-bom = "2026.04.01"
+compose-bom = "2026.05.00"
 compose-activity = "1.13.0"
 compose-lifecycle = "2.10.0"
 compose-navigation = "2.9.8"
