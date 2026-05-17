@@ -1,0 +1,10 @@
+#!/bin/bash
+
+gemini --yolo
+1. Read the specs.md and progress.txt file. \
+2. Study the Definition of Done in the specs.md file \
+3. Find the next incomplete task and implement it. \
+4. Commit your changes. \
+5. Update progress.txt with what you did. \
+ONLY DO ONE TASK AT A TIME."
+
