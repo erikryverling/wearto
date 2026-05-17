@@ -1,6 +1,6 @@
 #!/bin/bash
 
-gemini --yolo --prompt "\ 
+docker sandbox run gemini --yolo --prompt "\
 1. Read the specs.md and progress.txt file. \
 2. Study the Definition of Done in the specs.md file \
 3. Find the next incomplete task and implement it. \

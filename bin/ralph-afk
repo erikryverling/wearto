@@ -8,7 +8,7 @@ fi
 
 for ((i=1; i<=$1; i++)); do
   echo "Starting iteration $i"
-  result=$(gemini --yolo --prompt "
+  result=$(docker sandbox run gemini --yolo --prompt "
     1. Read the specs.md and progress.txt file.
     2. Study the Definition of Done in the specs.md file
     3. Find the next incomplete task and implement it.
