@@ -19,12 +19,7 @@ Ensure that `toEntity()` and `toModel()` mapping functions are updated to includ
 # 2 Update Mobile Database Schema & Migration
 
 ## Status
-Blocked by 1
-
-## Description
-Update `AppDatabase` in `mobile/data/items` to increment the version from `1` to `2`. 
-Implement a migration or allow destructive migration if appropriate for this stage of development, but a proper migration is preferred:
-`ALTER TABLE Item ADD COLUMN interactionCount INTEGER NOT NULL DEFAULT 0`
+DONE
 
 Files to modify:
 - `mobile/data/items/src/main/kotlin/se/yverling/wearto/mobile/data/items/db/AppDatabase.kt`

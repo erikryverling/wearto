@@ -22,7 +22,8 @@ class DataItemsModule {
             context,
             AppDatabase::class.java,
             "items-database"
-        ).build()
+        ).addMigrations(AppDatabase.MIGRATION_1_2)
+            .build()
     }
 
     @Provides
