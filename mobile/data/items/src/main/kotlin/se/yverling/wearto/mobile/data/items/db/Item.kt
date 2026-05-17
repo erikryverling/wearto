@@ -11,7 +11,8 @@ internal data class Item(
     @PrimaryKey(autoGenerate = true)
     val uid: Int? = null,
     val name: String,
+    val interactionCount: Long = 0,
 )
 
-private fun Item.toModel() = ItemModel(uid = uid, name = name)
+private fun Item.toModel() = ItemModel(uid = uid, name = name, interactionCount = interactionCount)
 internal fun List<Item>.toModels(): List<ItemModel> = map { it.toModel() }

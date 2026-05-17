@@ -6,7 +6,8 @@ data class Item(
     val uid: Int? = null,
     val name: String,
     val state: ItemState = ItemState.Init,
+    val interactionCount: Long = 0,
 )
 
-private fun Item.toEntity() = ItemEntity(uid = uid, name = name)
+private fun Item.toEntity() = ItemEntity(uid = uid, name = name, state = state, interactionCount = interactionCount)
 internal fun List<Item>.toEntities(): List<ItemEntity> = map { it.toEntity() }
