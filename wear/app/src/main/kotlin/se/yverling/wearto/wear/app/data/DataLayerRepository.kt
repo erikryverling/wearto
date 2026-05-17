@@ -15,6 +15,7 @@ internal class DataLayerRepository @Inject constructor(private val dataClient: D
         val dataMap = dataMapRequest.dataMap
 
         dataMap.putString(ITEM_KEY, item.name)
+        dataMap.putLong(INTERACTION_COUNT_KEY, item.interactionCount)
         dataMap.putString(REQUEST_UUID_KEY, Uuid.random().toString())
 
         val request = dataMapRequest.asPutDataRequest()
@@ -31,5 +32,6 @@ internal class DataLayerRepository @Inject constructor(private val dataClient: D
 
         private const val ITEM_PATH = "/item"
         private const val ITEM_KEY = "ITEM"
+        private const val INTERACTION_COUNT_KEY = "INTERACTION_COUNT"
     }
 }

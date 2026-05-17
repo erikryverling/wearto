@@ -77,8 +77,8 @@ fun ItemsScreen(
             } else {
                 ItemsList(items, columnState, modifier) { item ->
                     scope.launch {
-                        viewModel.setItemStateToLoading(item)
-                        onAddItem(item)
+                        val updatedItem = viewModel.setItemStateToLoading(item)
+                        onAddItem(updatedItem)
                     }
                 }
             }

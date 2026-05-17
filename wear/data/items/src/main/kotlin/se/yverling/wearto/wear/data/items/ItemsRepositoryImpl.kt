@@ -29,4 +29,13 @@ internal class ItemsRepositoryImpl @Inject constructor(
         val item = db.itemsDao().getItemByName(name).firstOrNull()
         item?.let { db.itemsDao().setItem(item.copy(state = state)) }
     }
+
+    override suspend fun incrementInteractionCount(name: String): Long {
+        val item = db.itemsDao().getItemByName(name).firstOrNull()
+        val newCount = (item?.interactionCount ?: 0) + 1
+        item?.let {
+            db.itemsDao().setItem(item.copy(interactionCount = newCount))
+        }
+        return newCount
+    }
 }

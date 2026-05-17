@@ -41,4 +41,11 @@ private class ItemsRepositoryImplTest {
         coVerify { dbMock.itemsDao().deleteAllItems() }
         coVerify { dbMock.itemsDao().setItems(any()) }
     }
+
+    @Test
+    fun `incrementInteractionCount() should call dao correctly`() = runTest {
+        repository.incrementInteractionCount(item.name)
+
+        coVerify { dbMock.itemsDao().getItemByName(item.name) }
+    }
 }

@@ -31,8 +31,10 @@ class ItemsViewModel @Inject constructor(
         }
     }
 
-    suspend fun setItemStateToLoading(item: Item) {
+    suspend fun setItemStateToLoading(item: Item): Item {
         itemsRepository.updateItemState(item.name, state = Loading)
+        val newCount = itemsRepository.incrementInteractionCount(item.name)
+        return item.copy(state = Loading, interactionCount = newCount)
     }
 
     internal sealed class UiState {

@@ -49,5 +49,6 @@ private class ItemsViewModelTest {
         viewModel.setItemStateToLoading(item)
 
         coVerify { itemsRepository.updateItemState(any(), any()) }
+        coVerify { itemsRepository.incrementInteractionCount(any()) }
     }
 }

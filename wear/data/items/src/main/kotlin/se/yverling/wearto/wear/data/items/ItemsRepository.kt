@@ -10,4 +10,5 @@ interface ItemsRepository {
     suspend fun replaceItems(items: List<Item>)
     suspend fun resetAllItemState()
     suspend fun updateItemState(name: String, state: ItemState)
+    suspend fun incrementInteractionCount(name: String): Long
 }
