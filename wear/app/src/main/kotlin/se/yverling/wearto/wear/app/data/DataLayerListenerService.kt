@@ -40,8 +40,14 @@ class DataLayerListenerService : WearableListenerService() {
             if (event.type == DataEvent.TYPE_CHANGED) {
                 val item = event.dataItem
                 if (item.uri.path == ITEMS_PATH) {
-                    DataMapItem.fromDataItem(item).dataMap.getStringArrayList(ITEMS_KEY)?.let { itemsAsStrings ->
-                        val items = itemsAsStrings.map { Item(name = it) }
+                    val dataMap = DataMapItem.fromDataItem(item).dataMap
+                    dataMap.getDataMapArrayList(ITEMS_KEY)?.let { itemsMaps ->
+                        val items = itemsMaps.map { itemMap ->
+                            Item(
+                                name = itemMap.getString(ITEM_NAME_KEY, ""),
+                                interactionCount = itemMap.getLong(ITEM_INTERACTION_COUNT_KEY, 0L)
+                            )
+                        }
 
                         vibratorManager.defaultVibrator.vibrate(
                             VibrationEffect.createOneShot(
@@ -78,6 +84,9 @@ class DataLayerListenerService : WearableListenerService() {
     companion object {
         private const val ITEMS_PATH = "/items"
         private const val ITEMS_KEY = "ITEMS"
+
+        private const val ITEM_NAME_KEY = "name"
+        private const val ITEM_INTERACTION_COUNT_KEY = "interactionCount"
 
         private const val ITEM_CONFIRM_PATH = "/item-confirm"
         private const val ITEM_SUCCESS_KEY = "ITEM_SUCCESS"

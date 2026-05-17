@@ -29,11 +29,7 @@ Files to modify:
 # 3 Update Wearable Data Layer Sync Logic
 
 ## Status
-Blocked by 1
-
-## Description
-Ensure that when items are synced between Wear and Mobile, the `interactionCount` is preserved and transmitted. 
-Check `DataLayerListenerService` and any data serialization logic (e.g., using `DataMap` or JSON) to include the new field.
+DONE
 
 Files to check:
 - `mobile/app/src/main/kotlin/se/yverling/wearto/mobile/data/DataLayerListenerService.kt`
