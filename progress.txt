@@ -1,5 +1,5 @@
 - [x] Data Model: Update the data models and database schemas to track interactionCount for each item.
-- [ ] Wear App Tracking: Update the ItemsScreen and data layer in the Wear OS app to increment and transmit the interaction count whenever an item is toggled or clicked.
+- [x] Wear App Tracking: Update the ItemsScreen and data layer in the Wear OS app to increment and transmit the interaction count whenever an item is toggled or clicked.
 - [ ] Data Sync: Ensure the Wearable Data Layer correctly syncs these interaction events/counts from the Wear OS device to the Mobile app's local storage.
 - [ ] UI Implementation: Create a new StatisticsScreen (and corresponding ViewModel) in the Mobile app that retrieves and displays the interaction data.
 - [ ] Navigation: Add the StatisticsScreen to the mobile app's navigation graph.

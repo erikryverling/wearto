@@ -7,4 +7,3 @@ gemini --yolo --prompt "\
 4. Commit your changes. \
 5. Update progress.txt with what you did. \
 ONLY DO ONE TASK AT A TIME."
-

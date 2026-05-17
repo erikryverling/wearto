@@ -1,6 +1,7 @@
 package se.yverling.wearto.mobile.data.items
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import se.yverling.wearto.mobile.data.items.db.AppDatabase
 import se.yverling.wearto.mobile.data.items.db.toModels
@@ -17,6 +18,15 @@ internal class ItemsRepositoryImpl @Inject constructor(
 
     override suspend fun setItem(item: Item) {
         db.itemsDao().upsertItem(item.toEntity())
+    }
+
+    override suspend fun updateInteractionCount(name: String, count: Long) {
+        val item = db.itemsDao().getItemByName(name).first()
+        if (item != null) {
+            db.itemsDao().upsertItem(item.copy(interactionCount = count))
+        } else {
+            db.itemsDao().upsertItem(se.yverling.wearto.mobile.data.items.db.Item(name = name, interactionCount = count))
+        }
     }
 
     override suspend fun setItems(items: List<Item>) {

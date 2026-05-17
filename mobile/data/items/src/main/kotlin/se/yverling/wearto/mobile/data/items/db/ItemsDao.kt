@@ -12,8 +12,8 @@ internal interface ItemsDao {
     @Query("SELECT * FROM item ORDER BY name ASC")
     fun getItems(): Flow<List<Item>>
 
-    @Query("SELECT * FROM item WHERE uid = :uid")
-    fun getItem(uid: Int): Flow<Item?>
+    @Query("SELECT * FROM item WHERE name = :name")
+    fun getItemByName(name: String): Flow<Item?>
 
     @Upsert
     suspend fun upsertItem(item: Item)

@@ -1,0 +1,26 @@
+#!/bin/bash
+set -e
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 <iterations>"
+  exit 1
+fi
+
+for ((i=1; i<=$1; i++)); do
+  echo "Starting iteration $i"
+  result=$(gemini --yolo --prompt "
+    1. Read the specs.md and progress.txt file.
+    2. Study the Definition of Done in the specs.md file
+    3. Find the next incomplete task and implement it.
+    4. Commit your changes.
+    5. Update progress.txt with what you did.
+    ONLY DO ONE TASK AT A TIME.
+    If the progress.txt is complete, output <promise>COMPLETE</promise>.")
+
+  echo "$result"
+
+  if [[ "$result" == *"<promise>COMPLETE</promise>"* ]]; then
+    echo "specs.md complete after $i iterations."
+    exit 0
+  fi
+done
