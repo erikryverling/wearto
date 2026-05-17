@@ -22,7 +22,7 @@ class DataItemsModule {
             context,
             AppDatabase::class.java,
             "items-database"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides

@@ -16,6 +16,7 @@ internal data class Item(
     val uid: Int? = null,
     val name: String,
     val state: ItemState = ItemState.Init,
+    val interactionCount: Long = 0,
 )
 
 internal class Converters {
@@ -26,5 +27,10 @@ internal class Converters {
     fun fromState(value: ItemState) = value.name
 }
 
-private fun Item.toModelItem() = ItemModel(uid = uid, name = name, state = state)
+private fun Item.toModelItem() = ItemModel(
+    uid = uid,
+    name = name,
+    state = state,
+    interactionCount = interactionCount
+)
 internal fun List<Item>.toModelItems(): List<ItemModel> = map { it.toModelItem() }
