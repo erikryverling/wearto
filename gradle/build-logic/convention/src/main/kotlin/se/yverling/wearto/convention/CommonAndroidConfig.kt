@@ -18,8 +18,8 @@ internal fun Project.commonAndroidConfig() {
 
         compileOptions {
             // KSP only supports Java 17
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility =  JavaVersion.toVersion(Versions.jvm)
+            targetCompatibility =  JavaVersion.toVersion(Versions.jvm)
         }
 
         testOptions {
