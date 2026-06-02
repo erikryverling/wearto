@@ -17,7 +17,6 @@ class ApplicationConventionPlugin : Plugin<Project> {
         with(target) {
             plugins.run {
                 alias(libs.plugins.android.application)
-                alias(libs.plugins.kotlin.android)
                 alias(libs.plugins.ksp)
                 alias(libs.plugins.hilt.android)
                 alias(libs.plugins.kotlin.compose)
@@ -55,10 +54,10 @@ class ApplicationConventionPlugin : Plugin<Project> {
                     }
                 }
 
-                lintOptions {
+                lint {
                     // This will generate a single report for all dependent modules
-                    isCheckDependencies = true
-                    isWarningsAsErrors = true
+                    checkDependencies = true
+                    warningsAsErrors = true
                     xmlReport = false
                     htmlReport = true
                     htmlOutput = file("${project.rootDir}/build/reports/android-lint.html")

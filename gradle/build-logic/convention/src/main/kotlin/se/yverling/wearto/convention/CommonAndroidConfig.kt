@@ -1,6 +1,7 @@
 package se.yverling.wearto.convention
 
-import com.android.build.gradle.BaseExtension
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -9,43 +10,44 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 internal fun Project.commonAndroidConfig() {
-    android {
-        compileSdkVersion(Versions.compileSdk)
+    extensions.configure<CommonExtension> {
+        compileSdk = Versions.compileSdk
 
-        defaultConfig {
+        defaultConfig.apply {
             minSdk = Versions.minSdk
         }
 
-        compileOptions {
+        compileOptions.apply {
             // KSP only supports Java 17
-            sourceCompatibility =  JavaVersion.toVersion(Versions.jvm)
-            targetCompatibility =  JavaVersion.toVersion(Versions.jvm)
+            sourceCompatibility = JavaVersion.toVersion(Versions.jvm)
+            targetCompatibility = JavaVersion.toVersion(Versions.jvm)
         }
 
-        testOptions {
+        testOptions.apply {
             unitTests.all {
                 it.useJUnitPlatform()
             }
         }
 
-        lintOptions {
+        lint.apply {
             disable += "NewerVersionAvailable"
             disable += "AndroidGradlePluginVersion"
             disable += "GradleDependency"
         }
 
-        packagingOptions {
+        packaging.apply {
             resources.excludes += "META-INF/**"
-        }
-
-        tasks.withType<KotlinJvmCompile>().configureEach {
-            compilerOptions {
-                jvmTarget.set(JvmTarget.JVM_17)
-            }
         }
 
         buildFeatures.buildConfig = true
     }
+
+    tasks.withType<KotlinJvmCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
+    }
 }
 
-internal fun Project.android(action: BaseExtension.() -> Unit) = extensions.configure<BaseExtension>(action)
+internal fun Project.android(action: ApplicationExtension.() -> Unit) =
+    extensions.configure<ApplicationExtension>(action)

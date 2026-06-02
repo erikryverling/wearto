@@ -1,6 +1,6 @@
 package se.yverling.wearto.convention.plugins
 
-import com.android.build.gradle.BaseExtension
+import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -29,4 +29,4 @@ class ComposeConventionPlugin : Plugin<Project> {
     }
 }
 
-private fun Project.compose(action: BaseExtension.() -> Unit) = extensions.configure<BaseExtension>(action)
+private fun Project.compose(action: CommonExtension.() -> Unit) = extensions.configure<CommonExtension>(action)

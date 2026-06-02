@@ -15,7 +15,6 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
         with(target) {
             plugins.run {
                 alias(libs.plugins.android.library)
-                alias(libs.plugins.kotlin.android)
             }
             commonAndroidConfig()
 
