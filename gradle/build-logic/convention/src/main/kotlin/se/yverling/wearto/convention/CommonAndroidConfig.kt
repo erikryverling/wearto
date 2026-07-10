@@ -18,7 +18,6 @@ internal fun Project.commonAndroidConfig() {
         }
 
         compileOptions.apply {
-            // KSP only supports Java 17
             sourceCompatibility = JavaVersion.toVersion(Versions.jvm)
             targetCompatibility = JavaVersion.toVersion(Versions.jvm)
         }
@@ -44,7 +43,7 @@ internal fun Project.commonAndroidConfig() {
 
     tasks.withType<KotlinJvmCompile>().configureEach {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
 }

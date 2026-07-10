@@ -4,5 +4,5 @@ object Versions {
 
     const val minSdk = 31
     const val compileSdk = 37
-    const val jvm = 17
+    const val jvm = 21
 }
