@@ -61,3 +61,13 @@ WearTo is a multi-module Android application designed to let users add items to 
 *   `settings.gradle.kts`: Project module configuration.
 *   `fastlane/Fastfile`: Automation lanes for testing and deployment.
 *   `gradle/build-logic/`: Custom Gradle convention plugins.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs are tracked in GitHub Issues for `erikryverling/wearto`. See `docs/agents/issue-tracker.md`.
+
+### Domain docs
+
+This repository uses a single-context domain documentation layout. See `docs/agents/domain.md`.
