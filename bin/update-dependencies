@@ -1,2 +1,2 @@
 #!/bin/sh
-gemini update-dependencies
+opencode --prompt "Update dependencies. Use current checkout."

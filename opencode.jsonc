@@ -1,0 +1,20 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  "providers": {
+    "google": {
+      "package": "@opencode/ai/providers/google",
+      "settings": {
+        "apiKey": "{env:GEMINI_PRIVATE_API_KEY}",
+      },
+    },
+  },
+
+  "default_agent": "build",
+
+  "agents": {
+    "build":  {
+      "model": "google/gemini-3.8-flash",
+    },
+  },
+}
