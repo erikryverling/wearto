@@ -39,21 +39,23 @@ class DataLayerListenerService : WearableListenerService() {
             if (event.type == DataEvent.TYPE_CHANGED) {
                 val item = event.dataItem
                 if (item.uri.path == ITEM_PATH) {
-                    DataMapItem.fromDataItem(item).dataMap.getString(ITEM_KEY).let { itemName ->
-                        if (itemName == null) throw IllegalArgumentException("Item name is null")
+                    val itemName = DataMapItem.fromDataItem(item).dataMap.getString(ITEM_KEY)
+                    if (itemName == null) {
+                        Timber.e("Item name is null")
+                        return@forEach
+                    }
 
-                        // We need to make sure that the service is not destroyed while the request is running
+                    // We need to make sure that the service is not destroyed while the request is running
                         runBlocking {
-                            val isSuccessful = try {
-                                itemRepository.addItem(itemName)
-                                true
-                            } catch (e: Exception) {
-                                Timber.e(e)
-                                false
-                            }
-
-                            confirmItem(itemName, isSuccessful)
+                        val isSuccessful = try {
+                            itemRepository.addItem(itemName)
+                            true
+                        } catch (e: Exception) {
+                            Timber.e(e)
+                            false
                         }
+
+                        confirmItem(itemName, isSuccessful)
                     }
                 }
             }
