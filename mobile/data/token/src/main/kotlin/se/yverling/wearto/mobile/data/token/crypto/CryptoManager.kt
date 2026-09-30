@@ -23,7 +23,7 @@ internal class CryptoManager @Inject constructor() {
         val encryptedBytes = encryptCipher.doFinal(bytes)
 
         outputStream.use {
-            it.write(encryptCipher.iv.size)
+            it.writeByte(encryptCipher.iv.size)
             it.write(encryptCipher.iv)
             it.writeInt(encryptedBytes.size)
             it.write(encryptedBytes)
@@ -34,13 +34,13 @@ internal class CryptoManager @Inject constructor() {
 
     fun decrypt(inputStream: DataInputStream): ByteArray {
         return inputStream.use {
-            val ivSize = it.read()
+            val ivSize = it.readUnsignedByte()
             val iv = ByteArray(ivSize)
-            it.read(iv)
+            it.readFully(iv)
 
             val encryptedBytesSize = it.readInt()
             val encryptedBytes = ByteArray(encryptedBytesSize)
-            it.read(encryptedBytes)
+            it.readFully(encryptedBytes)
 
             getDecryptCipherForIv(iv).doFinal(encryptedBytes)
         }
