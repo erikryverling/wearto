@@ -16,6 +16,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.first
 import kotlinx.serialization.json.Json
 import se.yverling.wearto.mobile.common.network.exception.InvalidTokenException
+import se.yverling.wearto.mobile.common.network.exception.NoTokenException
 import se.yverling.wearto.mobile.data.token.TokenRepository
 import javax.inject.Named
 import javax.inject.Singleton
@@ -33,8 +34,8 @@ class CommonNetworkModule {
         }
 
         client.plugin(HttpSend).intercept { request ->
-            val token = tokenRepository.getToken().first()
-            token?.let { request.bearerAuth(it) }
+            val token = tokenRepository.getToken().first() ?: throw NoTokenException()
+            request.bearerAuth(token)
 
             val originalCall = execute(request)
 

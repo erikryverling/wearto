@@ -12,7 +12,7 @@ import se.yverling.wearto.mobile.data.items.ItemsRepository
 import se.yverling.wearto.mobile.data.settings.SettingsRepository
 import se.yverling.wearto.mobile.data.settings.model.Project
 import se.yverling.wearto.mobile.data.token.TokenRepository
-import se.yverling.wearto.mobile.feature.settings.exception.NoTokenException
+import se.yverling.wearto.mobile.common.network.exception.NoTokenException
 import se.yverling.wearto.mobile.feature.settings.ui.SettingsViewModel.ProjectsUiState.LoggedOut
 import javax.inject.Inject
 

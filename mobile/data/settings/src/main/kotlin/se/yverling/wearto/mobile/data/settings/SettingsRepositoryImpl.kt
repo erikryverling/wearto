@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import se.yverling.wearto.mobile.common.network.exception.InvalidTokenException
 import se.yverling.wearto.mobile.common.network.exception.NetworkException
+import se.yverling.wearto.mobile.common.network.exception.NoTokenException
 import se.yverling.wearto.mobile.data.settings.datastore.ProjectDataStore
 import se.yverling.wearto.mobile.data.settings.model.Project
 import se.yverling.wearto.mobile.data.settings.network.ProjectsEndpoint
@@ -24,6 +25,8 @@ internal class SettingsRepositoryImpl @Inject constructor(
         } catch (e: CancellationException) {
             throw e
         } catch (e: InvalidTokenException) {
+            throw e
+        } catch (e: NoTokenException) {
             throw e
         } catch (e: Exception) {
             throw NetworkException("Failed to fetch projects", e)
