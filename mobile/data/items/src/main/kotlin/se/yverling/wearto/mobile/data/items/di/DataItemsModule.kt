@@ -26,7 +26,9 @@ class DataItemsModule {
             context,
             AppDatabase::class.java,
             "items-database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration(dropAllTables = true)
+            .build()
     }
 
     @Provides
