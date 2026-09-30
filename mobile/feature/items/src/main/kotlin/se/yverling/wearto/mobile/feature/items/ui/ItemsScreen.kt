@@ -79,10 +79,10 @@ import se.yverling.wearto.mobile.feature.items.R
 import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.Loading
 import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.LoggedOut
 import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.Success
-import theme.AddItemSize
-import theme.IconAnimationDurationInMillis
-import theme.IconAnimationRotation
-import theme.ItemCardElevation
+import se.yverling.wearto.mobile.feature.items.theme.AddItemSize
+import se.yverling.wearto.mobile.feature.items.theme.IconAnimationDurationInMillis
+import se.yverling.wearto.mobile.feature.items.theme.IconAnimationRotation
+import se.yverling.wearto.mobile.feature.items.theme.ItemCardElevation
 import timber.log.Timber
 
 const val ItemsRoute = "ItemsRoute"

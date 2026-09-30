@@ -1,4 +1,4 @@
-package theme
+package se.yverling.wearto.mobile.feature.items.theme
 
 import androidx.compose.ui.unit.dp
 
