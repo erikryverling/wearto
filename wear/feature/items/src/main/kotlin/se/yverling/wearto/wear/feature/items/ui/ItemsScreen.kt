@@ -18,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,7 +39,6 @@ import com.google.android.horologist.compose.layout.ScalingLazyColumnState
 import com.google.android.horologist.compose.layout.rememberResponsiveColumnState
 import com.google.android.horologist.compose.material.ChipIconWithProgress
 import com.google.android.horologist.images.base.paintable.ImageVectorPaintable
-import kotlinx.coroutines.launch
 import se.yverling.wearto.common.ui.LoadingScreen
 import se.yverling.wearto.wear.common.design.theme.DefaultSpace
 import se.yverling.wearto.wear.common.design.theme.SmallSpace
@@ -48,6 +46,7 @@ import se.yverling.wearto.wear.common.design.theme.WearToTheme
 import se.yverling.wearto.wear.data.items.model.Item
 import se.yverling.wearto.wear.data.items.model.ItemState
 import se.yverling.wearto.wear.feature.items.R
+import se.yverling.wearto.wear.feature.items.model.ItemUiModel
 import se.yverling.wearto.wear.feature.items.ui.ItemsViewModel.UiState.Loading
 import se.yverling.wearto.wear.feature.items.ui.ItemsViewModel.UiState.Success
 import se.yverling.wearto.wear.feature.items.ui.theme.AddIconSize
@@ -62,8 +61,6 @@ fun ItemsScreen(
     viewModel: ItemsViewModel = hiltViewModel(),
     onAddItem: (Item) -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     when (uiState) {
@@ -76,10 +73,8 @@ fun ItemsScreen(
                 EmptyScreen()
             } else {
                 ItemsList(items, columnState, modifier) { item ->
-                    scope.launch {
-                        viewModel.setItemStateToLoading(item)
-                        onAddItem(item)
-                    }
+                    viewModel.setItemStateToLoading(item)
+                    onAddItem(item)
                 }
             }
         }
@@ -91,36 +86,22 @@ private const val COLOR_ANIMATION_DURATION_IN_MILLIS = 200
 @Composable
 @OptIn(ExperimentalHorologistApi::class)
 private fun ItemsList(
-    items: List<Item>,
+    items: List<ItemUiModel>,
     columnState: ScalingLazyColumnState,
     modifier: Modifier = Modifier,
     onAddItem: (Item) -> Unit,
 ) {
-    var animationTargetValue: Color
-
     ScalingLazyColumn(
         modifier = modifier
             .fillMaxSize()
             .background(Color.Black),
         columnState = columnState,
     ) {
-        items(items) { item ->
-            when (item.state) {
-                ItemState.Init -> {
-                    animationTargetValue = MaterialTheme.colorScheme.onSurface
-                }
-
-                ItemState.Loading -> {
-                    animationTargetValue = MaterialTheme.colorScheme.onSurface
-                }
-
-                ItemState.Successful -> {
-                    animationTargetValue = MaterialTheme.colorScheme.primary
-                }
-
-                ItemState.Error -> {
-                    animationTargetValue = MaterialTheme.colorScheme.error
-                }
+        items(items) { itemUi ->
+            val animationTargetValue = when (itemUi.state) {
+                ItemState.Init, ItemState.Loading -> MaterialTheme.colorScheme.onSurface
+                ItemState.Successful -> MaterialTheme.colorScheme.primary
+                ItemState.Error -> MaterialTheme.colorScheme.error
             }
 
             val itemStateColor by animateColorAsState(
@@ -129,7 +110,7 @@ private fun ItemsList(
                 label = "itemStateColor",
             )
 
-            Item(item, itemStateColor, onAddItem)
+            Item(itemUi, itemStateColor, onAddItem)
         }
     }
 }
@@ -137,7 +118,7 @@ private fun ItemsList(
 @Composable
 @OptIn(ExperimentalHorologistApi::class)
 private fun Item(
-    item: Item,
+    itemUi: ItemUiModel,
     itemStateColor: Color,
     onAddItem: (Item) -> Unit,
 ) {
@@ -145,7 +126,7 @@ private fun Item(
         modifier = Modifier.fillMaxWidth(),
         label = {
             Text(
-                text = item.name,
+                text = itemUi.item.name,
                 style = MaterialTheme.typography.labelMedium.copy(
                     hyphens = Hyphens.Auto,
                     lineBreak = LineBreak.Paragraph,
@@ -159,7 +140,7 @@ private fun Item(
         ),
         icon = {
             Box(modifier = Modifier.padding(end = SmallSpace)) {
-                if (item.state == ItemState.Loading) {
+                if (itemUi.state == ItemState.Loading) {
                     ChipIconWithProgress(
                         progressIndicatorColor = MaterialTheme.colorScheme.primary,
                         icon = ImageVectorPaintable(Icons.Default.AddTask)
@@ -173,7 +154,7 @@ private fun Item(
                 }
             }
         },
-        onClick = { onAddItem(item) }
+        onClick = { onAddItem(itemUi.item) }
     )
 }
 
@@ -213,9 +194,9 @@ fun ItemsListPreview() {
         Surface {
             ItemsList(
                 items = listOf(
-                    Item(name = "Milk"),
-                    Item(name = "Paper"),
-                    Item(name = "Flour"),
+                    ItemUiModel(Item(name = "Milk")),
+                    ItemUiModel(Item(name = "Paper")),
+                    ItemUiModel(Item(name = "Flour")),
                 ),
                 columnState = rememberResponsiveColumnState(),
             ) {}
@@ -235,10 +216,10 @@ fun HyphenationPreview() {
         Surface {
             ItemsList(
                 items = listOf(
-                    Item(name = "Matlagningsgrädde"),
-                    Item(name = "Hushållspapper"),
-                    Item(name = "Diskmaskinstabletter"),
-                    Item(name = "Kolsyrepatroner"),
+                    ItemUiModel(Item(name = "Matlagningsgrädde")),
+                    ItemUiModel(Item(name = "Hushållspapper")),
+                    ItemUiModel(Item(name = "Diskmaskinstabletter")),
+                    ItemUiModel(Item(name = "Kolsyrepatroner")),
                 ),
                 columnState = rememberResponsiveColumnState(),
             ) {}
@@ -258,7 +239,10 @@ private fun ListItemPreview() {
     WearToTheme {
         Surface {
             Item(
-                item = Item(name = "Item"),
+                itemUi = ItemUiModel(
+                    item = Item(name = "Item"),
+                    state = ItemState.Successful,
+                ),
                 itemStateColor = MaterialTheme.colorScheme.primary,
                 onAddItem = {}
             )

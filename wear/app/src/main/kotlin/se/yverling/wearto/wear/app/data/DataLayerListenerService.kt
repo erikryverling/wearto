@@ -11,18 +11,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import se.yverling.wearto.wear.data.items.ItemStatusHolder
 import se.yverling.wearto.wear.data.items.ItemsRepository
 import se.yverling.wearto.wear.data.items.model.Item
-import se.yverling.wearto.wear.data.items.model.ItemState
-import se.yverling.wearto.wear.data.items.model.ItemState.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class DataLayerListenerService : WearableListenerService() {
     @Inject
     internal lateinit var itemsRepository: ItemsRepository
+
+    @Inject
+    internal lateinit var itemStatusHolder: ItemStatusHolder
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -55,23 +56,16 @@ class DataLayerListenerService : WearableListenerService() {
                         }
                     }
                 } else if (item.uri.path == ITEM_CONFIRM_PATH) {
-                    DataMapItem.fromDataItem(item).dataMap.getString(ITEM_SUCCESS_KEY).let { itemName ->
-                        if (itemName != null) confirmState(itemName, Successful)
+                    val dataMap = DataMapItem.fromDataItem(item).dataMap
+                    dataMap.getString(ITEM_SUCCESS_KEY)?.let { itemName ->
+                        itemStatusHolder.setConfirmed(itemName, isSuccess = true)
                     }
 
-                    DataMapItem.fromDataItem(item).dataMap.getString(ITEM_ERROR_KEY).let { itemName ->
-                        if (itemName != null) confirmState(itemName, Error)
+                    dataMap.getString(ITEM_ERROR_KEY)?.let { itemName ->
+                        itemStatusHolder.setConfirmed(itemName, isSuccess = false)
                     }
                 }
             }
-        }
-    }
-
-    private fun confirmState(itemName: String, state: ItemState) {
-        serviceScope.launch {
-            itemsRepository.updateItemState(itemName, state)
-            delay(CONFIRMATION_DELAY)
-            itemsRepository.updateItemState(itemName, Init)
         }
     }
 
@@ -83,7 +77,6 @@ class DataLayerListenerService : WearableListenerService() {
         private const val ITEM_SUCCESS_KEY = "ITEM_SUCCESS"
         private const val ITEM_ERROR_KEY = "ITEM_ERROR"
 
-        private const val CONFIRMATION_DELAY = 500L
         private const val ITEMS_VIBRATION_CONFIRMATION_LENGTH = 500L
     }
 }

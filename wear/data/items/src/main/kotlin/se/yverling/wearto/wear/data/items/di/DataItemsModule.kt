@@ -7,6 +7,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import se.yverling.wearto.wear.data.items.ItemStatusHolder
+import se.yverling.wearto.wear.data.items.ItemStatusHolderImpl
 import se.yverling.wearto.wear.data.items.ItemsRepository
 import se.yverling.wearto.wear.data.items.ItemsRepositoryImpl
 import se.yverling.wearto.wear.data.items.db.AppDatabase
@@ -22,11 +27,25 @@ class DataItemsModule {
             context,
             AppDatabase::class.java,
             "items-database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration(dropAllTables = true)
+            .build()
     }
 
     @Provides
     @Singleton
-    internal fun provideItemsRepository(db: AppDatabase)
-            : ItemsRepository = ItemsRepositoryImpl(db)
+    internal fun provideItemsRepository(db: AppDatabase): ItemsRepository =
+        ItemsRepositoryImpl(db)
+
+    @Provides
+    @Singleton
+    @ApplicationScope
+    internal fun provideApplicationScope(): CoroutineScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    @Provides
+    @Singleton
+    internal fun provideItemStatusHolder(
+        @ApplicationScope scope: CoroutineScope,
+    ): ItemStatusHolder = ItemStatusHolderImpl(scope)
 }
