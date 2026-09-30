@@ -2,8 +2,11 @@ package se.yverling.wearto.mobile.data.settings
 
 import io.ktor.client.call.body
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import se.yverling.wearto.mobile.common.network.exception.InvalidTokenException
+import se.yverling.wearto.mobile.common.network.exception.NetworkException
 import se.yverling.wearto.mobile.data.settings.datastore.ProjectDataStore
 import se.yverling.wearto.mobile.data.settings.model.Project
 import se.yverling.wearto.mobile.data.settings.network.ProjectsEndpoint
@@ -16,11 +19,19 @@ internal class SettingsRepositoryImpl @Inject constructor(
     private val projectDataStore: ProjectDataStore,
 ) : SettingsRepository {
     override fun getProjects(): Flow<List<Project>> = flow {
-        val response = projectsEndpoint.getProjects()
+        val response = try {
+            projectsEndpoint.getProjects()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: InvalidTokenException) {
+            throw e
+        } catch (e: Exception) {
+            throw NetworkException("Failed to fetch projects", e)
+        }
 
         when (response.status.value) {
             HttpStatusCode.OK.value -> emit(response.body<ProjectsDto>().toSortedProjects())
-            else -> throw IllegalStateException("Get projects request failed")
+            else -> throw NetworkException("Get projects request failed with status: ${response.status}")
         }
     }
 

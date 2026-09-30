@@ -17,6 +17,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import se.yverling.wearto.mobile.common.network.exception.NetworkException
 import se.yverling.wearto.mobile.data.settings.datastore.ProjectDataStore
 import se.yverling.wearto.mobile.data.settings.model.Project
 import se.yverling.wearto.mobile.data.settings.network.ProjectsEndpoint
@@ -70,13 +71,22 @@ private class SettingsRepositoryImplTest {
     }
 
     @Test
-    fun `getProjects should throw IllegalStateException when status code is not OK`() = runTest {
+    fun `getProjects should throw NetworkException when status code is not OK`() = runTest {
         val responseMock = mockk<HttpResponse>()
 
         every { responseMock.status } returns HttpStatusCode.InternalServerError
         coEvery { projectsEndpointMock.getProjects() } returns responseMock
 
-        shouldThrow<IllegalStateException> {
+        shouldThrow<NetworkException> {
+            repository.getProjects().collect {}
+        }
+    }
+
+    @Test
+    fun `getProjects should throw NetworkException when endpoint throws transport exception`() = runTest {
+        coEvery { projectsEndpointMock.getProjects() } throws java.io.IOException("Connection reset")
+
+        shouldThrow<NetworkException> {
             repository.getProjects().collect {}
         }
     }
