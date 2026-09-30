@@ -1,18 +1,19 @@
 package se.yverling.wearto.mobile.data.settings
 
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.matchers.equals.shouldBeEqual
-import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.shouldBe
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,16 +30,15 @@ private class SettingsRepositoryImplTest {
     @RelaxedMockK
     lateinit var projectsEndpointMock: ProjectsEndpoint
 
-    @RelaxedMockK
-    lateinit var projectDataStoreMock: ProjectDataStore
-
-    lateinit var repository: SettingsRepositoryImpl
+    private lateinit var projectDataStore: FakeProjectDataStore
+    private lateinit var repository: SettingsRepositoryImpl
 
     @BeforeEach
     fun setup() {
+        projectDataStore = FakeProjectDataStore()
         repository = SettingsRepositoryImpl(
-            projectsEndpointMock,
-            projectDataStoreMock
+            projectsEndpoint = projectsEndpointMock,
+            projectDataStore = projectDataStore
         )
     }
 
@@ -65,9 +65,7 @@ private class SettingsRepositoryImplTest {
 
         coEvery { projectsEndpointMock.getProjects() } returns responseMock
 
-        repository.getProjects().collect {
-            it.shouldBeEqual(sortedListOfProjectModels)
-        }
+        repository.getProjects().first() shouldBe sortedListOfProjectModels
     }
 
     @Test
@@ -94,13 +92,9 @@ private class SettingsRepositoryImplTest {
     @Test
     fun `getProject should emit successfully`() = runTest {
         val project = Project(id = "1", name = "A")
+        projectDataStore.persistProject(project)
 
-        coEvery { projectDataStoreMock.getProject() } returns flowOf(project)
-
-        repository.getProject().collect {
-            it.shouldNotBeNull()
-            it.shouldBeEqual(project)
-        }
+        repository.getProject().first() shouldBe project
     }
 
     @Test
@@ -109,13 +103,32 @@ private class SettingsRepositoryImplTest {
 
         repository.setProject(project)
 
-        coVerify { projectDataStoreMock.persistProject(project) }
+        projectDataStore.getProject().first() shouldBe project
     }
 
     @Test
     fun `clearProject should call ProjectDataStore`() = runTest {
+        val project = Project(id = "1", name = "A")
+        projectDataStore.persistProject(project)
+
         repository.clearProject()
 
-        coVerify { projectDataStoreMock.clearProject() }
+        projectDataStore.getProject().first().shouldBeNull()
+    }
+}
+
+private class FakeProjectDataStore(
+    initialProject: Project? = null,
+) : ProjectDataStore {
+    private val projectFlow = MutableStateFlow(initialProject)
+
+    override fun getProject(): Flow<Project?> = projectFlow
+
+    override suspend fun persistProject(project: Project) {
+        projectFlow.value = project
+    }
+
+    override suspend fun clearProject() {
+        projectFlow.value = null
     }
 }

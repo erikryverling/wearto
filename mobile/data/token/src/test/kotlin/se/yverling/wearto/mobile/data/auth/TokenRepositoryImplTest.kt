@@ -1,64 +1,82 @@
 package se.yverling.wearto.mobile.data.auth
 
+import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
-import io.mockk.coVerify
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.junit5.MockKExtension
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import se.yverling.wearto.mobile.data.token.datastore.TokenDataSource
 import se.yverling.wearto.mobile.data.token.TokenRepositoryImpl
+import se.yverling.wearto.mobile.data.token.datastore.TokenDataSource
 
-@ExtendWith(MockKExtension::class)
 private class TokenRepositoryImplTest {
-    @RelaxedMockK
-    lateinit var dataSourceMock: TokenDataSource
-
-    lateinit var repository: TokenRepositoryImpl
+    private lateinit var dataSource: FakeTokenDataSource
+    private lateinit var repository: TokenRepositoryImpl
 
     @BeforeEach
     fun setUp() {
-        repository = TokenRepositoryImpl(dataSourceMock)
+        dataSource = FakeTokenDataSource()
+        repository = TokenRepositoryImpl(dataSource)
     }
 
     @Test
-    fun `should get token successfully`() = runTest {
+    fun `getToken should emit token successfully`() = runTest {
         val token = "token"
 
         repository.setToken(token)
 
-        repository.getToken().collect {
-            it.shouldBe(token)
-        }
+        repository.getToken().first() shouldBe token
     }
 
     @Test
-    fun `should return hasToken successfully`() = runTest {
+    fun `hasToken should return true when token exists`() = runTest {
         val token = "token"
 
         repository.setToken(token)
 
-        repository.hasToken().collect {
-            it.shouldBeTrue()
-        }
+        repository.hasToken().first().shouldBeTrue()
     }
 
     @Test
-    fun `setToken should call date source`() = runTest {
+    fun `hasToken should return false when token is absent`() = runTest {
+        repository.hasToken().first().shouldBeFalse()
+    }
+
+    @Test
+    fun `setToken should call data source`() = runTest {
         val token = "token"
 
         repository.setToken(token)
 
-        coVerify { dataSourceMock.persistToken(token) }
+        dataSource.tokenFlow.first() shouldBe token
     }
 
     @Test
-    fun `clearToken should call date source`() = runTest {
+    fun `clearToken should call data source`() = runTest {
+        val token = "token"
+
+        repository.setToken(token)
         repository.clearToken()
 
-        coVerify { dataSourceMock.clearToken() }
+        dataSource.tokenFlow.first() shouldBe null
+    }
+}
+
+private class FakeTokenDataSource(
+    initialToken: String? = null,
+) : TokenDataSource {
+    private val tokenState = MutableStateFlow(initialToken)
+
+    override val tokenFlow: Flow<String?> = tokenState
+
+    override suspend fun persistToken(token: String) {
+        tokenState.value = token
+    }
+
+    override suspend fun clearToken() {
+        tokenState.value = null
     }
 }

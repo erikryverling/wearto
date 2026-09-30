@@ -1,22 +1,23 @@
 package se.yverling.wearto.mobile.data.settings.di
 
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import se.yverling.wearto.mobile.data.settings.SettingsRepository
 import se.yverling.wearto.mobile.data.settings.SettingsRepositoryImpl
 import se.yverling.wearto.mobile.data.settings.datastore.ProjectDataStore
-import se.yverling.wearto.mobile.data.settings.network.ProjectsEndpoint
+import se.yverling.wearto.mobile.data.settings.datastore.ProjectDataStoreImpl
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class DataSettingsModule {
-    @Provides
+internal abstract class DataSettingsModule {
+    @Binds
     @Singleton
-    internal fun provideSettingsRepository(
-        projectsEndpoint: ProjectsEndpoint,
-        projectDataStore: ProjectDataStore,
-    ): SettingsRepository = SettingsRepositoryImpl(projectsEndpoint, projectDataStore)
+    abstract fun bindProjectDataStore(impl: ProjectDataStoreImpl): ProjectDataStore
+
+    @Binds
+    @Singleton
+    abstract fun bindSettingsRepository(impl: SettingsRepositoryImpl): SettingsRepository
 }

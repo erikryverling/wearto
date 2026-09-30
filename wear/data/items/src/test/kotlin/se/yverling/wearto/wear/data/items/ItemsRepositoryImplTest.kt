@@ -1,44 +1,55 @@
 package se.yverling.wearto.wear.data.items
 
-import io.mockk.coVerify
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.junit5.MockKExtension
-import io.mockk.verify
+import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import se.yverling.wearto.test.MainDispatcherExtension
-import se.yverling.wearto.wear.data.items.db.AppDatabase
+import se.yverling.wearto.wear.data.items.db.ItemsDao
 import se.yverling.wearto.wear.data.items.model.Item
+import se.yverling.wearto.wear.data.items.db.Item as DbItem
 
-@ExtendWith(MockKExtension::class)
-@ExtendWith(MainDispatcherExtension::class)
 private class ItemsRepositoryImplTest {
-    @RelaxedMockK
-    lateinit var dbMock: AppDatabase
+    private lateinit var dao: FakeItemsDao
+    private lateinit var repository: ItemsRepositoryImpl
 
-    lateinit var repository: ItemsRepositoryImpl
-
-    val item = Item(name = "name")
+    private val item = Item(name = "name")
 
     @BeforeEach
     fun setUp() {
-        repository = ItemsRepositoryImpl(db = dbMock)
+        dao = FakeItemsDao()
+        repository = ItemsRepositoryImpl(dao)
     }
 
     @Test
-    fun `getItems() should call dao correctly`() = runTest {
-        repository.getItems()
-
-        verify { dbMock.itemsDao().getItems() }
-    }
-
-    @Test
-    fun `replaceItems() should call dao correctly`() = runTest {
+    fun `getItems should call dao correctly`() = runTest {
         repository.replaceItems(listOf(item))
 
-        coVerify { dbMock.itemsDao().deleteAllItems() }
-        coVerify { dbMock.itemsDao().setItems(any()) }
+        repository.getItems().first() shouldBe listOf(item)
+    }
+
+    @Test
+    fun `replaceItems should call dao correctly`() = runTest {
+        val oldItem = Item(name = "old")
+        repository.replaceItems(listOf(oldItem))
+        repository.replaceItems(listOf(item))
+
+        repository.getItems().first() shouldBe listOf(item)
+    }
+}
+
+private class FakeItemsDao : ItemsDao {
+    private val items = MutableStateFlow<List<DbItem>>(emptyList())
+
+    override fun getItems(): Flow<List<DbItem>> = items
+
+    override suspend fun setItems(items: List<DbItem>) {
+        this.items.value = items
+    }
+
+    override suspend fun deleteAllItems() {
+        items.value = emptyList()
     }
 }

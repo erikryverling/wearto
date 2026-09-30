@@ -1,58 +1,90 @@
 package se.yverling.wearto.mobile.data.items
 
-import io.mockk.coVerify
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.junit5.MockKExtension
-import io.mockk.verify
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import se.yverling.wearto.mobile.data.items.ItemsRepositoryImpl
-import se.yverling.wearto.mobile.data.items.db.AppDatabase
+import se.yverling.wearto.mobile.data.items.db.ItemsDao
 import se.yverling.wearto.mobile.data.items.model.Item
-import se.yverling.wearto.test.MainDispatcherExtension
+import se.yverling.wearto.mobile.data.items.model.toEntity
+import se.yverling.wearto.mobile.data.items.db.Item as DbItem
 
-@ExtendWith(MockKExtension::class)
-@ExtendWith(MainDispatcherExtension::class)
 private class ItemsRepositoryImplTest {
-    @RelaxedMockK
-    lateinit var dbMock: AppDatabase
+    private lateinit var dao: FakeItemsDao
+    private lateinit var repository: ItemsRepositoryImpl
 
-    lateinit var repository: ItemsRepositoryImpl
-
-    val item = Item(name = "name")
+    private val item = Item(name = "name")
 
     @BeforeEach
     fun setUp() {
-        repository = ItemsRepositoryImpl(dbMock)
+        dao = FakeItemsDao()
+        repository = ItemsRepositoryImpl(dao)
     }
 
     @Test
-    fun `getItems() should call dao correctly`() = runTest {
-        repository.getItems()
-
-        verify { dbMock.itemsDao().getItems() }
-    }
-
-    @Test
-    fun `setItem() should call dao correctly`() = runTest {
+    fun `getItems should call dao correctly`() = runTest {
         repository.setItem(item)
 
-        coVerify { dbMock.itemsDao().upsertItem(any<se.yverling.wearto.mobile.data.items.db.Item>()) }
+        repository.getItems().first() shouldBe listOf(item)
     }
 
     @Test
-    fun `deleteItem() should call dao correctly`() = runTest {
+    fun `setItem should call dao correctly`() = runTest {
+        repository.setItem(item)
+
+        dao.items.value shouldBe listOf(item.toEntity())
+    }
+
+    @Test
+    fun `setItems should call dao correctly`() = runTest {
+        val item2 = Item(name = "name2")
+        repository.setItems(listOf(item, item2))
+
+        repository.getItems().first() shouldBe listOf(item, item2)
+    }
+
+    @Test
+    fun `deleteItem should call dao correctly`() = runTest {
+        repository.setItem(item)
         repository.deleteItem(item)
 
-        coVerify { dbMock.itemsDao().deleteItem(any<se.yverling.wearto.mobile.data.items.db.Item>()) }
+        dao.items.value.shouldBeEmpty()
     }
 
     @Test
-    fun `clearItems() should call dao correctly`() = runTest {
+    fun `clearItems should call dao correctly`() = runTest {
+        repository.setItem(item)
         repository.clearItems()
 
-        coVerify { dbMock.itemsDao().deleteAllItems() }
+        dao.items.value.shouldBeEmpty()
+    }
+}
+
+private class FakeItemsDao : ItemsDao {
+    val items = MutableStateFlow<List<DbItem>>(emptyList())
+
+    override fun getItems(): Flow<List<DbItem>> = items
+
+    override fun getItem(uid: Int): Flow<DbItem?> = items.map { list -> list.find { it.uid == uid } }
+
+    override suspend fun upsertItem(item: DbItem) {
+        items.value = items.value.filterNot { it.name == item.name } + item
+    }
+
+    override suspend fun insertItems(items: List<DbItem>) {
+        this.items.value += items
+    }
+
+    override suspend fun deleteItem(item: DbItem) {
+        items.value = items.value.filterNot { it.name == item.name }
+    }
+
+    override suspend fun deleteAllItems() {
+        items.value = emptyList()
     }
 }
