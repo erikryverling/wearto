@@ -3,15 +3,10 @@ package se.yverling.wearto.mobile.app
 import app.cash.turbine.test
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.junit5.MockKExtension
-import io.mockk.slot
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -24,12 +19,8 @@ import se.yverling.wearto.mobile.data.items.model.Item
 import se.yverling.wearto.mobile.data.items.sync.ItemsSyncPublisher
 import se.yverling.wearto.test.MainDispatcherExtension
 
-@ExtendWith(MockKExtension::class)
 @ExtendWith(MainDispatcherExtension::class)
 private class MainViewModelTest {
-    @RelaxedMockK
-    lateinit var itemsRepositoryMock: ItemsRepository
-
     val itemsSyncPublisher = FakeItemsSyncPublisher()
 
     val csv = "name1,name2,name3"
@@ -40,14 +31,15 @@ private class MainViewModelTest {
         Item(name = "name3"),
     )
 
+    lateinit var itemsRepository: FakeItemsRepository
     lateinit var mainViewModel: MainViewModel
 
     @BeforeEach
     fun setup() {
-        every { itemsRepositoryMock.getItems() } returns flowOf(items)
+        itemsRepository = FakeItemsRepository(initialItems = items)
 
         mainViewModel = MainViewModel(
-            itemsRepository = itemsRepositoryMock,
+            itemsRepository = itemsRepository,
             itemsSyncPublisher = itemsSyncPublisher,
         )
     }
@@ -56,7 +48,6 @@ private class MainViewModelTest {
     fun `sendItems should call ItemsRepository and ItemsSyncPublisher`() = runTest {
         mainViewModel.sendItems()
 
-        verify { itemsRepositoryMock.getItems() }
         itemsSyncPublisher.publishedItems shouldBe items
     }
 
@@ -89,11 +80,35 @@ private class MainViewModelTest {
         mainViewModel.replaceWithItemsFromCsv(csv)
         advanceUntilIdle()
 
-        coVerify { itemsRepositoryMock.clearItems() }
+        itemsRepository.cleared shouldBe true
+        itemsRepository.getItems().first() shouldBeEqual items
+    }
+}
 
-        val listSlot = slot<List<Item>>()
-        coVerify { itemsRepositoryMock.setItems(capture(listSlot)) }
-        listSlot.captured.shouldBeEqual(items)
+private class FakeItemsRepository(
+    initialItems: List<Item> = emptyList(),
+) : ItemsRepository {
+    private val itemsFlow = MutableStateFlow(initialItems)
+    var cleared = false
+        private set
+
+    override fun getItems(): Flow<List<Item>> = itemsFlow
+
+    override suspend fun setItem(item: Item) {
+        itemsFlow.value = itemsFlow.value + item
+    }
+
+    override suspend fun setItems(items: List<Item>) {
+        itemsFlow.value = items
+    }
+
+    override suspend fun deleteItem(item: Item) {
+        itemsFlow.value = itemsFlow.value - item
+    }
+
+    override suspend fun clearItems() {
+        cleared = true
+        itemsFlow.value = emptyList()
     }
 }
 

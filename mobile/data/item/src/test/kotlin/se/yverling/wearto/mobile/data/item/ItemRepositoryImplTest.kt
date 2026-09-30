@@ -9,6 +9,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
@@ -24,30 +25,22 @@ private class ItemRepositoryImplTest {
     @RelaxedMockK
     lateinit var tasksEndpointMock: TasksEndpoint
 
-    @RelaxedMockK
-    lateinit var settingsRepositoryMock: SettingsRepository
-
-    lateinit var repository: ItemRepositoryImpl
-
     @Test
     fun `addItem should call SettingsRepository and TasksEndpoint`() = runTest {
-        every { settingsRepositoryMock.getProject() } returns flowOf(Project(id = "Id", name = "Project"))
-
+        val settingsRepository = FakeSettingsRepository(project = Project(id = "Id", name = "Project"))
         mockResponse(HttpStatusCode.OK)
 
-        repository = createRepository()
-
+        val repository = createRepository(settingsRepository)
         repository.addItem(itemName = "Item")
 
-        coVerify { settingsRepositoryMock.getProject() }
-        coVerify { tasksEndpointMock.addTask(any(), "Item") }
+        coVerify { tasksEndpointMock.addTask(projectId = "Id", itemName = "Item") }
     }
 
     @Test
     fun `addItem should throw if project is null`() = runTest {
-        every { settingsRepositoryMock.getProject() } returns flowOf(null)
+        val settingsRepository = FakeSettingsRepository(project = null)
 
-        repository = createRepository()
+        val repository = createRepository(settingsRepository)
 
         shouldThrow<IllegalStateException> {
             repository.addItem("Item")
@@ -56,22 +49,31 @@ private class ItemRepositoryImplTest {
 
     @Test
     fun `addItem should throw if TasksEndpoint response is not successful`() = runTest {
-        every { settingsRepositoryMock.getProject() } returns flowOf(Project(id = "Id", name = "Project"))
-
+        val settingsRepository = FakeSettingsRepository(project = Project(id = "Id", name = "Project"))
         mockResponse(HttpStatusCode.InternalServerError)
 
-        repository = createRepository()
+        val repository = createRepository(settingsRepository)
 
         shouldThrow<IllegalStateException> {
             repository.addItem(itemName = "Item")
         }
     }
 
-    private fun createRepository(): ItemRepositoryImpl = ItemRepositoryImpl(tasksEndpointMock, settingsRepositoryMock)
+    private fun createRepository(settingsRepository: SettingsRepository): ItemRepositoryImpl =
+        ItemRepositoryImpl(tasksEndpointMock, settingsRepository)
 
     private fun mockResponse(httpStatusCode: HttpStatusCode) {
         val responseMock = mockk<HttpResponse>()
         every { responseMock.status } returns httpStatusCode
         coEvery { tasksEndpointMock.addTask(any(), any()) } returns responseMock
     }
+}
+
+private class FakeSettingsRepository(
+    var project: Project? = null,
+) : SettingsRepository {
+    override fun getProject(): Flow<Project?> = flowOf(project)
+    override fun getProjects(): Flow<List<Project>> = flowOf(emptyList())
+    override suspend fun setProject(project: Project) { this.project = project }
+    override suspend fun clearProject() { this.project = null }
 }

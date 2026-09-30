@@ -3,10 +3,8 @@ package se.yverling.wearto.mobile.feature.items.ui
 import app.cash.turbine.test
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.junit5.MockKExtension
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
@@ -17,39 +15,30 @@ import se.yverling.wearto.mobile.data.token.TokenRepository
 import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState
 import se.yverling.wearto.test.MainDispatcherExtension
 
-@ExtendWith(MockKExtension::class)
 @ExtendWith(MainDispatcherExtension::class)
 private class ItemsViewModelTest {
-    @RelaxedMockK
-    lateinit var tokenRepositoryMock: TokenRepository
-
-    @RelaxedMockK
-    lateinit var itemsRepositoryMock: ItemsRepository
-
-    lateinit var itemsViewModel: ItemsViewModel
+    val item = Item(name = "Item")
 
     @Test
     fun `projectState should emit Success`() = runTest {
-        every { itemsRepositoryMock.getItems() } returns flowOf(listOf(item))
-        every { tokenRepositoryMock.hasToken() } returns flowOf(true)
-
-        itemsViewModel = createViewModel()
+        val tokenRepository = FakeTokenRepository(hasToken = true)
+        val itemsRepository = FakeItemsRepository(initialItems = listOf(item))
+        val itemsViewModel = ItemsViewModel(tokenRepository, itemsRepository)
 
         itemsViewModel.uiState.test {
             awaitItem().shouldBeInstanceOf<UiState.Loading>()
 
             val successItem = awaitItem()
             successItem.shouldBeInstanceOf<UiState.Success>()
-            successItem.items.shouldBe(listOf(item))
+            successItem.items shouldBe listOf(item)
         }
     }
 
     @Test
     fun `projectState should emit LoggedOut on no token`() = runTest {
-        every { itemsRepositoryMock.getItems() } returns flowOf(listOf(item))
-        every { tokenRepositoryMock.hasToken() } returns flowOf(false)
-
-        itemsViewModel = createViewModel()
+        val tokenRepository = FakeTokenRepository(hasToken = false)
+        val itemsRepository = FakeItemsRepository(initialItems = listOf(item))
+        val itemsViewModel = ItemsViewModel(tokenRepository, itemsRepository)
 
         itemsViewModel.uiState.test {
             awaitItem().shouldBeInstanceOf<UiState.Loading>()
@@ -60,28 +49,62 @@ private class ItemsViewModelTest {
 
     @Test
     fun `setItem should call ItemsRepository`() = runTest {
-        itemsViewModel = createViewModel()
+        val tokenRepository = FakeTokenRepository(hasToken = true)
+        val itemsRepository = FakeItemsRepository()
+        val itemsViewModel = ItemsViewModel(tokenRepository, itemsRepository)
 
         itemsViewModel.setItem(item)
 
-        coVerify { itemsRepositoryMock.setItem(item) }
+        itemsRepository.lastSavedItem shouldBe item
     }
 
     @Test
     fun `deleteItem should call ItemsRepository`() = runTest {
-        itemsViewModel = createViewModel()
+        val tokenRepository = FakeTokenRepository(hasToken = true)
+        val itemsRepository = FakeItemsRepository(initialItems = listOf(item))
+        val itemsViewModel = ItemsViewModel(tokenRepository, itemsRepository)
 
         itemsViewModel.deleteItem(item)
 
-        coVerify { itemsRepositoryMock.deleteItem(item) }
+        itemsRepository.lastDeletedItem shouldBe item
+    }
+}
+
+private class FakeTokenRepository(
+    var hasToken: Boolean = true,
+) : TokenRepository {
+    override fun getToken(): Flow<String?> = flowOf(if (hasToken) "token" else null)
+    override suspend fun setToken(token: String) { hasToken = true }
+    override suspend fun clearToken() { hasToken = false }
+    override fun hasToken(): Flow<Boolean> = flowOf(hasToken)
+}
+
+private class FakeItemsRepository(
+    initialItems: List<Item> = emptyList(),
+) : ItemsRepository {
+    private val itemsFlow = MutableStateFlow(initialItems)
+    var lastSavedItem: Item? = null
+        private set
+    var lastDeletedItem: Item? = null
+        private set
+
+    override fun getItems(): Flow<List<Item>> = itemsFlow
+
+    override suspend fun setItem(item: Item) {
+        lastSavedItem = item
+        itemsFlow.value = itemsFlow.value + item
     }
 
-    fun createViewModel() = ItemsViewModel(
-        tokenRepositoryMock,
-        itemsRepositoryMock
-    )
+    override suspend fun setItems(items: List<Item>) {
+        itemsFlow.value = items
+    }
 
-    companion object {
-        val item = Item(name = "Item")
+    override suspend fun deleteItem(item: Item) {
+        lastDeletedItem = item
+        itemsFlow.value = itemsFlow.value - item
+    }
+
+    override suspend fun clearItems() {
+        itemsFlow.value = emptyList()
     }
 }
