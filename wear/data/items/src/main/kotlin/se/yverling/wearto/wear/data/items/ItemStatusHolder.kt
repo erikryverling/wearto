@@ -33,13 +33,15 @@ internal class ItemStatusHolderImpl @Inject constructor(
         jobs[name]?.cancel()
         _statuses.update { it + (name to ItemState.Loading) }
 
-        jobs[name] = scope.launch {
+        val job = scope.launch {
+            val currentJob = coroutineContext[Job]
             delay(LOADING_TIMEOUT_MS)
-            _statuses.update { it + (name to ItemState.Error) }
+            _statuses.update { if (jobs[name] == currentJob) it + (name to ItemState.Error) else it }
             delay(CONFIRMATION_DELAY_MS)
-            _statuses.update { it - name }
-            jobs.remove(name)
+            _statuses.update { if (jobs[name] == currentJob) it - name else it }
+            jobs.remove(name, currentJob)
         }
+        jobs[name] = job
     }
 
     override fun setConfirmed(name: String, isSuccess: Boolean) {
@@ -47,11 +49,13 @@ internal class ItemStatusHolderImpl @Inject constructor(
         val targetState = if (isSuccess) ItemState.Successful else ItemState.Error
         _statuses.update { it + (name to targetState) }
 
-        jobs[name] = scope.launch {
+        val job = scope.launch {
+            val currentJob = coroutineContext[Job]
             delay(CONFIRMATION_DELAY_MS)
-            _statuses.update { it - name }
-            jobs.remove(name)
+            _statuses.update { if (jobs[name] == currentJob) it - name else it }
+            jobs.remove(name, currentJob)
         }
+        jobs[name] = job
     }
 
     override fun reset(name: String) {

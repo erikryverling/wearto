@@ -93,6 +93,27 @@ private class ItemStatusHolderImplTest {
     }
 
     @Test
+    fun `superseded job should not clear newly set status`() = runTest {
+        val testScope = TestScope()
+        val statusHolder = ItemStatusHolderImpl(scope = testScope.backgroundScope)
+
+        statusHolder.setConfirmed("Milk", isSuccess = true)
+        testScope.advanceTimeBy(CONFIRMATION_DELAY_MS - 100L)
+        testScope.runCurrent()
+
+        // New loading starts before confirmation delay completes
+        statusHolder.setLoading("Milk")
+        statusHolder.statuses.value["Milk"] shouldBe ItemState.Loading
+
+        // Finish the remaining time of the old confirmation delay
+        testScope.advanceTimeBy(200L)
+        testScope.runCurrent()
+
+        // Status should still be Loading, not wiped out by old job
+        statusHolder.statuses.value["Milk"] shouldBe ItemState.Loading
+    }
+
+    @Test
     fun `reset should remove item immediately`() = runTest {
         val statusHolder = ItemStatusHolderImpl(scope = backgroundScope)
 
