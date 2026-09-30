@@ -1,4 +1,4 @@
-package se.yverlingwearto.mobile.data.items
+package se.yverling.wearto.mobile.data.items
 
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test

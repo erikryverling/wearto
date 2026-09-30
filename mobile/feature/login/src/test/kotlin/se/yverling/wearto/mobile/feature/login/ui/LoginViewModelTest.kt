@@ -1,3 +1,5 @@
+package se.yverling.wearto.mobile.feature.login.ui
+
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.junit5.MockKExtension
