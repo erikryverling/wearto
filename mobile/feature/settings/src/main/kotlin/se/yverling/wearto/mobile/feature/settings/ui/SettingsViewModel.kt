@@ -23,7 +23,7 @@ class SettingsViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val itemsRepository: ItemsRepository,
 ) : ViewModel() {
-    internal var projectState = settingsRepository.getProject().map {
+    internal val projectState = settingsRepository.getProject().map {
         ProjectUiState.Success(it?.name)
     }.stateIn(
         scope = viewModelScope,
@@ -31,7 +31,7 @@ class SettingsViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed()
     )
 
-    internal var projectsState = settingsRepository.getProjects().map {
+    internal val projectsState = settingsRepository.getProjects().map {
         ProjectsUiState.Success(it) as ProjectsUiState
     }.catch { throwable ->
         val state: ProjectsUiState = when (throwable) {

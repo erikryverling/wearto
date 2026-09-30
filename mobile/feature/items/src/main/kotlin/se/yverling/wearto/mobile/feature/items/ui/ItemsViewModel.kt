@@ -23,7 +23,7 @@ class ItemsViewModel @Inject constructor(
     tokenRepository: TokenRepository,
     private val itemsRepository: ItemsRepository,
 ) : ViewModel() {
-    internal var uiState: StateFlow<UiState> = tokenRepository.hasToken().flatMapConcat { hasToken ->
+    internal val uiState: StateFlow<UiState> = tokenRepository.hasToken().flatMapConcat { hasToken ->
         if (!hasToken) {
             flowOf(LoggedOut(hasToken = false))
         } else {
