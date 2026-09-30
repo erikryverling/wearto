@@ -5,7 +5,7 @@ Technology stack and implementation conventions for WearTo.
 ## Storage Strategy
 
 - **Item Lists:** Room database for local caching in `mobile:data:items` and `wear:data:items`.
-- **Auth Token:** AndroidX DataStore (`TokenDataStore`) storing a JSON-serialized nullable token string encrypted with AES-CBC (`CryptoManager`).
+- **Auth Token:** AndroidX DataStore (`TokenDataSource`) storing a JSON-serialized nullable token string encrypted with AES-CBC (`CryptoManager`).
 - **Project Settings:** AndroidX DataStore (`ProjectDataStore`) serialized via Protobuf (`project.proto`).
 
 ## Implementation Stack
