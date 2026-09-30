@@ -59,7 +59,6 @@ fun ItemsScreen(
     columnState: ScalingLazyColumnState,
     modifier: Modifier = Modifier,
     viewModel: ItemsViewModel = hiltViewModel(),
-    onAddItem: (Item) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -73,8 +72,7 @@ fun ItemsScreen(
                 EmptyScreen()
             } else {
                 ItemsList(items, columnState, modifier) { item ->
-                    viewModel.setItemStateToLoading(item)
-                    onAddItem(item)
+                    viewModel.sendItem(item)
                 }
             }
         }

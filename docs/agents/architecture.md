@@ -6,8 +6,8 @@ Feature-based multi-module architecture separating mobile, wear, and shared infr
 
 - `mobile/app` & `wear/app`: Application entry points and lifecycle listeners.
 - `mobile:data:item`: Remote Todoist task execution via Ktor (`TasksEndpoint`).
-- `mobile:data:items`: Local Room database for mobile item list caching.
-- `wear:data:items`: Local Room database for Wear OS item list; communicates with mobile via Wearable `DataClient`.
+- `mobile:data:items`: Local Room database for mobile item list caching; publishes item presets to Wear OS via Wearable `DataClient` (`ItemsSyncPublisher`).
+- `wear:data:items`: Local Room database for Wear OS item list; communicates with mobile via Wearable `DataClient` (`ItemSyncClient`).
 - `mobile:common:design-system` & `wear:common:design-system`: Platform-specific Compose styling and themes.
 - `common:ui`: Cross-platform shared UI components (e.g., `LoadingScreen`).
 - `gradle/build-logic`: Custom convention plugins for consistent module build configuration.

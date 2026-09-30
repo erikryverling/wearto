@@ -15,6 +15,7 @@ import se.yverling.wearto.wear.data.items.ItemStatusHolder
 import se.yverling.wearto.wear.data.items.ItemsRepository
 import se.yverling.wearto.wear.data.items.model.Item
 import se.yverling.wearto.wear.data.items.model.ItemState
+import se.yverling.wearto.wear.data.items.sync.ItemSyncClient
 import se.yverling.wearto.wear.feature.items.model.ItemUiModel
 import se.yverling.wearto.wear.feature.items.ui.ItemsViewModel.UiState
 
@@ -26,8 +27,9 @@ private class ItemsViewModelTest {
     fun `uiState should emit Success combining items with default Init state`() = runTest {
         val itemsRepository = FakeItemsRepository(itemsFlow = flowOf(listOf(item)))
         val statusHolder = FakeItemStatusHolder()
+        val itemsSyncClient = FakeItemSyncClient()
 
-        val viewModel = ItemsViewModel(itemsRepository, statusHolder)
+        val viewModel = ItemsViewModel(itemsRepository, statusHolder, itemsSyncClient)
 
         viewModel.uiState.test {
             awaitItem().shouldBeInstanceOf<UiState.Loading>()
@@ -42,8 +44,9 @@ private class ItemsViewModelTest {
     fun `uiState should reflect updated status from ItemStatusHolder`() = runTest {
         val itemsRepository = FakeItemsRepository(itemsFlow = flowOf(listOf(item)))
         val statusHolder = FakeItemStatusHolder()
+        val itemsSyncClient = FakeItemSyncClient()
 
-        val viewModel = ItemsViewModel(itemsRepository, statusHolder)
+        val viewModel = ItemsViewModel(itemsRepository, statusHolder, itemsSyncClient)
 
         viewModel.uiState.test {
             awaitItem().shouldBeInstanceOf<UiState.Loading>()
@@ -58,15 +61,31 @@ private class ItemsViewModelTest {
     }
 
     @Test
-    fun `setItemStateToLoading should update ItemStatusHolder`() = runTest {
+    fun `sendItem should set status to Loading and dispatch task`() = runTest {
         val itemsRepository = FakeItemsRepository(itemsFlow = flowOf(listOf(item)))
         val statusHolder = FakeItemStatusHolder()
+        val itemsSyncClient = FakeItemSyncClient()
 
-        val viewModel = ItemsViewModel(itemsRepository, statusHolder)
-        viewModel.setItemStateToLoading(item)
+        val viewModel = ItemsViewModel(itemsRepository, statusHolder, itemsSyncClient)
+        viewModel.sendItem(item)
+        testScheduler.runCurrent()
 
         statusHolder.lastLoadedItemName shouldBe item.name
+        itemsSyncClient.lastSentTaskName shouldBe item.name
         statusHolder.statuses.value[item.name] shouldBe ItemState.Loading
+    }
+
+    @Test
+    fun `sendItem should transition status to Error immediately if dispatch fails`() = runTest {
+        val itemsRepository = FakeItemsRepository(itemsFlow = flowOf(listOf(item)))
+        val statusHolder = FakeItemStatusHolder()
+        val itemsSyncClient = FakeItemSyncClient(result = Result.failure(RuntimeException("Network failure")))
+
+        val viewModel = ItemsViewModel(itemsRepository, statusHolder, itemsSyncClient)
+        viewModel.sendItem(item)
+        testScheduler.runCurrent()
+
+        statusHolder.statuses.value[item.name] shouldBe ItemState.Error
     }
 }
 
@@ -100,5 +119,17 @@ private class FakeItemStatusHolder : ItemStatusHolder {
 
     override fun resetAll() {
         mutableStatuses.value = emptyMap()
+    }
+}
+
+private class FakeItemSyncClient(
+    var result: Result<Unit> = Result.success(Unit),
+) : ItemSyncClient {
+    var lastSentTaskName: String? = null
+        private set
+
+    override suspend fun sendItem(name: String): Result<Unit> {
+        lastSentTaskName = name
+        return result
     }
 }

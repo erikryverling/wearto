@@ -9,22 +9,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import se.yverling.wearto.mobile.app.data.DataLayerRepository
 import se.yverling.wearto.mobile.data.items.ItemsRepository
 import se.yverling.wearto.mobile.data.items.model.Item
+import se.yverling.wearto.mobile.data.items.sync.ItemsSyncPublisher
 import javax.inject.Inject
 
 @HiltViewModel
 internal class MainViewModel @Inject constructor(
     private val itemsRepository: ItemsRepository,
-    private val dataLayerRepository: DataLayerRepository,
+    private val itemsSyncPublisher: ItemsSyncPublisher,
 ) : ViewModel() {
     private val mutableUiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Default)
     internal var uiState: StateFlow<UiState> = mutableUiState
 
     suspend fun sendItems() {
         val items = itemsRepository.getItems().first()
-        dataLayerRepository.sendItems(items)
+        itemsSyncPublisher.publishItems(items)
     }
 
     fun showMessage(@StringRes message: Int) {

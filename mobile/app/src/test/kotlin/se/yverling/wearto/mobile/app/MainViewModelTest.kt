@@ -2,6 +2,7 @@ package se.yverling.wearto.mobile.app
 
 import app.cash.turbine.test
 import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.shouldBe
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -16,11 +17,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import se.yverling.wearto.mobile.app.data.DataLayerRepository
 import se.yverling.wearto.mobile.app.ui.MainViewModel
 import se.yverling.wearto.mobile.app.ui.MainViewModel.UiState
 import se.yverling.wearto.mobile.data.items.ItemsRepository
 import se.yverling.wearto.mobile.data.items.model.Item
+import se.yverling.wearto.mobile.data.items.sync.ItemsSyncPublisher
 import se.yverling.wearto.test.MainDispatcherExtension
 
 @ExtendWith(MockKExtension::class)
@@ -29,8 +30,7 @@ private class MainViewModelTest {
     @RelaxedMockK
     lateinit var itemsRepositoryMock: ItemsRepository
 
-    @RelaxedMockK
-    lateinit var dataLayerRepositoryMock: DataLayerRepository
+    val itemsSyncPublisher = FakeItemsSyncPublisher()
 
     val csv = "name1,name2,name3"
 
@@ -48,16 +48,16 @@ private class MainViewModelTest {
 
         mainViewModel = MainViewModel(
             itemsRepository = itemsRepositoryMock,
-            dataLayerRepository = dataLayerRepositoryMock,
+            itemsSyncPublisher = itemsSyncPublisher,
         )
     }
 
     @Test
-    fun `sendItems should call ItemsRepository and DataLayerRepository`() = runTest {
+    fun `sendItems should call ItemsRepository and ItemsSyncPublisher`() = runTest {
         mainViewModel.sendItems()
 
         verify { itemsRepositoryMock.getItems() }
-        verify { dataLayerRepositoryMock.sendItems(any()) }
+        itemsSyncPublisher.publishedItems shouldBe items
     }
 
     @Test
@@ -78,11 +78,9 @@ private class MainViewModelTest {
     }
 
     @Test
-    fun `getItemsAsCsv should return names in CSV`() {
-        runTest {
-            val first = mainViewModel.getItemsAsCsv().first()
-            first.shouldBeEqual(csv)
-        }
+    fun `getItemsAsCsv should return names in CSV`() = runTest {
+        val first = mainViewModel.getItemsAsCsv().first()
+        first.shouldBeEqual(csv)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -96,5 +94,15 @@ private class MainViewModelTest {
         val listSlot = slot<List<Item>>()
         coVerify { itemsRepositoryMock.setItems(capture(listSlot)) }
         listSlot.captured.shouldBeEqual(items)
+    }
+}
+
+private class FakeItemsSyncPublisher : ItemsSyncPublisher {
+    var publishedItems: List<Item>? = null
+        private set
+
+    override suspend fun publishItems(items: List<Item>): Result<Unit> {
+        publishedItems = items
+        return Result.success(Unit)
     }
 }
