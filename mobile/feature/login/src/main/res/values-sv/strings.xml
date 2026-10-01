@@ -10,6 +10,7 @@
     <string name="password_icon_no_visible_content_description">Lösenordet är dolt</string>
     <string name="input_field_supporting_text">Klistra in din API-token och klicka på Logga in</string>
     <string name="login_error">Kontrollera din API-token och försök igen.</string>
+    <string name="reconnect_error">Det gick inte att återställa din Todoist-anslutning. Vänligen ange din API-token igen.</string>
 
     <string name="login_button_label">Logga in</string>
     <string name="login_button_icon_content_description">Logga in</string>

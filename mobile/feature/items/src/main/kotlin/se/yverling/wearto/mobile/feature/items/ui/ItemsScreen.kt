@@ -86,6 +86,9 @@ import se.yverling.wearto.mobile.feature.items.theme.AddItemSize
 import se.yverling.wearto.mobile.feature.items.theme.IconAnimationDurationInMillis
 import se.yverling.wearto.mobile.feature.items.theme.IconAnimationRotation
 import se.yverling.wearto.mobile.feature.items.theme.ItemCardElevation
+import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState
+import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.CredentialRecovery
+import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.TransientError
 import timber.log.Timber
 
 const val ItemsRoute = "ItemsRoute"
@@ -95,6 +98,7 @@ const val ItemsRoute = "ItemsRoute"
 fun ItemsScreen(
     onLoggedOut: () -> Unit,
     onSync: () -> Unit,
+    onReconnect: () -> Unit = onLoggedOut,
     viewModel: ItemsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -103,6 +107,10 @@ fun ItemsScreen(
         Loading -> LoadingScreen()
 
         is LoggedOut -> onLoggedOut()
+
+        CredentialRecovery -> CredentialRecoveryContent(onReconnect = onReconnect)
+
+        TransientError -> TransientErrorContent(onRetry = { viewModel.retry() })
 
         is Success -> {
             val scope = rememberCoroutineScope()

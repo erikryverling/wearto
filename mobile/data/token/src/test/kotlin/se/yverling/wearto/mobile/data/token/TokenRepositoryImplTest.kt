@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.InternalSerializationApi
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -198,19 +199,54 @@ private class TokenRepositoryImplTest {
     }
 
     @Test
-    fun `corrupted legacy data should throw CorruptionException and preserve legacy data`() = runTest {
+    fun `corrupted legacy data should throw UnrecoverableTokenException and preserve legacy data`() = runTest {
         fakeLegacyDataSource.tokenState.value = "corrupted_token"
         fakeLegacyDataSource.shouldFailOnGet = CorruptionException("Legacy decryption failed")
 
         val repository = createRepository()
 
-        shouldThrow<CorruptionException> {
+        shouldThrow<UnrecoverableTokenException> {
             repository.getToken().first()
         }
 
         // Legacy data is not retired or deleted prematurely on corruption
         fakeLegacyDataSource.retireCalls shouldBe 0
         fakeLegacyDataSource.tokenState.value shouldBe "corrupted_token"
+    }
+
+    @Test
+    fun `corrupted AEAD data should throw UnrecoverableTokenException and preserve stored data`() = runTest {
+        // Write garbage bytes to tokenFile to simulate disk corruption
+        tokenFile.writeBytes(byteArrayOf(0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08))
+
+        val repository = createRepository()
+
+        shouldThrow<UnrecoverableTokenException> {
+            repository.getToken().first()
+        }
+
+        // File remains on disk rather than being deleted or overwritten with null
+        tokenFile.exists().shouldBeTrue()
+        tokenFile.length() shouldBeGreaterThan 0L
+    }
+
+    @Test
+    fun `AEAD data with wrong key should throw UnrecoverableTokenException and preserve stored data`() = runTest {
+        val repository = createRepository()
+        repository.setToken("valid_token")
+
+        val wrongAead = KeysetHandle.generateNew(KeyTemplates.get("AES256_GCM"))
+            .getPrimitive(RegistryConfiguration.get(), Aead::class.java)
+
+        val wrongKeyRepository = createRepository(aead = wrongAead)
+
+        shouldThrow<UnrecoverableTokenException> {
+            wrongKeyRepository.getToken().first()
+        }
+
+        // File remains on disk
+        tokenFile.exists().shouldBeTrue()
+        tokenFile.length() shouldBeGreaterThan 0L
     }
 
     @Test
@@ -281,6 +317,7 @@ private class FakeLegacyTokenDataSource(
     }
 }
 
+@OptIn(InternalSerializationApi::class)
 private class FakeFailingTokenDataSource(
     private val failOnPersist: Boolean,
 ) : TokenDataSource {

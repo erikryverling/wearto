@@ -11,6 +11,7 @@
     <string name="password_icon_no_visible_content_description">Password is hidden</string>
     <string name="input_field_supporting_text">Paste the API-token then tap Login</string>
     <string name="login_error">Check your API-token and try again.</string>
+    <string name="reconnect_error">Your Todoist connection could not be restored. Please enter your API token again.</string>
 
     <string name="login_button_label">Login</string>
     <string name="login_button_icon_content_description">Login button</string>

@@ -144,6 +144,10 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(LoginRoute(errorMessage = null))
                                 },
 
+                                onReconnect = {
+                                    navController.navigate(LoginRoute(errorMessage = LoginR.string.reconnect_error))
+                                },
+
                                 onSync = {
                                     lifecycleScope.launch {
                                         viewModel.sendItems()

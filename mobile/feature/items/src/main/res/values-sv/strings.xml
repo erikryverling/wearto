@@ -17,4 +17,11 @@
     <string name="save_button_label">Spara</string>
 
     <string name="sync_action_description">Synka</string>
+
+    <string name="credential_recovery_title">Anslutningsfel</string>
+    <string name="credential_recovery_description">Det gick inte att återställa din Todoist-anslutning. Vänligen anslut ditt konto igen.</string>
+    <string name="credential_recovery_reconnect_button">Anslut igen</string>
+    <string name="transient_error_title">Lagringsfel</string>
+    <string name="transient_error_description">Ett tillfälligt lagringsfel uppstod. Vänligen försök igen.</string>
+    <string name="retry_button_label">Försök igen</string>
 </resources>

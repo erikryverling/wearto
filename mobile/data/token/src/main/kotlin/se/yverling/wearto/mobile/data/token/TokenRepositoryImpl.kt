@@ -1,6 +1,8 @@
 package se.yverling.wearto.mobile.data.token
 
+import androidx.datastore.core.CorruptionException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -12,6 +14,8 @@ import se.yverling.wearto.mobile.data.token.datastore.LegacyTokenDataSource
 import se.yverling.wearto.mobile.data.token.datastore.StoredTokenState
 import se.yverling.wearto.mobile.data.token.datastore.TokenDataSource
 import timber.log.Timber
+import java.io.IOException
+import java.security.GeneralSecurityException
 import javax.inject.Inject
 
 @OptIn(InternalSerializationApi::class)
@@ -34,6 +38,15 @@ internal class TokenRepositoryImpl @Inject constructor(
                 }
             }
         )
+    }.catch { throwable ->
+        when (throwable) {
+            is UnrecoverableTokenException -> throw throwable
+            is CorruptionException, is GeneralSecurityException -> {
+                throw UnrecoverableTokenException("Stored credential could not be decrypted or read", throwable)
+            }
+            is IOException -> throw throwable
+            else -> throw throwable
+        }
     }
 
     override suspend fun setToken(token: String) {
@@ -67,9 +80,27 @@ internal class TokenRepositoryImpl @Inject constructor(
         if (migrationAttempted) return
         migrationMutex.withLock {
             if (migrationAttempted) return
-            val currentAeadState = tokenDataSource.stateFlow.first()
+            val currentAeadState = try {
+                tokenDataSource.stateFlow.first()
+            } catch (e: Exception) {
+                when (e) {
+                    is CorruptionException, is GeneralSecurityException -> {
+                        throw UnrecoverableTokenException("Failed to read AEAD token store", e)
+                    }
+                    else -> throw e
+                }
+            }
             if (currentAeadState is StoredTokenState.Unset) {
-                val legacyToken = legacyTokenDataSource.getLegacyToken()
+                val legacyToken = try {
+                    legacyTokenDataSource.getLegacyToken()
+                } catch (e: Exception) {
+                    when (e) {
+                        is CorruptionException, is GeneralSecurityException -> {
+                            throw UnrecoverableTokenException("Failed to read legacy token store", e)
+                        }
+                        else -> throw e
+                    }
+                }
                 if (!legacyToken.isNullOrBlank()) {
                     tokenDataSource.persistToken(legacyToken)
                     legacyTokenDataSource.retireLegacyData()

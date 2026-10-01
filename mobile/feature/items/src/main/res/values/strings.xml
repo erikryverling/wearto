@@ -17,4 +17,11 @@
     <string name="save_button_label">Save</string>
 
     <string name="sync_action_description">Sync</string>
+
+    <string name="credential_recovery_title">Connection error</string>
+    <string name="credential_recovery_description">Your Todoist connection could not be restored. Please reconnect your account.</string>
+    <string name="credential_recovery_reconnect_button">Reconnect</string>
+    <string name="transient_error_title">Storage error</string>
+    <string name="transient_error_description">A temporary storage error occurred. Please try again.</string>
+    <string name="retry_button_label">Retry</string>
 </resources>
