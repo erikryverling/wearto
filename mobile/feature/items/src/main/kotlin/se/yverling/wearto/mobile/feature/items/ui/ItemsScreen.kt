@@ -60,9 +60,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardCapitalization.Companion.Sentences
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -112,10 +115,11 @@ fun ItemsScreen(
             )
 
             var selectedItem by remember { mutableStateOf<Item?>(null) }
-            var nameInputValue by remember { mutableStateOf("") }
+            var nameInputValue by remember { mutableStateOf(TextFieldValue()) }
             var isError: Boolean by remember { mutableStateOf(false) }
 
             val keyboardController = LocalSoftwareKeyboardController.current
+            val focusManager = LocalFocusManager.current
             val focusRequester = remember { FocusRequester() }
 
             BottomSheetScaffold(
@@ -143,8 +147,8 @@ fun ItemsScreen(
 
                         onSave = {
                             scope.launch {
-                                val newItem = if (selectedItem == null) Item(name = nameInputValue)
-                                else selectedItem!!.copy(name = nameInputValue)
+                                val newItem = if (selectedItem == null) Item(name = nameInputValue.text)
+                                else selectedItem!!.copy(name = nameInputValue.text)
 
                                 try {
                                     viewModel.setItem(newItem)
@@ -175,7 +179,7 @@ fun ItemsScreen(
                         },
 
                         onClearInputField = {
-                            nameInputValue = ""
+                            nameInputValue = TextFieldValue()
                         },
                     )
                 }
@@ -184,6 +188,7 @@ fun ItemsScreen(
                 LaunchedEffect(currentValue) {
                     if (currentValue == SheetValue.Hidden) {
                         isError = false
+                        focusManager.clearFocus()
                     }
                 }
 
@@ -229,7 +234,7 @@ fun ItemsScreen(
                         AddFab {
                             scope.launch {
                                 selectedItem = null
-                                nameInputValue = ""
+                                nameInputValue = TextFieldValue()
 
                                 bottomSheetScaffoldState.bottomSheetState.expand()
                                 keyboardController?.show()
@@ -252,9 +257,14 @@ fun ItemsScreen(
                                 isError = false
 
                                 selectedItem = item
-                                nameInputValue = item.name
+                                nameInputValue = TextFieldValue(
+                                    text = item.name,
+                                    selection = TextRange(item.name.length)
+                                )
 
                                 bottomSheetScaffoldState.bottomSheetState.expand()
+                                keyboardController?.show()
+                                focusRequester.requestFocus()
                             }
                         }
                     }
@@ -266,14 +276,14 @@ fun ItemsScreen(
 
 @Composable
 fun BottomSheet(
-    inputValue: String,
+    inputValue: TextFieldValue,
     isError: Boolean,
     canDelete: Boolean,
     focusRequester: FocusRequester,
     onSave: () -> Unit,
     onInputValidationError: () -> Unit,
     onDelete: () -> Unit,
-    onInputValueChanged: (String) -> Unit,
+    onInputValueChanged: (TextFieldValue) -> Unit,
     onClearInputField: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -294,7 +304,7 @@ fun BottomSheet(
             keyboardOptions = KeyboardOptions(capitalization = Sentences),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    if (inputValue.isBlank()) onInputValidationError()
+                    if (inputValue.text.isBlank()) onInputValidationError()
                     else onSave()
                 }
             ),
@@ -322,7 +332,7 @@ fun BottomSheet(
             Spacer(Modifier.width(LargeSpace))
 
             SaveButton(modifier = Modifier.weight(1f)) {
-                if (inputValue.isBlank()) onInputValidationError()
+                if (inputValue.text.isBlank()) onInputValidationError()
                 else onSave()
             }
         }
@@ -467,7 +477,7 @@ private fun BottomSheetPreview() {
     WearToTheme {
         Surface {
             BottomSheet(
-                inputValue = "Test",
+                inputValue = TextFieldValue("Test"),
                 isError = false,
                 canDelete = true,
                 focusRequester = remember { FocusRequester() },
