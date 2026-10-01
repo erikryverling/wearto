@@ -7,18 +7,24 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
+import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
 
 // TODO: Temporary compatibility code for pre-AEAD upgrades. Remove in a separate release after the supported upgrade window closes.
 internal interface LegacyTokenDataSource {
     val tokenFlow: Flow<String?>
+    suspend fun getLegacyToken(): String?
     suspend fun clearToken()
+    suspend fun retireLegacyData()
 }
 
 // TODO: Temporary compatibility code for pre-AEAD upgrades. Remove in a separate release after the supported upgrade window closes.
 internal class LegacyTokenDataSourceImpl(
     private val dataStore: DataStore<String?>,
+    private val produceFile: () -> File = { File("") },
 ) : LegacyTokenDataSource {
     @Inject
     constructor(
@@ -28,10 +34,13 @@ internal class LegacyTokenDataSourceImpl(
         dataStore = DataStoreFactory.create(
             serializer = serializer,
             produceFile = { context.preferencesDataStoreFile(DATASTORE_FILE_NAME) },
-        )
+        ),
+        produceFile = { context.preferencesDataStoreFile(DATASTORE_FILE_NAME) },
     )
 
     override val tokenFlow: Flow<String?> = dataStore.data
+
+    override suspend fun getLegacyToken(): String? = dataStore.data.first()
 
     override suspend fun clearToken() {
         withContext(Dispatchers.IO) {
@@ -39,7 +48,25 @@ internal class LegacyTokenDataSourceImpl(
         }
     }
 
+    override suspend fun retireLegacyData() {
+        withContext(Dispatchers.IO) {
+            try {
+                dataStore.updateData { null }
+            } catch (e: Exception) {
+                Timber.d(e, "Failed to clear legacy DataStore during retirement")
+            }
+            try {
+                val file = produceFile()
+                if (file.exists()) {
+                    file.delete()
+                }
+            } catch (e: Exception) {
+                Timber.d(e, "Failed to delete legacy file during retirement")
+            }
+        }
+    }
+
     companion object {
-        private const val DATASTORE_FILE_NAME = "token"
+        const val DATASTORE_FILE_NAME = "token"
     }
 }

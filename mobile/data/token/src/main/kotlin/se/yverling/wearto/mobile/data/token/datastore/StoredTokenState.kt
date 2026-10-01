@@ -1,4 +1,4 @@
- package se.yverling.wearto.mobile.data.token.datastore
+package se.yverling.wearto.mobile.data.token.datastore
 
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName

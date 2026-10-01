@@ -38,7 +38,7 @@ internal class TokenDataSourceImpl(
     override val tokenFlow: Flow<String?> = stateFlow.map { state ->
         when (state) {
             is StoredTokenState.Present -> state.token
-            StoredTokenState.Absent, StoredTokenState.Unset -> null
+            is StoredTokenState.Absent, is StoredTokenState.Unset -> null
         }
     }
 
