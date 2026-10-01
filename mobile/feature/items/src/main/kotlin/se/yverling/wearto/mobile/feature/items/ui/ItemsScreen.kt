@@ -107,6 +107,8 @@ fun ItemsScreen(
 
         is LoggedOut -> onLoggedOut()
 
+        // TODO Perhaps these states are a bit overkill, but let's keep them for now
+
         CredentialRecovery -> CredentialRecoveryContent(onReconnect = onReconnect)
 
         TransientError -> TransientErrorContent(onRetry = { viewModel.retry() })
