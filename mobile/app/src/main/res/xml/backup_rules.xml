@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <exclude domain="file" path="datastore/token_v1.json" />
+    <exclude domain="file" path="datastore/token.preferences_pb" />
+    <exclude domain="sharedpref" path="wearto_token_keyset_prefs.xml" />
+</full-backup-content>

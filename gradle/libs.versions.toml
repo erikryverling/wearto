@@ -22,7 +22,8 @@ horologist-compose = "0.7.15"
 
 timber = "5.0.1"
 kotlinx-serialization = "1.11.0"
-datastore = "1.2.1"
+datastore = "1.3.0-alpha11"
+tink = "1.23.0"
 
 protobuf = "4.36.2"
 # This needs to be synced with protobuf
@@ -84,6 +85,8 @@ playServices-wearable = { module = "com.google.android.gms:play-services-wearabl
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 protobuf = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+datastore-tink = { module = "androidx.datastore:datastore-tink", version.ref = "datastore" }
+tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
 
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 

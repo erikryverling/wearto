@@ -12,6 +12,7 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import se.yverling.wearto.mobile.data.token.crypto.CryptoManager
 
+// TODO: Temporary compatibility code for pre-AEAD upgrades. Remove in a separate release after the supported upgrade window closes.
 @Singleton
 internal class TokenDataStoreSerializer @Inject constructor(
     private val cryptoManager: CryptoManager,

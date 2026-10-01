@@ -12,6 +12,7 @@ import javax.crypto.spec.IvParameterSpec
 import javax.inject.Inject
 import javax.inject.Singleton
 
+// TODO: Temporary compatibility code for pre-AEAD upgrades. Remove in a separate release after the supported upgrade window closes.
 @Singleton
 internal class CryptoManager @Inject constructor() {
     private val keyStore = KeyStore.getInstance(KEY_STORE_NAME).apply {
