@@ -79,15 +79,14 @@ import se.yverling.wearto.mobile.common.design.theme.SmallSpace
 import se.yverling.wearto.mobile.common.design.theme.WearToTheme
 import se.yverling.wearto.mobile.data.items.model.Item
 import se.yverling.wearto.mobile.feature.items.R
-import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.Loading
-import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.LoggedOut
-import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.Success
 import se.yverling.wearto.mobile.feature.items.theme.AddItemSize
 import se.yverling.wearto.mobile.feature.items.theme.IconAnimationDurationInMillis
 import se.yverling.wearto.mobile.feature.items.theme.IconAnimationRotation
 import se.yverling.wearto.mobile.feature.items.theme.ItemCardElevation
-import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState
 import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.CredentialRecovery
+import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.Loading
+import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.LoggedOut
+import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.Success
 import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.TransientError
 import timber.log.Timber
 
