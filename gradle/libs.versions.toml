@@ -27,7 +27,7 @@ tink = "1.23.0"
 
 protobuf = "4.36.2"
 # This needs to be synced with protobuf
-protobufCompilerArtifact = "com.google.protobuf:protoc:4.36.2:osx-aarch_64"
+protobufCompilerArtifact = "com.google.protobuf:protoc:4.36.2"
 
 playServices-wearable = "20.0.1"
 ktor = "3.6.0"
