@@ -54,6 +54,5 @@ service-account.json
 .env
 
 # Agents
-/afk
-.dockerignore
 opencode.jsonc
+
