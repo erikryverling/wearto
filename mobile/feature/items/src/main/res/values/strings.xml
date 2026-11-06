@@ -24,4 +24,6 @@
     <string name="transient_error_title">Storage error</string>
     <string name="transient_error_description">A temporary storage error occurred. Please try again.</string>
     <string name="retry_button_label">Retry</string>
+
+    <string name="item_deleted">%1$s deleted</string>
 </resources>

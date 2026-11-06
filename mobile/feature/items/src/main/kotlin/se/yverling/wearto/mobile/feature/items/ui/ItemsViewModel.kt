@@ -7,12 +7,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import se.yverling.wearto.mobile.data.items.ItemsRepository
 import se.yverling.wearto.mobile.data.items.model.Item
 import se.yverling.wearto.mobile.data.token.TokenRepository
@@ -29,6 +31,11 @@ class ItemsViewModel @Inject constructor(
     private val itemsRepository: ItemsRepository,
 ) : ViewModel() {
     private val retryTrigger = MutableStateFlow(0)
+
+    private val _deletionNotice = MutableStateFlow<DeletionNotice?>(null)
+    internal val deletionNotice = _deletionNotice.asStateFlow()
+
+    private var deletionId = 0L
 
     internal val uiState: StateFlow<UiState> = retryTrigger.flatMapLatest {
         tokenRepository.hasToken().flatMapConcat { hasToken ->
@@ -66,9 +73,28 @@ class ItemsViewModel @Inject constructor(
         itemsRepository.setItem(item)
     }
 
+    internal fun dismissItem(item: Item) {
+        val notice = DeletionNotice(itemName = item.name, id = ++deletionId)
+        _deletionNotice.value = null
+        viewModelScope.launch {
+            itemsRepository.deleteItem(item)
+            if (notice.id == deletionId) {
+                _deletionNotice.value = notice
+            }
+        }
+    }
+
+    internal fun dismissDeletionNotice(notice: DeletionNotice) {
+        if (_deletionNotice.value == notice) {
+            _deletionNotice.value = null
+        }
+    }
+
     internal suspend fun deleteItem(item: Item) {
         itemsRepository.deleteItem(item)
     }
+
+    internal data class DeletionNotice(val itemName: String, val id: Long)
 
     internal sealed class UiState {
         data object Loading : UiState()

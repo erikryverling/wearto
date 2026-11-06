@@ -24,4 +24,6 @@
     <string name="transient_error_title">Lagringsfel</string>
     <string name="transient_error_description">Ett tillfälligt lagringsfel uppstod. Vänligen försök igen.</string>
     <string name="retry_button_label">Försök igen</string>
+
+    <string name="item_deleted">%1$s raderad</string>
 </resources>

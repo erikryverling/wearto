@@ -3,9 +3,11 @@ package se.yverling.wearto.mobile.feature.items.ui
 import app.cash.turbine.test
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -18,6 +20,7 @@ import se.yverling.wearto.test.MainDispatcherExtension
 import java.io.IOException
 
 @ExtendWith(MainDispatcherExtension::class)
+@OptIn(ExperimentalCoroutinesApi::class)
 private class ItemsViewModelTest {
     val item = Item(name = "Item")
 
@@ -108,6 +111,157 @@ private class ItemsViewModelTest {
 
         itemsRepository.lastDeletedItem shouldBe item
     }
+
+    @Test
+    fun `deleteItem should remove item and update uiState`() = runTest {
+        val item1 = Item(uid = 1, name = "Item 1")
+        val item2 = Item(uid = 2, name = "Item 2")
+        val tokenRepository = FakeTokenRepository(hasToken = true)
+        val itemsRepository = FakeItemsRepository(initialItems = listOf(item1, item2))
+        val itemsViewModel = ItemsViewModel(tokenRepository, itemsRepository)
+
+        itemsViewModel.uiState.test {
+            awaitItem().shouldBeInstanceOf<UiState.Loading>()
+            awaitItem() shouldBe UiState.Success(items = listOf(item1, item2))
+
+            itemsViewModel.deleteItem(item1)
+
+            awaitItem() shouldBe UiState.Success(items = listOf(item2))
+            itemsRepository.lastDeletedItem shouldBe item1
+        }
+    }
+
+    @Test
+    fun `deleteItem on last remaining item should emit Success with empty list`() = runTest {
+        val tokenRepository = FakeTokenRepository(hasToken = true)
+        val itemsRepository = FakeItemsRepository(initialItems = listOf(item))
+        val itemsViewModel = ItemsViewModel(tokenRepository, itemsRepository)
+
+        itemsViewModel.uiState.test {
+            awaitItem().shouldBeInstanceOf<UiState.Loading>()
+            awaitItem() shouldBe UiState.Success(items = listOf(item))
+
+            itemsViewModel.deleteItem(item)
+
+            awaitItem() shouldBe UiState.Success(items = emptyList())
+            itemsRepository.lastDeletedItem shouldBe item
+        }
+    }
+
+    @Test
+    fun `dismissing item should delete it`() = runTest {
+        val tokenRepository = FakeTokenRepository(hasToken = true)
+        val itemsRepository = FakeItemsRepository(initialItems = listOf(item))
+        val itemsViewModel = ItemsViewModel(tokenRepository, itemsRepository)
+
+        itemsViewModel.dismissItem(item)
+        runCurrent()
+
+        itemsRepository.lastDeletedItem shouldBe item
+        itemsRepository.getItems().test {
+            awaitItem() shouldBe emptyList()
+        }
+    }
+
+    @Test
+    fun `dismissing item should update ui state`() = runTest {
+        val item1 = Item(uid = 1, name = "Item 1")
+        val item2 = Item(uid = 2, name = "Item 2")
+        val tokenRepository = FakeTokenRepository(hasToken = true)
+        val itemsRepository = FakeItemsRepository(initialItems = listOf(item1, item2))
+        val itemsViewModel = ItemsViewModel(tokenRepository, itemsRepository)
+
+        itemsViewModel.uiState.test {
+            awaitItem().shouldBeInstanceOf<UiState.Loading>()
+            awaitItem() shouldBe UiState.Success(items = listOf(item1, item2))
+
+            itemsViewModel.dismissItem(item1)
+            awaitItem() shouldBe UiState.Success(items = listOf(item2))
+        }
+    }
+
+    @Test
+    fun `dismissing last item should show empty list`() = runTest {
+        val tokenRepository = FakeTokenRepository(hasToken = true)
+        val itemsRepository = FakeItemsRepository(initialItems = listOf(item))
+        val itemsViewModel = ItemsViewModel(tokenRepository, itemsRepository)
+
+        itemsViewModel.uiState.test {
+            awaitItem().shouldBeInstanceOf<UiState.Loading>()
+            awaitItem() shouldBe UiState.Success(items = listOf(item))
+
+            itemsViewModel.dismissItem(item)
+            awaitItem() shouldBe UiState.Success(items = emptyList())
+        }
+    }
+
+    @Test
+    fun `rapid dismissals should delete both items`() = runTest {
+        val first = Item(uid = 1, name = "First")
+        val latest = Item(uid = 2, name = "Latest")
+        val itemsRepository = FakeItemsRepository(initialItems = listOf(first, latest))
+        val viewModel = ItemsViewModel(FakeTokenRepository(), itemsRepository)
+
+        viewModel.dismissItem(first)
+        viewModel.dismissItem(latest)
+        runCurrent()
+
+        itemsRepository.getItems().test {
+            awaitItem() shouldBe emptyList()
+        }
+    }
+
+    @Test
+    fun `dismissing item should publish deletion notice`() = runTest {
+        val itemsRepository = FakeItemsRepository(initialItems = listOf(item))
+        val viewModel = ItemsViewModel(FakeTokenRepository(), itemsRepository)
+
+        viewModel.dismissItem(item)
+        runCurrent()
+
+        viewModel.deletionNotice.value?.itemName shouldBe item.name
+    }
+
+    @Test
+    fun `dismissing deletion notice should clear it and leave item deleted`() = runTest {
+        val itemsRepository = FakeItemsRepository(initialItems = listOf(item))
+        val viewModel = ItemsViewModel(FakeTokenRepository(), itemsRepository)
+        viewModel.dismissItem(item)
+        runCurrent()
+        val notice = requireNotNull(viewModel.deletionNotice.value)
+
+        viewModel.dismissDeletionNotice(notice)
+
+        viewModel.deletionNotice.value shouldBe null
+        itemsRepository.lastSavedItem shouldBe null
+        itemsRepository.getItems().test {
+            awaitItem() shouldBe emptyList()
+        }
+    }
+
+    @Test
+    fun `successive dismissals should retain latest deletion notice`() = runTest {
+        val first = Item(uid = 1, name = "First")
+        val latest = Item(uid = 2, name = "Latest")
+        val itemsRepository = FakeItemsRepository(initialItems = listOf(first, latest))
+        val viewModel = ItemsViewModel(FakeTokenRepository(), itemsRepository)
+        viewModel.dismissItem(first)
+        runCurrent()
+        val oldNotice = requireNotNull(viewModel.deletionNotice.value)
+        viewModel.dismissItem(latest)
+        runCurrent()
+        val latestNotice = requireNotNull(viewModel.deletionNotice.value)
+
+        viewModel.dismissDeletionNotice(oldNotice)
+
+        viewModel.deletionNotice.value shouldBe latestNotice
+        latestNotice.itemName shouldBe latest.name
+
+        itemsRepository.getItems().test {
+            awaitItem() shouldBe emptyList()
+        }
+    }
+
 }
 
 private class FakeTokenRepository(

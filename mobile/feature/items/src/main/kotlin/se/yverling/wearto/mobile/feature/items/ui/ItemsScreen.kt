@@ -1,14 +1,18 @@
 package se.yverling.wearto.mobile.feature.items.ui
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,13 +23,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddTask
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.outlined.LibraryAdd
 import androidx.compose.material3.BottomSheetScaffold
@@ -40,12 +45,18 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -59,8 +70,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -70,6 +84,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import se.yverling.wearto.common.ui.LoadingScreen
 import se.yverling.wearto.mobile.common.design.theme.DefaultSpace
@@ -89,6 +104,7 @@ import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.LoggedO
 import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.Success
 import se.yverling.wearto.mobile.feature.items.ui.ItemsViewModel.UiState.TransientError
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 const val ItemsRoute = "ItemsRoute"
 
@@ -115,6 +131,7 @@ fun ItemsScreen(
 
         is Success -> {
             val scope = rememberCoroutineScope()
+            val itemDeletedTemplate = stringResource(R.string.item_deleted)
 
             val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
                 bottomSheetState = rememberStandardBottomSheetState(
@@ -122,6 +139,19 @@ fun ItemsScreen(
                     initialValue = SheetValue.Hidden
                 )
             )
+
+            val deletionNotice by viewModel.deletionNotice.collectAsStateWithLifecycle()
+
+            LaunchedEffect(deletionNotice) {
+                val notice = deletionNotice ?: return@LaunchedEffect
+
+                bottomSheetScaffoldState.snackbarHostState.showSnackbar(
+                    message = itemDeletedTemplate.format(notice.itemName),
+                    duration = SnackbarDuration.Short,
+                )
+
+                viewModel.dismissDeletionNotice(notice)
+            }
 
             var selectedItem by remember { mutableStateOf<Item?>(null) }
             var nameInputValue by remember { mutableStateOf(TextFieldValue()) }
@@ -145,6 +175,8 @@ fun ItemsScreen(
                     },
 
                 scaffoldState = bottomSheetScaffoldState,
+                // The inner Scaffold hosts the Snackbar above its floating action button.
+                snackbarHost = {},
 
                 sheetContent = {
 
@@ -192,7 +224,7 @@ fun ItemsScreen(
                         },
                     )
                 }
-            ) { padding ->
+            ) {
                 val currentValue = bottomSheetScaffoldState.bottomSheetState.currentValue
                 LaunchedEffect(currentValue) {
                     if (currentValue == SheetValue.Hidden) {
@@ -239,6 +271,8 @@ fun ItemsScreen(
                         )
                     },
 
+                    snackbarHost = { SnackbarHost(bottomSheetScaffoldState.snackbarHostState) },
+
                     floatingActionButton = {
                         AddFab {
                             scope.launch {
@@ -260,7 +294,8 @@ fun ItemsScreen(
                     } else {
                         ItemsList(
                             items = items,
-                            modifier = Modifier.padding(padding)
+                            modifier = Modifier.padding(padding),
+                            onItemDismissed = viewModel::dismissItem,
                         ) { item ->
                             scope.launch {
                                 isError = false
@@ -352,6 +387,7 @@ fun BottomSheet(
 internal fun ItemsList(
     items: List<Item>,
     modifier: Modifier = Modifier,
+    onItemDismissed: (Item) -> Unit = {},
     onItemClicked: (Item) -> Unit = {},
 ) {
     Column(
@@ -363,13 +399,103 @@ internal fun ItemsList(
                 .padding(DefaultSpace)
                 .widthIn(max = MaxWith)
         ) {
-            itemsIndexed(items) { index, item ->
+            items(
+                items = items,
+                key = { it.uid ?: it.name }
+            ) { item ->
+                DismissibleItem(
+                    item = item,
+                    onItemDismissed = onItemDismissed,
+                    onItemClicked = onItemClicked,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+internal fun DismissibleItem(
+    item: Item,
+    onItemDismissed: (Item) -> Unit,
+    modifier: Modifier = Modifier,
+    onItemClicked: (Item) -> Unit = {},
+) {
+    var isDismissed by remember(item) { mutableStateOf(false) }
+    val dismissState = rememberSwipeToDismissBoxState()
+
+    val hapticFeedback = LocalHapticFeedback.current
+    LaunchedEffect(dismissState.targetValue) {
+        if (dismissState.targetValue == SwipeToDismissBoxValue.StartToEnd) {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+        }
+    }
+
+    LaunchedEffect(isDismissed) {
+        if (isDismissed) {
+            delay(300.milliseconds)
+            onItemDismissed(item)
+        }
+    }
+
+    AnimatedVisibility(
+        visible = !isDismissed,
+        exit = shrinkVertically(
+            animationSpec = tween(durationMillis = 300)
+        ),
+        modifier = modifier,
+    ) {
+        Column {
+            SwipeToDismissBox(
+                state = dismissState,
+                enableDismissFromStartToEnd = true,
+                enableDismissFromEndToStart = false,
+                onDismiss = { dismissValue ->
+                    if (dismissValue == SwipeToDismissBoxValue.StartToEnd) {
+                        isDismissed = true
+                    }
+                },
+                backgroundContent = {
+                    SwipeDeleteBackground(dismissState)
+                },
+            ) {
                 Item(item) {
                     onItemClicked(item)
                 }
-
-                Spacer(modifier = Modifier.padding(SmallSpace))
             }
+
+            Spacer(modifier = Modifier.padding(SmallSpace))
+        }
+    }
+}
+
+@Composable
+internal fun SwipeDeleteBackground(
+    dismissState: SwipeToDismissBoxState,
+    modifier: Modifier = Modifier,
+) {
+    val isSwipingRight = dismissState.dismissDirection == SwipeToDismissBoxValue.StartToEnd
+    val backgroundColor = if (isSwipingRight) {
+        MaterialTheme.colorScheme.errorContainer
+    } else {
+        Color.Transparent
+    }
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                color = backgroundColor,
+                shape = MaterialTheme.shapes.small,
+            )
+            .padding(horizontal = DefaultSpace),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        if (isSwipingRight) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = stringResource(R.string.delete_button_label),
+                tint = MaterialTheme.colorScheme.onErrorContainer,
+            )
         }
     }
 }
@@ -534,6 +660,24 @@ private fun ItemsListPreview() {
     }
 }
 
+@Preview(name = "Light Mode")
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+)
+@Composable
+private fun DismissibleItemPreview() {
+    WearToTheme {
+        Surface {
+            DismissibleItem(
+                item = Item(uid = 1, name = "Buy groceries"),
+                onItemDismissed = {},
+                modifier = Modifier.padding(DefaultSpace),
+            )
+        }
+    }
+}
+
 @Preview(
     name = "Light Mode"
 )
@@ -548,7 +692,6 @@ private fun DeleteButtonPreview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(
     name = "Light Mode"
 )
